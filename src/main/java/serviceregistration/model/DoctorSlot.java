@@ -10,7 +10,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "doctors_slots")
+@Table(name = "doctors_slots",
+    uniqueConstraints = @UniqueConstraint(name = "time_slot", columnNames = {"slot_id", "doctor_id"}))
 @SequenceGenerator(name = "default_generator", sequenceName = "doctor_slot_seq", allocationSize = 1)
 public class DoctorSlot
         extends GenericModel {
