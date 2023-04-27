@@ -23,7 +23,7 @@ public abstract class GenericController<T extends GenericModel> {
     }
 
     @Operation(description = "Получить запись по ID", method = "getOneById")
-    @RequestMapping(value = "getOneById", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/getOneById", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<T> getOneById(@RequestParam(value = "id") Long id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(genericRepository.findById(id).orElseThrow(() -> new NotFoundException("Нет данных по данному id")));
