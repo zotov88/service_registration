@@ -23,8 +23,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SequenceGenerator(name = "default_generator", sequenceName = "clients_seq", allocationSize = 1)
-public class Client
-        extends GenericModel {
+public class Client extends GenericModel {
 
     @Column(name = "login", nullable = false)
     private String login;
