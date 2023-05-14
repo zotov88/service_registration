@@ -2,6 +2,7 @@ package serviceregistration.mapper;
 
 import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
 import serviceregistration.dto.ClientDTO;
 import serviceregistration.model.Client;
 import serviceregistration.model.Registration;
@@ -12,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@Component
 public class ClientMapper extends GenericMapper<Client, ClientDTO> {
 
     private final RegistrationRepository registrationRepository;

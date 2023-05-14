@@ -7,18 +7,17 @@ import serviceregistration.dto.ClientDTO;
 import serviceregistration.model.Client;
 import serviceregistration.repository.ClientRepository;
 import serviceregistration.service.ClientService;
+import serviceregistration.service.GenericService;
 
 @RestController
 @RequestMapping("/clients")
 @Tag(name = "Клиенты", description = "Контроллер для работы с клиентами поликлиники")
-public class ClientController
-        extends GenericController<Client, ClientDTO> {
+public class ClientController extends GenericController<Client, ClientDTO> {
 
-    private final ClientRepository clientRepository;
+    private final ClientService clientService;
 
-    public ClientController(ClientService service,
-                            ClientRepository clientRepository) {
+    public ClientController(ClientService service) {
         super(service);
-        this.clientRepository = clientRepository;
+        this.clientService = service;
     }
 }

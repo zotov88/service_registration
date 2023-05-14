@@ -13,8 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @SequenceGenerator(name = "default_generator", sequenceName = "registrations_seq", allocationSize = 1)
-public class Registration
-        extends GenericModel {
+public class Registration extends GenericModel {
 
     @ManyToOne
     @JoinColumn(name = "doctor_slot_id", nullable = false, foreignKey = @ForeignKey(name = "FK_REGISTRATION_DOCTOR_SLOT"))

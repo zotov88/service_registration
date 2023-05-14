@@ -9,7 +9,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SpecializationDTO extends GenericDTO {
+public class SpecializationDTO {
 
     private Long id;
     private String titleSpecialization;

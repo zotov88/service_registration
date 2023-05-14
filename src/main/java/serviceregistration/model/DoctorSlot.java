@@ -13,8 +13,7 @@ import java.util.List;
 @Table(name = "doctors_slots",
     uniqueConstraints = @UniqueConstraint(name = "time_slot", columnNames = {"slot_id", "doctor_id"}))
 @SequenceGenerator(name = "default_generator", sequenceName = "doctor_slot_seq", allocationSize = 1)
-public class DoctorSlot
-        extends GenericModel {
+public class DoctorSlot extends GenericModel {
 
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false, foreignKey = @ForeignKey(name = "FK_DOCTOR_SLOT_DOCTOR"))

@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
-public class DoctorMapper
-        extends GenericMapper<Doctor, DoctorDTO> {
+public class DoctorMapper extends GenericMapper<Doctor, DoctorDTO> {
 
     private final DoctorSlotRepository doctorSlotRepository;
 

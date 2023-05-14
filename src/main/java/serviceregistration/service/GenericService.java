@@ -7,6 +7,7 @@ import serviceregistration.mapper.GenericMapper;
 import serviceregistration.model.GenericModel;
 import serviceregistration.repository.GenericRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -27,6 +28,7 @@ public abstract class GenericService<E extends GenericModel, D extends GenericDT
     }
 
     public D create(D newObj) {
+        newObj.setCreatedWhen(LocalDateTime.now());
         return mapper.toDTO(repository.save(mapper.toEntity(newObj)));
     }
 
