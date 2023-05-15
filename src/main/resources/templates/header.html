@@ -1,0 +1,58 @@
+<div xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+     th:fragment="header">
+    <nav class="navbar navbar-expand-lg" style="background-color: #00CED1">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/" style="color: #000000">Запись к врачу</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/doctors">Врачи</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/clients/list">Клиенты</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/doctorslots">Расписание</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/registrations">Записаться</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/something">Мои записи</a>
+                    </li>
+<!--                    <li sec:authorize="isAuthenticated() && (hasRole('USER'))" class="nav-item">-->
+<!--                        <a class="nav-link active" aria-current="page" href="/my/films">Мои фильмы</a>-->
+<!--                    </li>-->
+<!--                    <li sec:authorize="isAuthenticated() && (hasRole('ADMIN')) || (hasRole('LIBRARIAN'))" class="nav-item">-->
+<!--                        <a class="nav-link active" aria-current="page" href="users/list">Пользователи</a>-->
+<!--                    </li>-->
+                </ul>
+<!--                <div sec:authorize="isAuthenticated() && !(hasRole('ADMIN'))">-->
+<!--                    <a class="nav-link active" style="float: right" th:href="'users/profile' + ${#authentication.getPrincipal().getUserId()}">Профиль</a>-->
+<!--                </div>-->
+<!--                <form class="d-flex" sec:authorize="!isAuthenticated()">-->
+<!--                    <a href="/login" class="btn btn-primary" role="button" aria-disabled="true">Войти</a>-->
+<!--                </form>-->
+<!--                <form class="d-flex" sec:authorize="isAuthenticated()">-->
+<!--                    <a href="/logout" class="btn btn-primary" role="button" aria-disabled="true">Выйти</a>-->
+<!--                </form>-->
+
+                <div>
+                    <a class="nav-link active" style="float: right" href="users/profile">Профиль</a>
+                </div>
+                <form class="d-flex">
+                    <a href="/login" class="btn btn-primary" role="button" aria-disabled="true">Войти</a>
+                </form>
+                <form class="d-flex">
+                    <a href="/logout" class="btn btn-primary" role="button" aria-disabled="true">Выйти</a>
+                </form>
+            </div>
+        </div>
+    </nav>
+</div>

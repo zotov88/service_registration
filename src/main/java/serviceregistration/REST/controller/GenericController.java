@@ -1,4 +1,4 @@
-package serviceregistration.controller;
+package serviceregistration.REST.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;

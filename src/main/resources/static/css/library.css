@@ -1,0 +1,23 @@
+.nav-link {
+    color: whitesmoke !important;
+}
+
+.btn-primary {
+    color: white !important;
+    background-color: #00CED1 !important;
+    border-color: #00CED1 !important;
+}
+
+.btn-primary:hover {
+    background-color: #00CED1 !important;
+    border-color: #00CED1 !important;
+    color: white !important;
+}
+
+.text-link {
+    text-decoration: none;
+}
+
+.text-link:hover {
+    color: #001445;
+}

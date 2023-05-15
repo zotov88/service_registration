@@ -16,7 +16,7 @@ public interface DoctorSlotRepository
                     "cross join doctors " +
                     "cross join cabinets " +
                     "where days.id = :dayId " +
-                    "and first_name = :name " +
-                    "and cabinets.number = :number")
-    void addSchedule(Long dayId, String name, Integer number);
+                    "and doctors.id = :doctorId " +
+                    "and cabinets.id = :cabinetId")
+    void addSchedule(Long dayId, Long doctorId, Long cabinetId);
 }

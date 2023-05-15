@@ -1,13 +1,10 @@
-package serviceregistration.controller;
+package serviceregistration.REST.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import serviceregistration.dto.RegistrationDTO;
 import serviceregistration.model.Registration;
-import serviceregistration.repository.GenericRepository;
-import serviceregistration.repository.RegistrationRepository;
-import serviceregistration.service.GenericService;
 import serviceregistration.service.RegistrationService;
 
 @RestController

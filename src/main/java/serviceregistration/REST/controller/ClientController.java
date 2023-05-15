@@ -1,13 +1,11 @@
-package serviceregistration.controller;
+package serviceregistration.REST.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import serviceregistration.dto.ClientDTO;
 import serviceregistration.model.Client;
-import serviceregistration.repository.ClientRepository;
 import serviceregistration.service.ClientService;
-import serviceregistration.service.GenericService;
 
 @RestController
 @RequestMapping("/clients")

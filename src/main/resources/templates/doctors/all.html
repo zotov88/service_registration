@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Врачи</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Врачи</h1>
+    <div class="row">
+        <div class="col">
+<!--            <a sec:authorize="isAuthenticated() && ((hasRole('ADMIN') || (hasRole('LIBRARYAN'))))"-->
+            <a
+               href="/doctors/add"
+               class="btn btn-success"
+               role="button"
+               style="float: right"
+               aria-disabled="true"
+            >Добавить доктора</a>
+        </div>
+        <table class="table table-sm">
+            <thead>
+            <tr>
+                <th scope="col">Имя</th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Отчество</th>
+                <th scope="col">Специализация</th>
+                <!--                <th scope="col">Дата публикации</th>-->
+                <!--            <th scope="col">Автор(ы)</th>-->
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="doctor : ${doctors}">
+                <td th:text="${doctor.getFirstName()}"></td>
+                <td th:text="${doctor.getLastName()}"></td>
+                <td th:text="${doctor.getMidName()}"></td>
+                <td th:text="${doctor.getSpecialization().getTitleSpecialization()}"></td>
+                <!--                <td th:text="${director.getStoragePlace()}"></td>-->
+                <!--                <td th:classappend="${director.getAmount() <= 0} ? 'not-enough-director'"-->
+                <!--                    th:text="${director.getAmount()} <= 0 ? 'Нет в наличии' : ${director.getAmount()}"></td>-->
+                <!--                <td th:text="${director.getPublishDate()}"></td>-->
+                <!--            <td>-->
+                <!--                <ul>-->
+                <!--                    <li th:each="author : ${director.getAuthors()}" th:text="${author.getAuthorFio()}"></li>-->
+                <!--                </ul>-->
+                <!--            </td>-->
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

@@ -21,8 +21,8 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         this.doctorSlotRepository = doctorSlotRepository;
     }
 
-    public void getSchedule(Long dayId, String name, Integer cabinet) {
-         doctorSlotRepository.addSchedule(dayId, name, cabinet);
+    public void getSchedule(Long dayId, Long doctorId, Long cabinetId) {
+         doctorSlotRepository.addSchedule(dayId, doctorId, cabinetId);
     }
 
 //    @Override

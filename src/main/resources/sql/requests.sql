@@ -17,16 +17,16 @@ select * from roles;
 select * from registrations;
 
 insert into specializations(description, title)
-values
-('Врач общей практики', 'Терапевт');
+values ('Врач общей практики', 'Терапевт'),
+       ('Хирург', 'Хирург');
 
 insert into roles(description, title)
 values
 ('Стандарт', 'user');
 
 insert into cabinets(description, number)
-values
-('Палата', 13);
+values ('Палата', 1),
+       ('Палата', 13);
 
 insert into slots(time_slot)
 values
@@ -43,7 +43,11 @@ values
     ('04-06-2023');
 
 insert into doctors(first_name, last_name, login, password, specialization_id, role_id)
-values ('Петр', 'lastname', 'log4', 'pass', 1, 1);
+values ('Иван', 'Петров', 'log431', 'pass', 1, 1),
+       ('Петр', 'Иванов', 'log4312', 'pass', 2, 1);
+
+insert into clients(birth_date, age, email, phone, address, gender, policy, first_name, last_name, login, password, role_id)
+values (now(), 34, 'as1d2@sf.ru', '89031103775', 'Изм проспект', 'м', 153435, 'Сергей', 'lastname1', 'lыog422', 'pass', 1);
 
 insert into doctors_slots(doctor_id, day_id, slot_id, cabinet_id)
 select doctors.id, days.id, slots.id, cabinets.id
@@ -52,11 +56,11 @@ from days
     cross join doctors
     cross join cabinets
 where
-    days.id = 2
+    days.id = 4
     and
-    first_name = 'Петр'
+    doctors.id = 2
     and
-    cabinets.number = 1;
+    cabinets.id = 2;
 
 insert into doctors_slots(doctor_id, day_id, slot_id, cabinet_id)
 select doctors.id, days.id, slots.id, cabinets.id
