@@ -6,26 +6,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "slots")
+@Table(name = "days")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Slot {
+public class Day {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "time_slot", nullable = false)
-    private Time timeSlot;
+    @Column(name = "day", nullable = false)
+    private LocalDate day;
 
-    @OneToMany(mappedBy = "slot")
+    @OneToMany(mappedBy = "day")
     private List<DoctorSlot> doctorSlots;
 }

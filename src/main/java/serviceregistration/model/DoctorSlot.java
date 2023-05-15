@@ -11,13 +11,17 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "doctors_slots",
-    uniqueConstraints = @UniqueConstraint(name = "time_slot", columnNames = {"slot_id", "doctor_id"}))
+    uniqueConstraints = @UniqueConstraint(name = "time_slot", columnNames = {"day_id", "slot_id", "doctor_id", "cabinet_id"}))
 @SequenceGenerator(name = "default_generator", sequenceName = "doctor_slot_seq", allocationSize = 1)
 public class DoctorSlot extends GenericModel {
 
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false, foreignKey = @ForeignKey(name = "FK_DOCTOR_SLOT_DOCTOR"))
     private Doctor doctor;
+
+    @ManyToOne
+    @JoinColumn(name = "day_id", nullable = false, foreignKey = @ForeignKey(name = "FK_DOCTOR_SLOT_DAY"))
+    private Day day;
 
     @ManyToOne
     @JoinColumn(name = "slot_id", nullable = false, foreignKey = @ForeignKey(name = "FK_DOCTOR_SLOT_SLOT"))

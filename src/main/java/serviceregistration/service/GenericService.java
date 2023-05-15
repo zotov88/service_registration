@@ -22,14 +22,14 @@ public abstract class GenericService<E extends GenericModel, D extends GenericDT
         this.mapper = mapper;
     }
 
-    public D getOne(final Long id) {
-        return mapper.toDTO(repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Нет данных с id " + id)));
-    }
-
     public D create(D newObj) {
         newObj.setCreatedWhen(LocalDateTime.now());
         return mapper.toDTO(repository.save(mapper.toEntity(newObj)));
+    }
+
+    public D getOne(final Long id) {
+        return mapper.toDTO(repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Нет данных с id " + id)));
     }
 
     public D update(D updObj) {
