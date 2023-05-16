@@ -16,20 +16,29 @@
         </div>
         <div class="mb-3">
             <label for="middleName" class="form-label">Отчество</label>
-            <input name="middleName" type="text" class="form-control" id="middleName">
+            <input name="midName" type="text" class="form-control" id="middleName">
         </div>
         <div class="mb-3">
             <label for="lastName" class="form-label">Фамилия</label>
             <input name="lastName" type="text" class="form-control" id="lastName">
         </div>
         <div class="mb-3">
-            <label for="genre" class="form-label">Жанр</label>
-            <select class="form-select" name="genre" id="genre">
-                <option selected>Выберете специализацию:</option>
+            <label for="specialization" class="form-label">Специализация</label>
+            <select class="form-select" name="specialization" id="specialization">
+                <option selected>Выберете специализацию</option>
                 <option th:each="specialization : ${specializations}"
-                        th:value="${specialization}" th:text="${specialization.getTitleSpecialization()}"></option>
+                        th:value="${specialization.getId()}"
+                        th:text="${specialization.getTitleSpecialization()}"></option>
             </select>
-<!--        </div>-->
+        </div>
+        <div class="mb-3">
+            <label for="login" class="form-label">Логин</label>
+            <input name="login" type="text" class="form-control" id="login">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Пароль</label>
+            <input name="password" type="text" class="form-control" id="password">
+        </div>
 <!--        <div class="mb-3">-->
 <!--            <label for="country" class="form-label">Страна</label>-->
 <!--            <input name="filmCountry" type="text" class="form-control" id="country">-->

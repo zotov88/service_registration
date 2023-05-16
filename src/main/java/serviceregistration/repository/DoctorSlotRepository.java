@@ -17,10 +17,10 @@ public interface DoctorSlotRepository
                         cross join doctors
                         cross join cabinets
                     where
-                        days.id = :dayId
-                        and
                         doctors.id = :doctorId
                         and
+                        days.id = :dayId
+                        and
                         cabinets.id = :cabinetId""")
-    void addSchedule(Long dayId, Long doctorId, Long cabinetId);
+    void addSchedule(Long doctorId, Long dayId, Long cabinetId);
 }

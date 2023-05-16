@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import serviceregistration.model.Specialization;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class DoctorDTO extends GenericDTO {
     private String firstName;
     private String lastName;
     private String midName;
-    private SpecializationDTO specialization;
+    private Specialization specialization;
     private RoleDTO role;
     private List<Long> doctorSlotsId;
 

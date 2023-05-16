@@ -3,9 +3,15 @@ package serviceregistration.MVC.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import serviceregistration.dto.DoctorDTO;
 import serviceregistration.dto.DoctorSlotDTO;
-import serviceregistration.service.DoctorSlotService;
+import serviceregistration.model.Cabinet;
+import serviceregistration.model.Day;
+import serviceregistration.model.Slot;
+import serviceregistration.service.*;
 
 import java.util.List;
 
@@ -14,9 +20,21 @@ import java.util.List;
 public class DoctorSlotMVCController {
 
     private final DoctorSlotService doctorSlotService;
+    private final DoctorService doctorService;
+    private final DayService dayService;
+    private final SlotService slotService;
+    private final CabinetService cabinetService;
 
-    public DoctorSlotMVCController(DoctorSlotService doctorSlotService) {
+    public DoctorSlotMVCController(DoctorSlotService doctorSlotService,
+                                   DoctorService doctorService,
+                                   DayService dayService,
+                                   SlotService slotService,
+                                   CabinetService cabinetService) {
         this.doctorSlotService = doctorSlotService;
+        this.doctorService = doctorService;
+        this.dayService = dayService;
+        this.slotService = slotService;
+        this.cabinetService = cabinetService;
     }
 
     @GetMapping("")
@@ -27,14 +45,23 @@ public class DoctorSlotMVCController {
     }
 
     @GetMapping ("/addSchedule")
-    public String addSchedule() {
+    public String addSchedule(Model model) {
+        List<DoctorDTO> doctors = doctorService.listAll();
+        List<Day> days = dayService.listAll();
+        List<Slot> slots = slotService.listAll();
+        List<Cabinet> cabinets = cabinetService.listAll();
+        model.addAttribute("doctors", doctors);
+        model.addAttribute("days", days);
+        model.addAttribute("slots", slots);
+        model.addAttribute("cabinets", cabinets);
         return "doctorslots/addSchedule";
     }
 
-//    @PostMapping("/addSchedule")
-//    public String addSchedule(@ModelAttribute("scheduleForm") DoctorSlotDTO doctorSlotDTO,
-//                              @ModelAttribute"") {
-//        doctorSlotService.getSchedule(doctorSlotDTO.getId(), );
-//        return "redirect:/doctorslots";
-//    }
+    @PostMapping("/addSchedule")
+    public String addSchedule(@ModelAttribute("scheduleForm") DoctorSlotDTO doctorSlotDTO) {
+        doctorSlotService.getSchedule(doctorSlotDTO.getDoctor().getId(),
+                doctorSlotDTO.getDay().getId(),
+                doctorSlotDTO.getCabinet().getId());
+        return "redirect:/doctorslots";
+    }
 }

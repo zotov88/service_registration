@@ -22,7 +22,8 @@ values ('Врач общей практики', 'Терапевт'),
 
 insert into roles(description, title)
 values
-('Стандарт', 'user');
+('Стандарт', 'user'),
+('Врач', 'doctor');
 
 insert into cabinets(description, number)
 values ('Палата', 1),
@@ -43,7 +44,9 @@ values
     ('04-06-2023');
 
 insert into doctors
-values (nextval('doctors_seq'), null, now(), null, null, false, 'Петр', 'Иванов', 'l', 'Иванович', 'p', 1, 1);
+values (nextval('doctors_seq'), null, now(), null, null, false, 'Петр', 'Иванов', 'l', 'Иванович', 'p', 2, 1),
+       (nextval('doctors_seq'), null, now(), null, null, false, 'Семен', 'Семенов', 'lщ', 'Иванович', 'p', 2, 2),
+       (nextval('doctors_seq'), null, now(), null, null, false, 'Иван', 'Петров', 'lр', 'Иванович', 'p', 2, 1);
 
 insert into clients
 values (nextval('clients_seq'), now(), null, null, null, null,

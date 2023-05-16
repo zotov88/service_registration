@@ -5,5 +5,4 @@ import serviceregistration.model.Specialization;
 
 public interface SpecializationRepository extends JpaRepository<Specialization, Long> {
 
-
 }

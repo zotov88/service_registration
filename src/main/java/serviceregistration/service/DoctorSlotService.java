@@ -7,8 +7,6 @@ import serviceregistration.mapper.GenericMapper;
 import serviceregistration.model.DoctorSlot;
 import serviceregistration.repository.DoctorSlotRepository;
 
-import java.time.LocalDate;
-
 @Transactional
 @Service
 public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO> {
@@ -21,8 +19,8 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         this.doctorSlotRepository = doctorSlotRepository;
     }
 
-    public void getSchedule(Long dayId, Long doctorId, Long cabinetId) {
-         doctorSlotRepository.addSchedule(dayId, doctorId, cabinetId);
+    public void getSchedule(Long doctorId, Long dayId, Long cabinetId) {
+         doctorSlotRepository.addSchedule(doctorId, dayId, cabinetId);
     }
 
 //    @Override
