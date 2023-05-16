@@ -15,15 +15,15 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class GenericModel {
 
-//    @Id
-//    @Column(name = "id", nullable = false)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "default_generator")
-//    private Long id;
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "default_generator")
     private Long id;
+
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "id")
+//    private Long id;
 
     @Column(name = "created_when")
     private LocalDateTime createdWhen;

@@ -7,6 +7,4 @@ import serviceregistration.model.GenericModel;
 @NoRepositoryBean
 public interface GenericRepository<T extends GenericModel>
         extends JpaRepository<T, Long> {
-
-
 }

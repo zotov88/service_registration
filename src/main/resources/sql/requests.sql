@@ -42,35 +42,23 @@ values
     ('03-06-2023'),
     ('04-06-2023');
 
-insert into doctors(first_name, last_name, login, password, specialization_id, role_id)
-values ('Иван', 'Петров', 'log431', 'pass', 1, 1),
-       ('Петр', 'Иванов', 'log4312', 'pass', 2, 1);
+insert into doctors
+values (nextval('doctors_seq'), null, now(), null, null, false, 'Петр', 'Иванов', 'l', 'Иванович', 'p', 1, 1);
 
-insert into clients(birth_date, age, email, phone, address, gender, policy, first_name, last_name, login, password, role_id)
-values (now(), 34, 'as1d2@sf.ru', '89031103775', 'Изм проспект', 'м', 153435, 'Сергей', 'lastname1', 'lыog422', 'pass', 1);
+insert into clients
+values (nextval('clients_seq'), now(), null, null, null, null,
+        'Изм проспект', 34, now(), 'as1d2@sf.ru', 'Алексей', 'm', 'Зотов', 'login',
+        'Владимирович', 'pass', '89031103775', 12345, 1);
 
-insert into doctors_slots(doctor_id, day_id, slot_id, cabinet_id)
-select doctors.id, days.id, slots.id, cabinets.id
+insert into doctors_slots
+select nextval('doctor_slot_seq'), null, now(), null, null, null, false,cabinets.id, days.id, doctors.id, slots.id
 from days
     cross join slots
     cross join doctors
     cross join cabinets
 where
-    days.id = 4
+    days.id = 1
     and
-    doctors.id = 2
+    doctors.id = 1
     and
-    cabinets.id = 2;
-
-insert into doctors_slots(doctor_id, day_id, slot_id, cabinet_id)
-select doctors.id, days.id, slots.id, cabinets.id
-from days
-         cross join slots
-         cross join doctors
-         cross join cabinets
-where
-        day = '2023-03-06'
-  and
-        first_name = 'Иван'
-  and
-        cabinets.number = 1;
+    cabinets.id = 1;

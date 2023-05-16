@@ -25,4 +25,16 @@ public class DoctorSlotMVCController {
         model.addAttribute("doctorslots", doctorSlots);
         return "doctorslots/schedule";
     }
+
+    @GetMapping ("/addSchedule")
+    public String addSchedule() {
+        return "doctorslots/addSchedule";
+    }
+
+//    @PostMapping("/addSchedule")
+//    public String addSchedule(@ModelAttribute("scheduleForm") DoctorSlotDTO doctorSlotDTO,
+//                              @ModelAttribute"") {
+//        doctorSlotService.getSchedule(doctorSlotDTO.getId(), );
+//        return "redirect:/doctorslots";
+//    }
 }
