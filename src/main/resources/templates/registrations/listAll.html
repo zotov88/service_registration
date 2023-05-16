@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Записи</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Архив записей клиентов</h1>
+    <div class="row">
+        <div class="col">
+        </div>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">ФИО клиента</th>
+                <th scope="col">ФИО врача</th>
+                <th scope="col">Время записи</th>
+                <th scope="col">Кабинет</th>
+                <th scope="col">Статус</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${registrations}">
+                <td th:text="${r.getClient().getLastName() + ' ' + r.getClient().getFirstName() + ' ' + r.getClient().getMidName()}"></td>
+                <td th:text="${r.getDoctorSlot().getDoctor().getLastName() + ' ' +
+                               r.getDoctorSlot().getDoctor().getFirstName() + ' ' +
+                               r.getDoctorSlot().getDoctor().getMidName()}"></td>
+                <td th:text="${r.getDoctorSlot().getDay().getDay() + ' ' + r.getDoctorSlot().getSlot().getTimeSlot()}"></td>
+                <td th:text="${r.getDoctorSlot().getCabinet().getCabinetNumber()}"></td>
+                <td th:classappend="${r.getIsActive() == false} ? 'not-active-reg' : 'active-reg'"
+                    th:text="${r.getIsActive()} == false ? 'Не активна' : 'Активна'"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

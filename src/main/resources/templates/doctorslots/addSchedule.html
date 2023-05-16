@@ -10,10 +10,6 @@
 <div layout:fragment="content">
     <h3 class="mt-3 mb-3">Добавить расписание</h3>
     <form style="max-width: 50vw" method="POST" th:action="@{/doctorslots/addSchedule}" th:object="${scheduleForm}">
-<!--        <div class="mb-3">-->
-<!--            <label for="firstName" class="form-label">Имя</label>-->
-<!--            <input name="firstName" type="text" class="form-control" id="firstName">-->
-<!--        </div>-->
         <div class="mb-3">
             <label for="doctor" class="form-label">Врач</label>
             <select class="form-select" name="doctor" id="doctor">
@@ -42,23 +38,7 @@
                         th:text="${cabinet.getCabinetNumber()}"></option>
             </select>
         </div>
-        <!--        <div class="mb-3">-->
-        <!--            <label for="country" class="form-label">Страна</label>-->
-        <!--            <input name="filmCountry" type="text" class="form-control" id="country">-->
-        <!--        </div>-->
-        <!--        <div class="mb-3">-->
-        <!--            <label for="premier" class="form-label">Премьера</label>-->
-        <!--            <input name="premierYear" type="datetime-local" class="form-control" id="premier">-->
-        <!--        </div>-->
-        <!--        <div class="mb-3">-->
-        <!--            <label for="amount" class="form-label">Количество страниц</label>-->
-        <!--            <input name="amount" type="number" class="form-control" id="amount">-->
-        <!--        </div>-->
-        <!--        <div class="mb-3">-->
-        <!--            <label for="description" class="form-label">Описание</label>-->
-        <!--            <input name="description" type="text" class="form-control" id="description">-->
-        <!--        </div>-->
-        <button type="submit" class="btn btn-primary">Добавить</button>
+        <button type="submit" class="btn btn-success">Добавить</button>
         <button type="button" class="btn btn-secondary" onclick="window.history.back()">Назад</button>
     </form>
 </div>

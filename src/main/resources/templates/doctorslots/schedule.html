@@ -21,40 +21,26 @@
                     aria-disabled="true"
             >Добавить расписание</a>
         </div>
-        <table class="table table-sm">
+        <table class="table table-hover">
             <thead>
             <tr>
-                <th scope="col">Имя</th>
-                <th scope="col">Отчество</th>
-                <th scope="col">Фамилия</th>
+                <th scope="col">ФИО</th>
                 <th scope="col">Специализация</th>
                 <th scope="col">День</th>
                 <th scope="col">Время</th>
                 <th scope="col">Кабинет</th>
-                <!--                <th scope="col">Дата публикации</th>-->
-                <!--            <th scope="col">Автор(ы)</th>-->
-                <th scope="col"></th>
+                <th scope="col">Статус</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="doctorslot : ${doctorslots}">
-                <td th:text="${doctorslot.getDoctor().getFirstName()}"></td>
-                <td th:text="${doctorslot.getDoctor().getMidName()}"></td>
-                <td th:text="${doctorslot.getDoctor().getLastName()}"></td>
-                <td th:text="${doctorslot.getDoctor().getSpecialization().getTitleSpecialization()}"></td>
-                <td th:text="${doctorslot.getDay().getDay()}"></td>
-                <td th:text="${doctorslot.getSlot().getTimeSlot()}"></td>
-                <td th:text="${doctorslot.getCabinet().getCabinetNumber()}"></td>
-
-                <!--                <td th:text="${director.getStoragePlace()}"></td>-->
-                <!--                <td th:classappend="${director.getAmount() <= 0} ? 'not-enough-director'"-->
-                <!--                    th:text="${director.getAmount()} <= 0 ? 'Нет в наличии' : ${director.getAmount()}"></td>-->
-                <!--                <td th:text="${director.getPublishDate()}"></td>-->
-                <!--            <td>-->
-                <!--                <ul>-->
-                <!--                    <li th:each="author : ${director.getAuthors()}" th:text="${author.getAuthorFio()}"></li>-->
-                <!--                </ul>-->
-                <!--            </td>-->
+            <tr th:each="d : ${doctorslots}">
+                <td th:text="${d.getDoctor().getLastName() + ' ' + d.getDoctor().getFirstName() + ' ' + d.getDoctor().getMidName()}"></td>
+                <td th:text="${d.getDoctor().getSpecialization().getTitleSpecialization()}"></td>
+                <td th:text="${d.getDay().getDay()}"></td>
+                <td th:text="${d.getSlot().getTimeSlot()}"></td>
+                <td th:text="${d.getCabinet().getCabinetNumber()}"></td>
+                <td th:classappend="${d.getIsRegistered() == false} ? 'not-active-reg' : 'active-reg'"
+                    th:text="${d.getIsRegistered()} == false ? 'Свободно' : 'Занято'"></td>
             </tr>
             </tbody>
         </table>

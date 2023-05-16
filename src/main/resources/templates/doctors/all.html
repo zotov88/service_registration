@@ -21,33 +21,17 @@
                aria-disabled="true"
             >Добавить доктора</a>
         </div>
-        <table class="table table-sm">
+        <table class="table table-hover">
             <thead>
             <tr>
-                <th scope="col">Имя</th>
-                <th scope="col">Фамилия</th>
-                <th scope="col">Отчество</th>
+                <th scope="col">ФИО</th>
                 <th scope="col">Специализация</th>
-                <!--                <th scope="col">Дата публикации</th>-->
-                <!--            <th scope="col">Автор(ы)</th>-->
-                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="doctor : ${doctors}">
-                <td th:text="${doctor.getFirstName()}"></td>
-                <td th:text="${doctor.getLastName()}"></td>
-                <td th:text="${doctor.getMidName()}"></td>
-                <td th:text="${doctor.getSpecialization().getTitleSpecialization()}"></td>
-                <!--                <td th:text="${director.getStoragePlace()}"></td>-->
-                <!--                <td th:classappend="${director.getAmount() <= 0} ? 'not-enough-director'"-->
-                <!--                    th:text="${director.getAmount()} <= 0 ? 'Нет в наличии' : ${director.getAmount()}"></td>-->
-                <!--                <td th:text="${director.getPublishDate()}"></td>-->
-                <!--            <td>-->
-                <!--                <ul>-->
-                <!--                    <li th:each="author : ${director.getAuthors()}" th:text="${author.getAuthorFio()}"></li>-->
-                <!--                </ul>-->
-                <!--            </td>-->
+            <tr th:each="d : ${doctors}">
+                <td th:text="${d.getLastName() + ' ' + d.getFirstName() + ' ' + d.getMidName()}"></td>
+                <td th:text="${d.getSpecialization().getTitleSpecialization()}"></td>
             </tr>
             </tbody>
         </table>

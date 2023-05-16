@@ -1,9 +1,17 @@
+.not-active-reg {
+    color: red;
+}
+
+.active-reg {
+    color: #009b00;
+}
+
 .nav-link {
-    color: whitesmoke !important;
+    color: #000000 !important;
 }
 
 .btn-primary {
-    color: white !important;
+    color: #000000 !important;
     background-color: #00CED1 !important;
     border-color: #00CED1 !important;
 }
@@ -11,7 +19,19 @@
 .btn-primary:hover {
     background-color: #00CED1 !important;
     border-color: #00CED1 !important;
-    color: white !important;
+    color: #00575a !important;
+}
+
+.btn-success {
+    color: #000000 !important;
+    background-color: #00CED1 !important;
+    border-color: #00CED1 !important;
+}
+
+.btn-success:hover {
+    color: #000000 !important;
+    background-color: #51d5d8 !important;
+    border-color: #51d5d8 !important;
 }
 
 .text-link {

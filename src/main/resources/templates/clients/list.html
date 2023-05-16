@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Клиенты</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Клиенты</h1>
+    <div class="row">
+        <div class="col">
+        </div>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">ФИО</th>
+                <th scope="col">Возраст</th>
+                <th scope="col">Адрес</th>
+                <th scope="col">Полис</th>
+                <th scope="col">Телефон</th>
+                <th scope="col">Почта</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${clients}">
+                <td th:text="${c.getLastName() + ' ' + c.getFirstName() + ' ' + c.getMidName()}"></td>
+                <td th:text="${c.getAge()}"></td>
+                <td th:text="${c.getAddress()}"></td>
+                <td th:text="${c.getPolicy()}"></td>
+                <td th:text="${c.getPhone()}"></td>
+                <td th:text="${c.getEmail()}"></td>
+                <td>
+                    <a href="/clients"
+                       class="btn btn-success"
+                       role="button"
+                       style="float: right"
+                       aria-disabled="true">Архив</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
