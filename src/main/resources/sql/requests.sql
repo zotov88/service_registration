@@ -21,9 +21,8 @@ values ('Врач общей практики', 'Терапевт'),
        ('Хирург', 'Хирург');
 
 insert into roles(description, title)
-values
-('Стандарт', 'user'),
-('Врач', 'doctor');
+values ('Клиент', 'CLIENT'),
+       ('Врач', 'DOCTOR');
 
 insert into cabinets(description, number)
 values ('Палата', 1),
@@ -50,9 +49,9 @@ values (nextval('doctors_seq'), null, now(), null, null, false, 'Петр', 'И�
 
 insert into clients
 values (nextval('clients_seq'), now(), null, null, null, null,
-        'Изм проспект', 34, now(), 'as1d2@sf.ru', 'Алексей', 'm', 'Зотов', 'login', 'Владимирович', 'pass', '89031103775', 12345, 1),
+        'Изм проспект', now(), 'as1d2@sf.ru', 'Алексей', 'm', 'Зотов', 'login', 'Владимирович', 'pass', '89031103775', 12345, 1),
        (nextval('clients_seq'), now(), null, null, null, null,
-        'Изм проспект', 19, now(), 'vs1d2@sf.ru', 'Иван', 'm', 'Иванов', 'login2', 'Владимирович', 'pass', '89131103765', 16345, 1);
+        'Изм проспект', now(), 'vs1d2@sf.ru', 'Иван', 'm', 'Иванов', 'login2', 'Владимирович', 'pass', '89131103765', 16345, 1);
 
 insert into doctors_slots
 select nextval('doctor_slot_seq'), null, now(), null, null, null, false,cabinets.id, days.id, doctors.id, slots.id

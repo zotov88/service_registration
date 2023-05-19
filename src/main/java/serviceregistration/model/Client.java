@@ -1,13 +1,12 @@
 package serviceregistration.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.Constraint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -50,7 +49,7 @@ public class Client extends GenericModel {
     private Integer age;
 
     @Column(name = "birth_date", nullable = false)
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
 
     @Column(name = "phone", nullable = false)
     private String phone;

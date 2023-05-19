@@ -18,10 +18,7 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
     public DoctorDTO create(DoctorDTO newObj) {
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setId(2L);
-//        SpecializationDTO specializationDTO = new SpecializationDTO();
-//        specializationDTO.setId(1L);
         newObj.setRole(roleDTO);
-//        newObj.setSpecialization(specializationDTO);
         return mapper.toDTO(repository.save(mapper.toEntity(newObj)));
     }
 }

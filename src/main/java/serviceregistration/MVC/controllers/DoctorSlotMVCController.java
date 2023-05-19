@@ -2,6 +2,7 @@ package serviceregistration.MVC.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,7 +59,16 @@ public class DoctorSlotMVCController {
     }
 
     @PostMapping("/addSchedule")
-    public String addSchedule(@ModelAttribute("scheduleForm") DoctorSlotDTO doctorSlotDTO) {
+    public String addSchedule(@ModelAttribute("scheduleForm") DoctorSlotDTO doctorSlotDTO,
+                              BindingResult bindingResult) {
+        if (doctorSlotService.getDoctorSlotByDoctorAndDay(doctorSlotDTO.getDoctor().getId(), doctorSlotDTO.getDay().getId()) != null) {
+            bindingResult.rejectValue("day", "error.day", "Врач уже работает " + doctorSlotDTO.getDay().getDay());
+            return "doctorslots/addSchedule";
+        }
+        if (doctorSlotService.getDoctorSlotByCabinetAndDay(doctorSlotDTO.getCabinet().getId(), doctorSlotDTO.getDay().getId()) != null) {
+            bindingResult.rejectValue("cabinet", "error.cabinet", "В этот день кабинет занят");
+            return "doctorslots/addSchedule";
+        }
         doctorSlotService.getSchedule(doctorSlotDTO.getDoctor().getId(),
                 doctorSlotDTO.getDay().getId(),
                 doctorSlotDTO.getCabinet().getId());

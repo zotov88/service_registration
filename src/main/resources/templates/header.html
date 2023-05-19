@@ -14,45 +14,32 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/doctors">Врачи</a>
                     </li>
-                    <li class="nav-item">
+                    <li sec:authorize="isAuthenticated() && hasRole('ADMIN')" class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/clients/list">Клиенты</a>
                     </li>
-                    <li class="nav-item">
+                    <li sec:authorize="isAuthenticated() && hasRole('ADMIN')" class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/doctorslots">Расписание</a>
                     </li>
-                    <li class="nav-item">
+                    <li sec:authorize="isAuthenticated() && hasRole('DOCTOR')" class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/doctorslots/mySchedule">Мое расписание</a>
+                    </li>
+                    <li sec:authorize="isAuthenticated() && hasRole('CLIENT')" class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/registrations">Записаться</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/something">Мои записи</a>
+                    <li sec:authorize="isAuthenticated() && hasRole('CLIENT')" class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/registrations/myList">Мои записи</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/registrations/listAll">Записи</a>
+                    <li sec:authorize="isAuthenticated() && hasRole('ADMIN')" class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/registrations/listAll">Архив записей</a>
                     </li>
-<!--                    <li sec:authorize="isAuthenticated() && (hasRole('USER'))" class="nav-item">-->
-<!--                        <a class="nav-link active" aria-current="page" href="/my/films">Мои фильмы</a>-->
-<!--                    </li>-->
-<!--                    <li sec:authorize="isAuthenticated() && (hasRole('ADMIN')) || (hasRole('LIBRARIAN'))" class="nav-item">-->
-<!--                        <a class="nav-link active" aria-current="page" href="users/list">Пользователи</a>-->
-<!--                    </li>-->
                 </ul>
-<!--                <div sec:authorize="isAuthenticated() && !(hasRole('ADMIN'))">-->
-<!--                    <a class="nav-link active" style="float: right" th:href="'users/profile' + ${#authentication.getPrincipal().getUserId()}">Профиль</a>-->
-<!--                </div>-->
-<!--                <form class="d-flex" sec:authorize="!isAuthenticated()">-->
-<!--                    <a href="/login" class="btn btn-primary" role="button" aria-disabled="true">Войти</a>-->
-<!--                </form>-->
-<!--                <form class="d-flex" sec:authorize="isAuthenticated()">-->
-<!--                    <a href="/logout" class="btn btn-primary" role="button" aria-disabled="true">Выйти</a>-->
-<!--                </form>-->
-
-                <div>
-                    <a class="nav-link active" style="float: right" href="users/profile">Профиль</a>
+                <div sec:authorize="isAuthenticated() && !hasRole('ADMIN')">
+                    <a class="nav-link active" style="float: right" th:href="'clients/profile/' + ${#authentication.getPrincipal().getUserId()}">Профиль</a>
                 </div>
-                <form class="d-flex">
+                <form class="d-flex" sec:authorize="!isAuthenticated()">
                     <a href="/login" class="btn btn-primary" role="button" aria-disabled="true">Войти</a>
                 </form>
-                <form class="d-flex">
+                <form class="d-flex" sec:authorize="isAuthenticated()">
                     <a href="/logout" class="btn btn-primary" role="button" aria-disabled="true">Выйти</a>
                 </form>
             </div>

@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @ToString
@@ -22,7 +22,7 @@ public class ClientDTO extends GenericDTO {
     private String midName;
     private String gender;
     private Integer age;
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
     private String phone;
     private String email;
     private String address;

@@ -19,12 +19,15 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         this.doctorSlotRepository = doctorSlotRepository;
     }
 
-    public void getSchedule(Long doctorId, Long dayId, Long cabinetId) {
+    public void getSchedule(final Long doctorId, final Long dayId, final Long cabinetId) {
          doctorSlotRepository.addSchedule(doctorId, dayId, cabinetId);
     }
 
-//    @Override
-//    public DoctorSlotDTO create(DoctorSlotDTO newObj) {
-//
-//    }
+    public DoctorSlotDTO getDoctorSlotByCabinetAndDay(final Long cabinetId, final Long dayId) {
+        return mapper.toDTO(doctorSlotRepository.findFirstByCabinetIdAndDayId(cabinetId, dayId));
+    }
+
+    public DoctorSlotDTO getDoctorSlotByDoctorAndDay(final Long doctorId, final Long dayId) {
+        return mapper.toDTO(doctorSlotRepository.findFirstByDoctorIdAndDayId(doctorId, dayId));
+    }
 }

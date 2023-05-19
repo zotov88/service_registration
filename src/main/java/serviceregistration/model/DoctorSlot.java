@@ -11,7 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "doctors_slots",
-    uniqueConstraints = @UniqueConstraint(name = "time_slot", columnNames = {"day_id", "slot_id", "doctor_id"}))
+    uniqueConstraints = @UniqueConstraint(name = "time_slot", columnNames = {"doctor_id", "day_id", "slot_id"}))
+
 @SequenceGenerator(name = "default_generator", sequenceName = "doctor_slot_seq", allocationSize = 1)
 public class DoctorSlot extends GenericModel {
 
