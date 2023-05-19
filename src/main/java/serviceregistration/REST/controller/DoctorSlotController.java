@@ -28,6 +28,6 @@ public class DoctorSlotController extends GenericController<DoctorSlot, DoctorSl
     public void schedule(@RequestParam(value = "dayId") Long dayId,
                          @RequestParam(value = "doctorId") Long doctorId,
                          @RequestParam(value = "cabinetId") Long cabinetId) {
-        doctorSlotService.getSchedule(dayId, doctorId, cabinetId);
+        doctorSlotService.addSchedule(dayId, doctorId, cabinetId);
     }
 }

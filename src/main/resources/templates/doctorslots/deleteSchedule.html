@@ -4,16 +4,17 @@
       layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Добавить расписание</title>
+    <title>Удалить расписание</title>
 </head>
 <body>
 <div layout:fragment="content">
-    <h3 class="mt-3 mb-3">Добавить расписание врачу</h3>
-    <form style="max-width: 50vw" method="POST" class="needs-validation" th:action="@{/doctorslots/addSchedule}"
+    <h3 class="mt-3 mb-3">Удалить расписание врача</h3>
+    <form style="max-width: 50vw" method="POST" class="needs-validation"
+          th:action="@{/doctorslots/deleteSchedule}"
           th:object="${scheduleForm}">
         <div class="mb-3">
             <label for="doctor" class="form-label">Врач</label>
-            <select class="form-select" name="doctor" id="doctor" required>
+            <select class="form-select" name="doctor" id="doctor">
                 <option selected value="default">-</option>
                 <option th:each="doctor : ${doctors}"
                         th:value="${doctor.getId()}"
@@ -23,27 +24,14 @@
         </div>
         <div class="mb-3">
             <label for="day" class="form-label">День</label>
-            <select class="form-select" name="day" id="day" required>
+            <select class="form-select" name="day" id="day">
                 <option selected value="default">-</option>
                 <option th:each="day : ${days}"
                         th:value="${day.getId()}"
                         th:text="${day.getDay()}"></option>
             </select>
         </div>
-        <div class="mb-3">
-            <label for="cabinet" class="form-label">Кабинет</label>
-            <select class="form-select" name="cabinet" id="cabinet" required>
-                <option selected value="default">-</option>
-                <option th:each="cabinet : ${cabinets}"
-                        th:value="${cabinet.getId()}"
-                        th:text="${cabinet.getCabinetNumber()}"></option>
-            </select>
-<!--            <div class="alert alert-danger" th:if="${#fields.hasErrors('cabinet')}">-->
-<!--                <p th:errors="*{cabinet}"></p>-->
-<!--            </div>-->
-        </div>
-
-        <button type="submit" class="btn btn-success" onclick="validateFormSchedule()">Добавить</button>
+        <button type="submit" class="btn btn-success" onclick="validateFormSchedule()">Удалить</button>
         <button type="button" class="btn btn-secondary" onclick="window.history.back()">Назад</button>
     </form>
 </div>

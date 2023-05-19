@@ -24,6 +24,8 @@ public interface DoctorSlotRepository
                         cabinets.id = :cabinetId""")
     void addSchedule(Long doctorId, Long dayId, Long cabinetId);
 
+    void deleteAllByDoctorIdAndDayId(Long doctorId, Long dayId);
+
     DoctorSlot findFirstByCabinetIdAndDayId(Long cabinetId, Long dayId);
 
     DoctorSlot findFirstByDoctorIdAndDayId(Long doctorId, Long dayId);

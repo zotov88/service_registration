@@ -11,7 +11,6 @@ import serviceregistration.dto.DoctorDTO;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.model.Cabinet;
 import serviceregistration.model.Day;
-import serviceregistration.model.Slot;
 import serviceregistration.service.*;
 
 import java.util.List;
@@ -49,11 +48,9 @@ public class DoctorSlotMVCController {
     public String addSchedule(Model model) {
         List<DoctorDTO> doctors = doctorService.listAll();
         List<Day> days = dayService.listAll();
-        List<Slot> slots = slotService.listAll();
         List<Cabinet> cabinets = cabinetService.listAll();
         model.addAttribute("doctors", doctors);
         model.addAttribute("days", days);
-        model.addAttribute("slots", slots);
         model.addAttribute("cabinets", cabinets);
         return "doctorslots/addSchedule";
     }
@@ -63,15 +60,30 @@ public class DoctorSlotMVCController {
                               BindingResult bindingResult) {
         if (doctorSlotService.getDoctorSlotByDoctorAndDay(doctorSlotDTO.getDoctor().getId(), doctorSlotDTO.getDay().getId()) != null) {
             bindingResult.rejectValue("day", "error.day", "Врач уже работает " + doctorSlotDTO.getDay().getDay());
-            return "doctorslots/addSchedule";
+            return "redirect:/doctorslots/addSchedule";
         }
         if (doctorSlotService.getDoctorSlotByCabinetAndDay(doctorSlotDTO.getCabinet().getId(), doctorSlotDTO.getDay().getId()) != null) {
             bindingResult.rejectValue("cabinet", "error.cabinet", "В этот день кабинет занят");
-            return "doctorslots/addSchedule";
+            return "redirect:/doctorslots/addSchedule";
         }
-        doctorSlotService.getSchedule(doctorSlotDTO.getDoctor().getId(),
+        doctorSlotService.addSchedule(doctorSlotDTO.getDoctor().getId(),
                 doctorSlotDTO.getDay().getId(),
                 doctorSlotDTO.getCabinet().getId());
+        return "redirect:/doctorslots";
+    }
+
+    @GetMapping ("/deleteSchedule")
+    public String deleteSchedule(Model model) {
+        List<DoctorDTO> doctors = doctorService.listAll();
+        List<Day> days = dayService.listAll();
+        model.addAttribute("doctors", doctors);
+        model.addAttribute("days", days);
+        return "doctorslots/deleteSchedule";
+    }
+
+    @PostMapping("/deleteSchedule")
+    public String deleteSchedule(@ModelAttribute("scheduleForm") DoctorSlotDTO doctorSlotDTO) {
+        doctorSlotService.deleteSchedule(doctorSlotDTO.getDoctor().getId(), doctorSlotDTO.getDay().getId());
         return "redirect:/doctorslots";
     }
 }

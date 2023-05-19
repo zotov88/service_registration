@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Добавить врача</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h3 class="mt-3 mb-3">Добавить врача</h3>
+    <form method="POST" class="needs-validation" novalidate style="max-width: 50vw"
+          th:action="@{/doctors/addDoctor}" th:object="${doctorForm}">
+        <div class="mb-3">
+            <input name="firstName" type="text" class="form-control" id="firstName" placeholder="Введите имя" required>
+            <div class="invalid-feedback">Обязательное поле для заполнения</div>
+        </div>
+        <div class="mb-3">
+            <input name="midName" type="text" class="form-control" id="middleName" placeholder="Введите отчество">
+            <div class="invalid-feedback">Обязательное поле для заполнения</div>
+        </div>
+        <div class="mb-3">
+            <input name="lastName" type="text" class="form-control" id="lastName" placeholder="Введите фамилию" required>
+            <div class="invalid-feedback">Обязательное поле для заполнения</div>
+        </div>
+        <div class="mb-3">
+            <select class="form-select" name="specialization" id="specialization">
+                <option selected value="default">Выберете специализацию</option>
+                <option th:each="specialization : ${specializations}"
+                        th:value="${specialization.getId()}"
+                        th:text="${specialization.getTitleSpecialization()}"></option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <input name="login" type="text" class="form-control" id="login" placeholder="Придумайте логин" required>
+            <div class="invalid-feedback">Обязательное поле для заполнения</div>
+            <div class="alert alert-danger" th:if="${#fields.hasErrors('login')}">
+                <p th:errors="*{login}"></p>
+            </div>
+        </div>
+        <div class="mb-3">
+            <input name="password" type="text" class="form-control" id="password" placeholder="Придумайте пароль" required>
+            <div class="invalid-feedback">Обязательное поле для заполнения</div>
+        </div>
+        <button type="submit" class="btn btn-primary" onclick="validateFormDoctor()">Добавить</button>
+        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Назад</button>
+    </form>
+</div>
+</body>
+</html>

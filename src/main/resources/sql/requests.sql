@@ -70,3 +70,9 @@ insert into registrations
 values (nextval('registrations_seq'), null, now(), null, null, false, null, false, 1, 2, 1),
        (nextval('registrations_seq'), null, now(), null, null, false, null, false, 1, 2, 6),
        (nextval('registrations_seq'), null, now(), null, null, false, null, true, 1, 1, 11);
+
+delete from doctors_slots
+where
+    doctor_id = 2
+and
+    day_id = 2;
