@@ -24,16 +24,16 @@
 
 .btn-success {
     color: #000000 !important;
-    background-color: #00CED1 !important;
-    border-color: #00CED1 !important;
+    background-color: #2ac3ff !important;
+    border-color: #2ac3ff !important;
     margin-left: 10px;
     min-width: 100px;
 }
 
 .btn-success:hover {
     color: #000000 !important;
-    background-color: #51d5d8 !important;
-    border-color: #51d5d8 !important;
+    background-color: #27afe5 !important;
+    border-color: #27afe5 !important;
 }
 
 .text-link {

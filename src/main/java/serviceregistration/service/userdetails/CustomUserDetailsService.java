@@ -9,7 +9,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import serviceregistration.constants.UserRolesConstants;
 import serviceregistration.model.Client;
+import serviceregistration.model.Doctor;
 import serviceregistration.repository.ClientRepository;
+import serviceregistration.repository.DoctorRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final ClientRepository clientRepository;
+    private final DoctorRepository doctorRepository;
 
     @Value("${spring.security.user.name}")
     private String adminUserName;
@@ -28,8 +31,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Value("${spring.security.user.roles}")
     private String adminRole;
 
-    public CustomUserDetailsService(ClientRepository clientRepository) {
+    public CustomUserDetailsService(ClientRepository clientRepository,
+                                    DoctorRepository doctorRepository) {
         this.clientRepository = clientRepository;
+        this.doctorRepository = doctorRepository;
     }
 
     @Override
@@ -38,10 +43,23 @@ public class CustomUserDetailsService implements UserDetailsService {
             return new CustomUserDetails(null, adminUserName, adminPassword, List.of(new SimpleGrantedAuthority("ROLE_" + adminRole)));
         } else {
             Client client = clientRepository.findClientByLogin(username);
+            Doctor doctor = doctorRepository.findDoctorByLogin(username);
             List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority(client.getRole().getId() == 1L ? "ROLE_" + UserRolesConstants.CLIENT :
-                    "ROLE_" + UserRolesConstants.DOCTOR));
-            return new CustomUserDetails(client.getId().intValue(), username, client.getPassword(), authorities);
+            if (client != null) {
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + UserRolesConstants.CLIENT));
+                return new CustomUserDetails(client.getId().intValue(), username, client.getPassword(), authorities);
+            }
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + UserRolesConstants.DOCTOR));
+            return new CustomUserDetails(doctor.getId().intValue(), username, doctor.getPassword(), authorities);
         }
     }
 }
+
+//        if (username.equals(adminUserName)) {
+//            return new CustomUserDetails(null, adminUserName, adminPassword, List.of(new SimpleGrantedAuthority("ROLE_" + adminRole)));
+//        } else {
+//            Client client = clientRepository.findClientByLogin(username);
+//            List<GrantedAuthority> authorities = new ArrayList<>();
+//            authorities.add(new SimpleGrantedAuthority(client.getRole().getId() == 1L ? "ROLE_" + UserRolesConstants.CLIENT :
+//                    "ROLE_" + UserRolesConstants.DOCTOR));
+//            return new CustomUserDetails(client.getId().intValue(), username, client.getPassword(), authorities);

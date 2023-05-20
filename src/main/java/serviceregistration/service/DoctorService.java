@@ -28,4 +28,5 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
     public DoctorDTO getDoctorByLogin(String login) {
         return mapper.toDTO(((DoctorRepository)repository).findDoctorByLogin(login));
     }
+
 }

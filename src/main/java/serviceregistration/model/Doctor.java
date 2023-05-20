@@ -16,7 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SequenceGenerator(name = "default_generator", sequenceName = "doctors_seq", allocationSize = 1)
-
 public class Doctor extends GenericModel {
 
     @Column(name = "login", nullable = false)
@@ -42,7 +41,7 @@ public class Doctor extends GenericModel {
     @JoinColumn(name = "role_id", nullable = false, foreignKey = @ForeignKey(name = "FK_DOCTORS_ROLES"))
     private Role role;
 
-    @OneToMany(mappedBy = "doctor")
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.REMOVE)
     private List<DoctorSlot> doctorSlots;
 
 }

@@ -3,10 +3,7 @@ package serviceregistration.MVC.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import serviceregistration.dto.DoctorDTO;
 import serviceregistration.model.Specialization;
 import serviceregistration.service.DoctorService;
@@ -65,8 +62,8 @@ public class DoctorMVCController {
     }
 
     @PostMapping("/deleteDoctor")
-    public String deleteDoctor(@ModelAttribute("doctorForm") DoctorDTO doctorDTO) {
-        doctorService.delete(doctorDTO.getId());
+    public String deleteDoctor(@RequestParam("doctorDel") Long doctorId) {
+        doctorService.delete(doctorId);
         return "redirect:/doctors";
     }
 }

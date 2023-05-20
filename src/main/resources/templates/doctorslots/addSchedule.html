@@ -8,9 +8,9 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <h3 class="mt-3 mb-3">Добавить расписание врачу</h3>
     <form style="max-width: 50vw" method="POST" class="needs-validation" th:action="@{/doctorslots/addSchedule}"
           th:object="${scheduleForm}">
+        <h3 class="mt-3 mb-3" align="center">Добавить расписание врачу</h3>
         <div class="mb-3">
             <label for="doctor" class="form-label">Врач</label>
             <select class="form-select" name="doctor" id="doctor" required>
@@ -43,8 +43,10 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-success" onclick="validateFormSchedule()">Добавить</button>
-        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Назад</button>
+        <div class="mt-3">
+            <button type="button" style="float: right" class="btn btn-success" onclick="window.history.back()">Назад</button>
+            <button type="submit" style="float: right" class="btn btn-success" onclick="validateFormSchedule()">Добавить</button>
+        </div>
     </form>
 </div>
 </body>

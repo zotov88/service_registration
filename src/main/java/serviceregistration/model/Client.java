@@ -31,7 +31,7 @@ public class Client extends GenericModel {
     private String password;
 
     @Column(name = "policy", nullable = false)
-    private Integer policy;
+    private Long policy;
 
     @Column(name = "first_name", nullable = false)
     private String firstName;

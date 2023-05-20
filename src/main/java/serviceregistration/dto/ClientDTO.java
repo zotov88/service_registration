@@ -16,7 +16,7 @@ public class ClientDTO extends GenericDTO {
 
     private String login;
     private String password;
-    private Integer policy;
+    private Long policy;
     private String firstName;
     private String lastName;
     private String midName;

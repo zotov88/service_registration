@@ -78,4 +78,4 @@ and
     day_id = 2;
 
 delete from doctors
-where id = 6;
+where id = 1;

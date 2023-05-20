@@ -5,14 +5,13 @@ import lombok.*;
 
 import java.util.List;
 
+@Entity
+@Table(name = "doctors_slots",
+        uniqueConstraints = @UniqueConstraint(name = "time_slot", columnNames = {"doctor_id", "day_id", "slot_id"}))
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "doctors_slots",
-    uniqueConstraints = @UniqueConstraint(name = "time_slot", columnNames = {"doctor_id", "day_id", "slot_id"}))
-
 @SequenceGenerator(name = "default_generator", sequenceName = "doctor_slot_seq", allocationSize = 1)
 public class DoctorSlot extends GenericModel {
 

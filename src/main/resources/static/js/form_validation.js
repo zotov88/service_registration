@@ -79,7 +79,7 @@ function validateFormSchedule() {
         })
 }
 
-function validateForm() {
+function validateFormRegistration() {
     'use strict'
     const forms = document.querySelectorAll('.needs-validation');
     const gender = document.getElementById("gender");
