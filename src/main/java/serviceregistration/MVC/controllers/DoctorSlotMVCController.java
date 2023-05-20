@@ -44,11 +44,12 @@ public class DoctorSlotMVCController {
         return "doctorslots/schedule";
     }
 
-    @GetMapping ("/addSchedule")
+    @GetMapping("/addSchedule")
     public String addSchedule(Model model) {
         List<DoctorDTO> doctors = doctorService.listAll();
         List<Day> days = dayService.listAll();
         List<Cabinet> cabinets = cabinetService.listAll();
+        model.addAttribute("scheduleForm", new DoctorSlotDTO());
         model.addAttribute("doctors", doctors);
         model.addAttribute("days", days);
         model.addAttribute("cabinets", cabinets);
@@ -57,14 +58,16 @@ public class DoctorSlotMVCController {
 
     @PostMapping("/addSchedule")
     public String addSchedule(@ModelAttribute("scheduleForm") DoctorSlotDTO doctorSlotDTO,
-                              BindingResult bindingResult) {
+                              BindingResult bindingResult,
+                              Model model) {
+        addSchedule(model);
         if (doctorSlotService.getDoctorSlotByDoctorAndDay(doctorSlotDTO.getDoctor().getId(), doctorSlotDTO.getDay().getId()) != null) {
             bindingResult.rejectValue("day", "error.day", "Врач уже работает " + doctorSlotDTO.getDay().getDay());
-            return "redirect:/doctorslots/addSchedule";
+            return "doctorslots/addSchedule";
         }
         if (doctorSlotService.getDoctorSlotByCabinetAndDay(doctorSlotDTO.getCabinet().getId(), doctorSlotDTO.getDay().getId()) != null) {
             bindingResult.rejectValue("cabinet", "error.cabinet", "В этот день кабинет занят");
-            return "redirect:/doctorslots/addSchedule";
+            return "doctorslots/addSchedule";
         }
         doctorSlotService.addSchedule(doctorSlotDTO.getDoctor().getId(),
                 doctorSlotDTO.getDay().getId(),
@@ -72,7 +75,7 @@ public class DoctorSlotMVCController {
         return "redirect:/doctorslots";
     }
 
-    @GetMapping ("/deleteSchedule")
+    @GetMapping("/deleteSchedule")
     public String deleteSchedule(Model model) {
         List<DoctorDTO> doctors = doctorService.listAll();
         List<Day> days = dayService.listAll();

@@ -38,9 +38,9 @@
                         th:value="${cabinet.getId()}"
                         th:text="${cabinet.getCabinetNumber()}"></option>
             </select>
-<!--            <div class="alert alert-danger" th:if="${#fields.hasErrors('cabinet')}">-->
-<!--                <p th:errors="*{cabinet}"></p>-->
-<!--            </div>-->
+            <div class="alert alert-danger" th:if="${#fields.hasErrors('cabinet')}">
+                <p th:errors="*{cabinet}"></p>
+            </div>
         </div>
 
         <button type="submit" class="btn btn-success" onclick="validateFormSchedule()">Добавить</button>

@@ -33,7 +33,7 @@ public class DoctorMVCController {
     public String getAll(Model model) {
         List<DoctorDTO> doctors = doctorService.listAll();
         model.addAttribute("doctors", doctors);
-        return "doctors/all";
+        return "doctors/list";
     }
 
     @GetMapping("/addDoctor")
@@ -46,12 +46,27 @@ public class DoctorMVCController {
 
     @PostMapping("/addDoctor")
     public String addDoctor(@ModelAttribute("doctorForm") DoctorDTO doctorDTO,
-                      BindingResult bindingResult) {
+                            BindingResult bindingResult,
+                            Model model) {
+        addDoctor(model);
         if (doctorDTO.getLogin().equalsIgnoreCase(ADMIN) || doctorService.getDoctorByLogin(doctorDTO.getLogin()) != null) {
             bindingResult.rejectValue("login", "error.login", "Этот логин уже существует");
             return "doctors/addDoctor";
         }
         doctorService.create(doctorDTO);
+        return "redirect:/doctors";
+    }
+
+    @GetMapping("/deleteDoctor")
+    public String deleteDoctor(Model model) {
+        List<DoctorDTO> doctors = doctorService.listAll();
+        model.addAttribute("doctors", doctors);
+        return "doctors/deleteDoctor";
+    }
+
+    @PostMapping("/deleteDoctor")
+    public String deleteDoctor(@ModelAttribute("doctorForm") DoctorDTO doctorDTO) {
+        doctorService.delete(doctorDTO.getId());
         return "redirect:/doctors";
     }
 }

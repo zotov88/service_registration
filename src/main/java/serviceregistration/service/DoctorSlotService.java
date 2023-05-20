@@ -27,8 +27,6 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         doctorSlotRepository.deleteAllByDoctorIdAndDayId(doctorId, dayId);
     }
 
-
-
     public DoctorSlotDTO getDoctorSlotByCabinetAndDay(final Long cabinetId, final Long dayId) {
         return mapper.toDTO(doctorSlotRepository.findFirstByCabinetIdAndDayId(cabinetId, dayId));
     }

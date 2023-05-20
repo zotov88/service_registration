@@ -76,3 +76,6 @@ where
     doctor_id = 2
 and
     day_id = 2;
+
+delete from doctors
+where id = 6;
