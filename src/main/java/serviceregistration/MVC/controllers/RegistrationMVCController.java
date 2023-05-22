@@ -25,4 +25,14 @@ public class RegistrationMVCController {
         model.addAttribute("registrations", registrations);
         return "registrations/listAll";
     }
+
+    @GetMapping("/doctorList")
+    public String doctorList() {
+        return "registrations/doctorList";
+    }
+
+    @GetMapping("/clientList")
+    public String clientList() {
+        return "registrations/clientList";
+    }
 }

@@ -1,5 +1,6 @@
 package serviceregistration.service;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import serviceregistration.dto.ClientDTO;
 import serviceregistration.dto.RoleDTO;
@@ -13,9 +14,13 @@ import java.time.Period;
 @Service
 public class ClientService extends GenericService<Client, ClientDTO> {
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     public ClientService(ClientRepository repository,
-                         ClientMapper mapper) {
+                         ClientMapper mapper,
+                         BCryptPasswordEncoder bCryptPasswordEncoder) {
         super(repository, mapper);
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public ClientDTO create(ClientDTO newObj) {
@@ -25,6 +30,7 @@ public class ClientService extends GenericService<Client, ClientDTO> {
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setId(1L);
         newObj.setRole(roleDTO);
+        newObj.setPassword(bCryptPasswordEncoder.encode(newObj.getPassword()));
         return mapper.toDTO(repository.save(mapper.toEntity(newObj)));
     }
 

@@ -77,5 +77,5 @@ where
 and
     day_id = 2;
 
-delete from doctors
+delete from clients
 where id = 1;

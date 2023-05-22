@@ -27,10 +27,13 @@
                         <a class="nav-link active" aria-current="page" href="/registrations">Записаться</a>
                     </li>
                     <li sec:authorize="isAuthenticated() && hasRole('CLIENT')" class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/registrations/myList">Мои записи</a>
+                        <a class="nav-link active" aria-current="page" href="/registrations/clientList">Мои записи</a>
                     </li>
                     <li sec:authorize="isAuthenticated() && hasRole('ADMIN')" class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/registrations/listAll">Архив записей</a>
+                    </li>
+                    <li sec:authorize="isAuthenticated() && hasRole('DOCTOR')" class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/registrations/doctorList">Мои записи</a>
                     </li>
                 </ul>
                 <div sec:authorize="isAuthenticated() && !hasRole('ADMIN')">
