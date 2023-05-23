@@ -7,11 +7,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import serviceregistration.constants.UserRolesConstants;
-import serviceregistration.model.Client;
-import serviceregistration.model.Doctor;
+import serviceregistration.model.Userable;
 import serviceregistration.repository.ClientRepository;
 import serviceregistration.repository.DoctorRepository;
+import serviceregistration.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +18,7 @@ import java.util.List;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
+    private final UserRepository userRepository;
     private final ClientRepository clientRepository;
     private final DoctorRepository doctorRepository;
 
@@ -31,35 +31,30 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Value("${spring.security.user.roles}")
     private String adminRole;
 
-    public CustomUserDetailsService(ClientRepository clientRepository,
+    public CustomUserDetailsService(UserRepository userRepository,
+                                    ClientRepository clientRepository,
                                     DoctorRepository doctorRepository) {
+        this.userRepository = userRepository;
         this.clientRepository = clientRepository;
         this.doctorRepository = doctorRepository;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         if (username.equals(adminUserName)) {
-            return new CustomUserDetails(null, adminUserName, adminPassword, List.of(new SimpleGrantedAuthority("ROLE_" + adminRole)));
+            return new CustomUserDetails(null, adminUserName, adminPassword,
+                    List.of(new SimpleGrantedAuthority("ROLE_" + adminRole)));
         } else {
-            Client client = clientRepository.findClientByLogin(username);
-            Doctor doctor = doctorRepository.findDoctorByLogin(username);
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            if (client != null) {
-                authorities.add(new SimpleGrantedAuthority("ROLE_" + UserRolesConstants.CLIENT));
-                return new CustomUserDetails(client.getId().intValue(), username, client.getPassword(), authorities);
-            }
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + UserRolesConstants.DOCTOR));
-            return new CustomUserDetails(doctor.getId().intValue(), username, doctor.getPassword(), authorities);
+            return getUserDetails(userRepository.findRoleByLogin(username) == 1
+                            ? clientRepository.findClientByLogin(username)
+                            : doctorRepository.findDoctorByLogin(username),
+                            username);
         }
     }
-}
 
-//        if (username.equals(adminUserName)) {
-//            return new CustomUserDetails(null, adminUserName, adminPassword, List.of(new SimpleGrantedAuthority("ROLE_" + adminRole)));
-//        } else {
-//            Client client = clientRepository.findClientByLogin(username);
-//            List<GrantedAuthority> authorities = new ArrayList<>();
-//            authorities.add(new SimpleGrantedAuthority(client.getRole().getId() == 1L ? "ROLE_" + UserRolesConstants.CLIENT :
-//                    "ROLE_" + UserRolesConstants.DOCTOR));
-//            return new CustomUserDetails(client.getId().intValue(), username, client.getPassword(), authorities);
+    public UserDetails getUserDetails(final Userable user, final String username) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getTitle()));
+        return new CustomUserDetails(user.getId().intValue(), username, user.getPassword(), authorities);
+    }
+}

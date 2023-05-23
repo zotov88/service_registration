@@ -15,30 +15,39 @@ import java.time.Period;
 public class ClientService extends GenericService<Client, ClientDTO> {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserService userService;
 
     public ClientService(ClientRepository repository,
                          ClientMapper mapper,
-                         BCryptPasswordEncoder bCryptPasswordEncoder) {
+                         UserService userService,
+                         BCryptPasswordEncoder bCryptPasswordEncoder
+    ) {
         super(repository, mapper);
+        this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public ClientDTO create(ClientDTO newObj) {
-        int age = Period.between(LocalDate.from(newObj.getBirthDate()), LocalDate.now()).getYears();
-//        System.out.println(ChronoUnit.YEARS.between(localDate, LocalDate.now())); //returns 11
-        newObj.setAge(age);
+    public ClientDTO create(ClientDTO clientDTO) {
+        int age = Period.between(LocalDate.from(clientDTO.getBirthDate()), LocalDate.now()).getYears();
+        clientDTO.setAge(age);
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setId(1L);
-        newObj.setRole(roleDTO);
-        newObj.setPassword(bCryptPasswordEncoder.encode(newObj.getPassword()));
-        return mapper.toDTO(repository.save(mapper.toEntity(newObj)));
+        clientDTO.setRole(roleDTO);
+        clientDTO.setPassword(bCryptPasswordEncoder.encode(clientDTO.getPassword()));
+        userService.createUser(clientDTO.getLogin(), clientDTO.getRole().getId());
+        return mapper.toDTO(repository.save(mapper.toEntity(clientDTO)));
+    }
+
+    public void delete(final Long id) {
+        userService.deleteByLogin(getOne(id).getLogin());
+        repository.deleteById(id);
     }
 
     public ClientDTO getClientByLogin(final String login) {
-        return mapper.toDTO(((ClientRepository)repository).findClientByLogin(login));
+        return mapper.toDTO(((ClientRepository) repository).findClientByLogin(login));
     }
 
     public ClientDTO getClientByEmail(final String email) {
-        return mapper.toDTO(((ClientRepository)repository).findClientByEmail(email));
+        return mapper.toDTO(((ClientRepository) repository).findClientByEmail(email));
     }
 }

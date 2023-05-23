@@ -43,4 +43,5 @@ public abstract class GenericService<E extends GenericModel, D extends GenericDT
     public List<D> listAll() {
         return mapper.toDTOs(repository.findAll());
     }
+
 }

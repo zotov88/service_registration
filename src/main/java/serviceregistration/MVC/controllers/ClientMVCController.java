@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import serviceregistration.dto.ClientDTO;
 import serviceregistration.service.ClientService;
+import serviceregistration.service.UserService;
 
 import java.util.List;
 
@@ -19,9 +20,12 @@ import static serviceregistration.constants.UserRolesConstants.*;
 public class ClientMVCController {
 
     private final ClientService clientService;
+    private final UserService userService;
 
-    public ClientMVCController(ClientService clientService) {
+    public ClientMVCController(ClientService clientService,
+                               UserService userService) {
         this.clientService = clientService;
+        this.userService = userService;
     }
 
     @GetMapping("/registration")
@@ -33,7 +37,10 @@ public class ClientMVCController {
     @PostMapping("/registration")
     public String registration(@ModelAttribute("clientForm") ClientDTO clientDTO,
                                BindingResult bindingResult) {
-        if (clientDTO.getLogin().equalsIgnoreCase(ADMIN) || clientService.getClientByLogin(clientDTO.getLogin()) != null) {
+        String login = clientDTO.getLogin().toLowerCase();
+        clientDTO.setLogin(login);
+        if (login.equalsIgnoreCase(ADMIN) ||
+                (userService.findUserByLogin(login) != null && userService.findUserByLogin(login).getLogin().equals(login))) {
             bindingResult.rejectValue("login", "login.error", "Этот логин уже существует");
             return "registration";
         }
@@ -51,4 +58,12 @@ public class ClientMVCController {
         model.addAttribute("clients", clients);
         return "clients/list";
     }
+
+//    @GetMapping("/profile")
+//    public String profile() {
+//        SecurityContext context = SecurityContextHolder.getContext();
+//        Authentication auth = context.getAuthentication();
+//        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+//        return "clients/profile/";
+//    }
 }

@@ -13,12 +13,14 @@ import java.time.LocalDateTime;
 @Service
 public class DoctorService extends GenericService<Doctor, DoctorDTO> {
 
+    private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public DoctorService(DoctorRepository repository,
                          DoctorMapper mapper,
-                         BCryptPasswordEncoder bCryptPasswordEncoder) {
+                         UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         super(repository, mapper);
+        this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
@@ -28,11 +30,18 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
         newObj.setRole(roleDTO);
         newObj.setPassword(bCryptPasswordEncoder.encode(newObj.getPassword()));
         newObj.setCreatedWhen(LocalDateTime.now());
+        userService.createUser(newObj.getLogin(), newObj.getRole().getId());
         return mapper.toDTO(repository.save(mapper.toEntity(newObj)));
     }
 
+    @Override
+    public void delete(Long id) {
+        userService.deleteByLogin(getOne(id).getLogin());
+        repository.deleteById(id);
+    }
+
     public DoctorDTO getDoctorByLogin(String login) {
-        return mapper.toDTO(((DoctorRepository)repository).findDoctorByLogin(login));
+        return mapper.toDTO(((DoctorRepository) repository).findDoctorByLogin(login));
     }
 
 }

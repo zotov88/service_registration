@@ -77,5 +77,13 @@ where
 and
     day_id = 2;
 
-delete from clients
-where id = 1;
+select login
+from (
+        select login from clients
+        union all
+        select login from doctors
+    ) as t
+where login = 'lp'
+
+
+

@@ -46,7 +46,10 @@ public class DoctorMVCController {
                             BindingResult bindingResult,
                             Model model) {
         addDoctor(model);
-        if (doctorDTO.getLogin().equalsIgnoreCase(ADMIN) || doctorService.getDoctorByLogin(doctorDTO.getLogin()) != null) {
+        String login = doctorDTO.getLogin().toLowerCase();
+        doctorDTO.setLogin(login);
+        if (doctorDTO.getLogin().equalsIgnoreCase(ADMIN) ||
+                doctorService.getDoctorByLogin(login) != null && doctorService.getDoctorByLogin(login).getLogin().equals(login)) {
             bindingResult.rejectValue("login", "error.login", "Этот логин уже существует");
             return "doctors/addDoctor";
         }
