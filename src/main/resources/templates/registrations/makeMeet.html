@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Запись</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h3 align="center">Доступно для записи</h3>
+    <div class="row">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">ФИО</th>
+                <th scope="col">Специализация</th>
+                <th scope="col">Дата</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ds : ${doctorDays}" >
+                <td th:text="${doctors.get(__${ds.getDoctorId() - 1}__).getLastName() + ' '
+                              + doctors.get(__${ds.getDoctorId() - 1}__).getFirstName() + ' '
+                              + doctors.get(__${ds.getDoctorId() - 1}__).getMidName()}">
+                </td>
+                <td th:text="${doctors.get(__${ds.getDoctorId() - 1}__).getSpecialization().getTitleSpecialization()}"></td>
+                <td th:text="${days.get(__${ds.getDayId() - 1}__).getDay()}"></td>
+
+                <td>
+                    <a sec:authorize="hasRole('CLIENT')" class="btn btn-sm btn-outline-success"
+                       th:href="'/rent/book/' + ${doctors.get(__${ds.getDoctorId() - 1}__).id}">Выбрать время</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

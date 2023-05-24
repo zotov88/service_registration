@@ -1,11 +1,17 @@
 package serviceregistration.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import serviceregistration.customcomponent.DoctorDay;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.mapper.GenericMapper;
 import serviceregistration.model.DoctorSlot;
 import serviceregistration.repository.DoctorSlotRepository;
+
+import java.util.List;
 
 @Transactional
 @Service
@@ -33,5 +39,15 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
 
     public DoctorSlotDTO getDoctorSlotByDoctorAndDay(final Long doctorId, final Long dayId) {
         return mapper.toDTO(doctorSlotRepository.findFirstByDoctorIdAndDayId(doctorId, dayId));
+    }
+
+    public List<DoctorDay> groupByDoctorSlot() {
+        return doctorSlotRepository.groupByDoctorSlot();
+    }
+
+    public Page<DoctorSlotDTO> getAllDoctorSlot(Pageable pageable) {
+        Page<DoctorSlot> doctorSlotsPaginated = doctorSlotRepository.findAllNotLessThanToday(pageable);
+        List<DoctorSlotDTO> result = mapper.toDTOs(doctorSlotsPaginated.getContent());
+        return new PageImpl<>(result, pageable, doctorSlotsPaginated.getTotalElements());
     }
 }

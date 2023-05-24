@@ -1,17 +1,21 @@
 package serviceregistration.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import serviceregistration.customcomponent.DoctorDay;
 import serviceregistration.model.DoctorSlot;
 
-public interface DoctorSlotRepository
-        extends GenericRepository<DoctorSlot> {
+import java.util.List;
+
+public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
 
     @Modifying
     @Query(nativeQuery = true,
             value = """
                     insert into doctors_slots
-                    select nextval('doctor_slot_seq'), null, now(), null, null, null, false,cabinets.id, days.id, doctors.id, slots.id
+                    select nextval('doctor_slot_seq'), null, now(), null, null, false, false,cabinets.id, days.id, doctors.id, slots.id
                     from days
                         cross join slots
                         cross join doctors
@@ -29,4 +33,25 @@ public interface DoctorSlotRepository
     DoctorSlot findFirstByCabinetIdAndDayId(Long cabinetId, Long dayId);
 
     DoctorSlot findFirstByDoctorIdAndDayId(Long doctorId, Long dayId);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select ds.*
+                    from doctors_slots ds
+                        join days d on ds.day_id = d.id
+                    where day >= TIMESTAMP 'today'
+                    order by day_id
+                    """)
+    Page<DoctorSlot> findAllNotLessThanToday(Pageable pageable);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select dc.id as DoctorId, d.id as DayId
+                    from doctors_slots ds
+                        join days d on ds.day_id = d.id
+                        join doctors dc on ds.doctor_id = dc.id
+                    where day > TIMESTAMP 'today' and ds.is_registered = false
+                    group by dc.id, d.id""")
+    List<DoctorDay> groupByDoctorSlot();
+
 }

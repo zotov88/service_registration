@@ -23,7 +23,7 @@ public class ClientDTO extends GenericDTO {
     private String gender;
     private Integer age;
     private LocalDate birthDate;
-    private String phone;
+    private Long phone;
     private String email;
     private String address;
     private RoleDTO role;

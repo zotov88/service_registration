@@ -18,15 +18,35 @@ select * from registrations;
 
 insert into specializations(description, title)
 values ('Врач общей практики', 'Терапевт'),
-       ('Хирург', 'Хирург');
+       ('Хирург', 'Хирург'),
+       ('Кардиолог', 'Кардиолог'),
+       ('Эндокринолог', 'Эндокринолог'),
+       ('Гинеколог', 'Гинеколог'),
+       ('Офтальмолог', 'Офтальмолог'),
+       ('Гастроэнтеролог', 'Гастроэнтеролог');
 
 insert into roles(description, title)
 values ('Клиент', 'CLIENT'),
        ('Врач', 'DOCTOR');
 
 insert into cabinets(description, number)
-values ('Палата', 1),
-       ('Палата', 13);
+values ('кабинет', 1),
+       ('кабинет', 2),
+       ('кабинет', 3),
+       ('кабинет', 4),
+       ('кабинет', 5),
+       ('кабинет', 6),
+       ('кабинет', 10),
+       ('кабинет', 11),
+       ('кабинет', 12),
+       ('кабинет', 13),
+       ('кабинет', 14),
+       ('кабинет', 15),
+       ('кабинет', 20),
+       ('кабинет', 21),
+       ('кабинет', 22),
+       ('кабинет', 23),
+       ('кабинет', 24);
 
 insert into slots(time_slot)
 values
@@ -37,10 +57,10 @@ values
 
 insert into days(day)
 values
-    ('01-06-2023'),
-    ('02-06-2023'),
-    ('03-06-2023'),
-    ('04-06-2023');
+    ('2023-05-01'),
+    ('2023-07-01'),
+    ('2023-07-02');
+
 
 insert into doctors
 values (nextval('doctors_seq'), null, now(), null, null, false, 'Петр', 'Иванов', 'l', 'Иванович', 'p', 2, 1),
@@ -67,15 +87,13 @@ where
     cabinets.id = 1;
 
 insert into registrations
-values (nextval('registrations_seq'), null, now(), null, null, false, null, false, 1, 2, 1),
-       (nextval('registrations_seq'), null, now(), null, null, false, null, false, 1, 2, 6),
+values (nextval('registrations_seq'), null, now(), null, null, false, null, true, 1, 1, 9),
+       (nextval('registrations_seq'), null, now(), null, null, false, null, true, 1, 1, 10),
        (nextval('registrations_seq'), null, now(), null, null, false, null, true, 1, 1, 11);
 
-delete from doctors_slots
-where
-    doctor_id = 2
-and
-    day_id = 2;
+update doctors_slots
+set is_registered = true
+where id = 12;
 
 select login
 from (
@@ -83,7 +101,22 @@ from (
         union all
         select login from doctors
     ) as t
-where login = 'lp'
+where login = 'lp';
+
+
+select dc.id, d.id
+from doctors_slots ds
+    join days d on ds.day_id = d.id
+    join doctors dc on ds.doctor_id = dc.id
+where day > TIMESTAMP 'today' and ds.is_registered = false
+group by dc.id, d.id;
+
+select *
+from doctors_slots ds
+         join days d on ds.day_id = d.id
+where day > TIMESTAMP 'today';
+
+
 
 
 

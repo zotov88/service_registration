@@ -54,7 +54,7 @@ public class Client
     private LocalDate birthDate;
 
     @Column(name = "phone", nullable = false)
-    private String phone;
+    private Long phone;
 
     @Column(name = "email", nullable = false)
     private String email;

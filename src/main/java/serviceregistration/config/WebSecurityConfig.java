@@ -46,11 +46,17 @@ public class WebSecurityConfig {
 
     private final List<String> DOCTORSLOTS_PERMISSION_LIST_FOR_ADMIN = List.of
             (
+
                     "/doctorslots",
                     "/doctorslots/schedule",
                     "/doctorslots/addSchedule",
-                    "/doctorslots/delete"
+                    "/doctorslots/deleteSchedule"
             );
+
+//    private final List<String> DOCTORSLOTS_PERMISSION_LIST = List.of
+//            (
+//                    "doctorslots/makeMeet"
+//            );
 
     private final List<String> DOCTORSLOTS_PERMISSION_LIST_FOR_DOCTOR = List.of
             (
@@ -72,7 +78,8 @@ public class WebSecurityConfig {
 
     private final List<String> REGISTRATIONS_PERMISSION_LIST_FOR_CLIENT = List.of
             (
-                    "/registrations",
+
+                    "/registrations/makeMeet",
                     "/registrations/myList"
             );
 
@@ -98,8 +105,10 @@ public class WebSecurityConfig {
                         .requestMatchers(DOCTORS_WHITE_LIST.toArray(String[]::new)).permitAll()
                         .requestMatchers(CLIENTS_WHITE_LIST.toArray(String[]::new)).permitAll()
                         .requestMatchers(DOCTORS_PERMISSION_LIST_FOR_ADMIN.toArray(String[]::new)).hasRole(ADMIN)
+//                        .requestMatchers(DOCTORSLOTS_PERMISSION_LIST.toArray(String[]::new)).hasAnyRole(ADMIN, CLIENT)
                         .requestMatchers(DOCTORSLOTS_PERMISSION_LIST_FOR_ADMIN.toArray(String[]::new)).hasRole(ADMIN)
                         .requestMatchers(DOCTORSLOTS_PERMISSION_LIST_FOR_DOCTOR.toArray(String[]::new)).hasRole(DOCTOR)
+
                         .requestMatchers(CLIENTS_PERMISSION_LIST_FOR_ADMIN.toArray(String[]::new)).hasRole(ADMIN)
                         .requestMatchers(REGISTRATIONS_PERMISSION_LIST_FOR_CLIENT.toArray(String[]::new)).hasRole(CLIENT)
                         .requestMatchers(REGISTRATIONS_PERMISSION_LIST_FOR_ADMIN.toArray(String[]::new)).hasRole(ADMIN)
