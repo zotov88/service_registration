@@ -1,10 +1,13 @@
 package serviceregistration.MVC.controllers;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import serviceregistration.dto.DoctorDTO;
+import serviceregistration.dto.DoctorSearchDTO;
 import serviceregistration.model.Specialization;
 import serviceregistration.service.DoctorService;
 import serviceregistration.service.SpecializationService;
@@ -27,9 +30,26 @@ public class DoctorMVCController {
     }
 
     @GetMapping("")
-    public String getAll(Model model) {
-        List<DoctorDTO> doctors = doctorService.listAll();
+    public String getAll(@RequestParam(value = "page", defaultValue = "1") int page,
+                         @RequestParam(value = "size", defaultValue = "10") int pageSize,
+                         Model model) {
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        Page<DoctorDTO> doctors = doctorService.listAll(pageRequest);
+        List<Specialization> specializations = specializationService.listAll();
+        model.addAttribute("specializations", specializations);
         model.addAttribute("doctors", doctors);
+        return "doctors/list";
+    }
+
+    @PostMapping("/search")
+    public String searchDoctor(@RequestParam(value = "page", defaultValue = "1") int page,
+                              @RequestParam(value = "size", defaultValue = "10") int pageSize,
+                              @ModelAttribute("doctorSearchForm") DoctorSearchDTO doctorSearchDTO,
+                              Model model) {
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        model.addAttribute("doctors", doctorService.findDoctors(doctorSearchDTO, pageRequest));
+        List<Specialization> specializations = specializationService.listAll();
+        model.addAttribute("specializations", specializations);
         return "doctors/list";
     }
 

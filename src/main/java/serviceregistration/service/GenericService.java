@@ -1,5 +1,8 @@
 package serviceregistration.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 import serviceregistration.dto.GenericDTO;
@@ -42,6 +45,12 @@ public abstract class GenericService<E extends GenericModel, D extends GenericDT
 
     public List<D> listAll() {
         return mapper.toDTOs(repository.findAll());
+    }
+
+    public Page<D> listAll(Pageable pageable) {
+        Page<E> objects = repository.findAll(pageable);
+        List<D> result = mapper.toDTOs(objects.getContent());
+        return new PageImpl<>(result, pageable, objects.getTotalElements());
     }
 
 }

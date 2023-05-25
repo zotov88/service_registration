@@ -1,14 +1,19 @@
 package serviceregistration.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import serviceregistration.dto.DoctorDTO;
+import serviceregistration.dto.DoctorSearchDTO;
 import serviceregistration.dto.RoleDTO;
 import serviceregistration.mapper.DoctorMapper;
 import serviceregistration.model.Doctor;
 import serviceregistration.repository.DoctorRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class DoctorService extends GenericService<Doctor, DoctorDTO> {
@@ -42,6 +47,18 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
 
     public DoctorDTO getDoctorByLogin(String login) {
         return mapper.toDTO(((DoctorRepository) repository).findDoctorByLogin(login));
+    }
+
+    public Page<DoctorDTO> findDoctors(DoctorSearchDTO doctorSearchDTO,
+                                       Pageable pageRequest) {
+        Page<Doctor> doctorsPaginated = ((DoctorRepository) repository).searchDoctors(
+                doctorSearchDTO.getLastName(),
+                doctorSearchDTO.getFirstName(),
+                doctorSearchDTO.getMidName(),
+                doctorSearchDTO.getSpecialization(),
+                pageRequest);
+        List<DoctorDTO> result = mapper.toDTOs(doctorsPaginated.getContent());
+        return new PageImpl<>(result, pageRequest, doctorsPaginated.getTotalElements());
     }
 
 }

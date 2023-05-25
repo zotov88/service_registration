@@ -43,3 +43,14 @@
 .text-link:hover {
     color: #001445;
 }
+
+.btn-outline-success {
+    color: #106a0e !important;
+    border-color: #50b314 !important;
+}
+
+.btn-outline-success:hover {
+    color: #e0f3e8 !important;
+    background: #2ac3ff !important;
+    border-color: #2ac3ff !important;
+}

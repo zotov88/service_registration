@@ -9,22 +9,63 @@
 </head>
 <body>
 <div layout:fragment="content">
+    <div>
+        <hr class="hr"/>
+        <h3>Поиск врача</h3>
+        <form method="POST" th:action="@{/doctors/search}" th:object="${doctorSearchForm}">
+            <div class="mt-0 row g-2">
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input name="lastName" type="text" class="form-control" id="lastName" placeholder="Фамилия">
+                        <label for="lastName">Фамилия</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input name="firstName" type="text" class="form-control" id="firstName" placeholder="Имя">
+                        <label for="firstName">Имя</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input name="midName" type="text" class="form-control" id="midName" placeholder="Отчество">
+                        <label for="midName">Отчество</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <select class="form-select" name="specialization" id="specialization">
+                            <option selected th:value="null">Выберете специализацию</option>
+                            <option th:each="spec : ${specializations}"
+                                    th:value="${spec.getTitleSpecialization()}"
+                                    th:text="${spec.getTitleSpecialization()}"></option>
+                        </select>
+                        <label for="specialization">Специализация</label>
+                    </div>
+                </div>
+                <div class="row g-2">
+                    <button type="submit" class="btn btn-secondary">Найти врача</button>
+                </div>
+            </div>
+        </form>
+    </div>
     <h1 align="center">Врачи</h1>
     <div class="row">
         <div class="col">
             <a sec:authorize="isAuthenticated() && hasRole('ADMIN')"
                href="/doctors/deleteDoctor"
-               class="btn btn-success"
+               class="btn btn-sm btn-success"
                role="button"
                style="float: right"
                aria-disabled="true">Удалить</a>
             <a sec:authorize="isAuthenticated() && hasRole('ADMIN')"
                href="/doctors/addDoctor"
-               class="btn btn-success"
+               class="btn btn-sm btn-success"
                role="button"
                style="float: right"
                aria-disabled="true">Добавить</a>
         </div>
+        <div><br></div>
         <table class="table table-hover">
             <thead>
             <tr>
@@ -40,6 +81,30 @@
             </tbody>
         </table>
     </div>
+    <nav aria-label="Pagination" th:if="${doctors.totalPages gt 0}">
+        <ul class="pagination justify-content-center font-weight-bold">
+            <li class="page-item" th:classappend="${doctors.number eq 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/doctors?page={id}(id=${doctors.number lt 2 ? 1 : doctors.number})}"
+                   aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(1, doctors.totalPages, 1)}"
+                th:classappend="${i eq doctors.number + 1} ? 'active'">
+                <a class="page-link" th:href="@{/doctors?page={id}(id=${i})}" th:text="${i}"
+                   th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+            </li>
+            <li class="page-item" th:classappend="${doctors.number eq doctors.totalPages - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/doctors?page={id}(id=${doctors.number + 2})}"
+                   aria-label="Next" title="Next Page" data-toggle="tooltip">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 </body>
 </html>

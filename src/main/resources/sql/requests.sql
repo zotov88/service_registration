@@ -87,9 +87,9 @@ where
     cabinets.id = 1;
 
 insert into registrations
-values (nextval('registrations_seq'), null, now(), null, null, false, null, true, 1, 1, 9),
-       (nextval('registrations_seq'), null, now(), null, null, false, null, true, 1, 1, 10),
-       (nextval('registrations_seq'), null, now(), null, null, false, null, true, 1, 1, 11);
+values (nextval('registrations_seq'), null, now(), null, null, false, null, true, 1, 1, 1),
+       (nextval('registrations_seq'), null, now(), null, null, false, null, true, 1, 1, 2),
+       (nextval('registrations_seq'), null, now(), null, null, false, null, true, 1, 1, 3);
 
 update doctors_slots
 set is_registered = true
@@ -116,6 +116,18 @@ from doctors_slots ds
          join days d on ds.day_id = d.id
 where day > TIMESTAMP 'today';
 
+select d.*
+from doctors d left join specializations s on d.specialization_id = s.id
+where last_name like '%'
+and first_name like '%'
+and mid_name like '%'
+and s.title like '%'
+
+select d.*
+from doctors d left join specializations s on d.specialization_id = s.id
+where last_name like '%'
+  and first_name like '%'
+  and mid_name like '%'
 
 
 

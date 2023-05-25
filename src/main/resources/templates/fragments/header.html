@@ -21,13 +21,13 @@
                         <a class="nav-link active" aria-current="page" href="/doctorslots">Расписание</a>
                     </li>
                     <li sec:authorize="isAuthenticated() && hasRole('DOCTOR')" class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/doctorslots/mySchedule">Мое расписание</a>
+                        <a class="nav-link active" aria-current="page" th:href="'/doctorslots/mySchedule/' + ${#authentication.getPrincipal().getUserId()}">Мое расписание</a>
                     </li>
                     <li sec:authorize="isAuthenticated() && hasRole('CLIENT')" class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/registrations/makeMeet">Записаться</a>
                     </li>
                     <li sec:authorize="isAuthenticated() && hasRole('CLIENT')" class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/registrations/clientList">Мои записи</a>
+                        <a class="nav-link active" aria-current="page" th:href="'/registrations/client-slots/' + ${#authentication.getPrincipal().getUserId()}">Мои записи</a>
                     </li>
                     <li sec:authorize="isAuthenticated() && hasRole('ADMIN')" class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/registrations/listAll">Архив записей</a>

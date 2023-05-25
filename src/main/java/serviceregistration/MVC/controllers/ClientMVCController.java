@@ -1,19 +1,16 @@
 package serviceregistration.MVC.controllers;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import serviceregistration.dto.ClientDTO;
 import serviceregistration.service.ClientService;
 import serviceregistration.service.UserService;
 
-import java.util.List;
-
-import static serviceregistration.constants.UserRolesConstants.*;
+import static serviceregistration.constants.UserRolesConstants.ADMIN;
 
 @Controller
 @RequestMapping("/clients")
@@ -53,8 +50,11 @@ public class ClientMVCController {
     }
 
     @GetMapping("/list")
-    public String getAll(Model model) {
-        List<ClientDTO> clients = clientService.listAll();
+    public String getAll(@RequestParam(value = "page", defaultValue = "1") int page,
+                         @RequestParam(value = "size", defaultValue = "10") int pageSize,
+                         Model model) {
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        Page<ClientDTO> clients = clientService.listAll(pageRequest);
         model.addAttribute("clients", clients);
         return "clients/list";
     }

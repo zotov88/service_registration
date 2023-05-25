@@ -1,10 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}"
+      lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Список клиента</title>
+    <title>Мои записи</title>
 </head>
 <body>
+<div layout:fragment="content">
+    <div class="mt-5">
+        <h1>Мои записи</h1>
+        <table class="table table-hover mt-3">
+            <thead>
+            <tr>
+                <th scope="col">Врач</th>
+                <th scope="col">Специализация</th>
+                <th scope="col">Дата</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="rs: ${registratedSlot}">
+                <td th:text="${rs.getDoctorSlot().getDoctor().getLastName()}"></td>
+                <td th:text="${rs.getDoctorSlot().getDoctor().getSpecialization().getTitleSpecialization()}"></td>
+                <td th:text="${rs.getDoctorSlot().getDay().getDay()}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <button sec:authorize="isAuthenticated() && (hasRole('ADMIN'))" type="button" class="btn btn-secondary"
+                onclick="window.history.back()">Назад
+        </button>
+    </div>
+    <nav aria-label="Pagination" th:if="${registratedSlot.totalPages gt 0}">
+        <ul class="pagination justify-content-center font-weight-bold">
+            <li class="page-item" th:classappend="${registratedSlot.number eq 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/registrations/clientList?page={id}(id=${registratedSlot.number lt 2 ? 1 : registratedSlot.number})}"
+                   aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(1, registratedSlot.totalPages, 1)}"
+                th:classappend="${i eq registratedSlot.number + 1} ? 'active'">
+                <a class="page-link" th:href="@{/registrations/clientList?page={id}(id=${i})}" th:text="${i}"
+                   th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+            </li>
+            <li class="page-item" th:classappend="${registratedSlot.number eq registratedSlot.totalPages - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/registrations/clientList?page={id}(id=${registratedSlot.number + 2})}"
+                   aria-label="Next" title="Next Page" data-toggle="tooltip">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
 
 </body>
 </html>

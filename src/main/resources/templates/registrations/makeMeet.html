@@ -9,7 +9,41 @@
 </head>
 <body>
 <div layout:fragment="content">
+<!--    <div>-->
+<!--        <hr class="hr"/>-->
+<!--        <h3>Поиск книги</h3>-->
+<!--        <form method="POST" th:action="@{/books/search}" th:object="${bookSearchForm}">-->
+<!--            <div class="mt-0 row g-2">-->
+<!--                <div class="col-md">-->
+<!--                    <div class="form-floating">-->
+<!--                        <input name="bookTitle" type="text" class="form-control" id="bookTitle" placeholder="Название книги">-->
+<!--                        <label for="bookTitle">Название книги</label>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md">-->
+<!--                    <div class="form-floating">-->
+<!--                        <input name="authorFio" type="text" class="form-control" id="authorFio" placeholder="ФИО автора">-->
+<!--                        <label for="authorFio">Автор</label>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md">-->
+<!--                    <div class="form-floating">-->
+<!--                        <select class="form-select" name="genre" id="genre">-->
+<!--                            <option selected th:value="null">Выберете жанр из списка</option>-->
+<!--                            <option th:each="genre : ${T(com.sber.java15.spring.springprojectlibrary.library.model.Genre).values()}"-->
+<!--                                    th:value="${genre}" th:text="${genre.getGenreTextDisplay()}"></option>-->
+<!--                        </select>-->
+<!--                        <label for="genre">Жанр</label>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="row g-2">-->
+<!--                    <button type="submit" class="btn btn-secondary">Найти книгу</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </form>-->
+<!--    </div>-->
     <h3 align="center">Доступно для записи</h3>
+    <div><br></div>
     <div class="row">
         <table class="table table-hover">
             <thead>
