@@ -4,7 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import serviceregistration.customcomponent.DoctorDay;
+import serviceregistration.dto.custommodel.DoctorDay;
+import serviceregistration.dto.custommodel.DoctorSlotIdTimeSlot;
 import serviceregistration.model.DoctorSlot;
 
 import java.util.List;
@@ -50,8 +51,37 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     from doctors_slots ds
                         join days d on ds.day_id = d.id
                         join doctors dc on ds.doctor_id = dc.id
-                    where day > TIMESTAMP 'today' and ds.is_registered = false
+                    where day > TIMESTAMP 'today' 
+                        and ds.is_registered = false
                     group by dc.id, d.id""")
     List<DoctorDay> groupByDoctorSlot();
 
+    @Query(nativeQuery = true,
+            value = """
+                    select id
+                    from doctors_slots
+                    where doctor_id = :doctorId
+                        and day_id = :dayId
+                        and is_registered = false""")
+    List<Long> findAllTimeForDoctorDay(Long doctorId, Long dayId);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select ds.id as RegistrationId, s.time_slot as Slot
+                    from doctors_slots ds
+                        join slots s on s.id = ds.slot_id
+                    where ds.doctor_id = :doctorId
+                        and ds.day_id = :dayId
+                        and ds.is_registered = false;
+                    """)
+    List<DoctorSlotIdTimeSlot> findAllDoctorslotIdsAndTimeSlotsFree(Long doctorId, Long dayId);
+
+//    @Query(nativeQuery = true,
+//            value = """
+//                    select *
+//                    from doctors_slots
+//                    where client_id = :doctorId
+//                    and day_id = :dayId
+//                    and is_registered = false""")
+//    List<DoctorSlot> findAllByClientReserved(Long clientId);
 }

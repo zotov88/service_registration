@@ -1,4 +1,4 @@
-package serviceregistration.customcomponent;
+package serviceregistration.dto.custommodel;
 
 public interface DoctorDay {
 

@@ -5,7 +5,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import serviceregistration.customcomponent.DoctorDay;
+import serviceregistration.dto.custommodel.DoctorDay;
+import serviceregistration.dto.custommodel.DoctorSlotIdTimeSlot;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.mapper.GenericMapper;
 import serviceregistration.model.DoctorSlot;
@@ -45,9 +46,23 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         return doctorSlotRepository.groupByDoctorSlot();
     }
 
+
+
     public Page<DoctorSlotDTO> getAllDoctorSlot(Pageable pageable) {
         Page<DoctorSlot> doctorSlotsPaginated = doctorSlotRepository.findAllNotLessThanToday(pageable);
         List<DoctorSlotDTO> result = mapper.toDTOs(doctorSlotsPaginated.getContent());
         return new PageImpl<>(result, pageable, doctorSlotsPaginated.getTotalElements());
     }
+
+    public List<Long> getTimeForDay(Long doctorId, Long dayId) {
+        return doctorSlotRepository.findAllTimeForDoctorDay(doctorId, dayId);
+    }
+
+    public List<DoctorSlotIdTimeSlot> getDoctorSlotsIdsAndTimeSlotsFree(Long doctorId, Long dayId) {
+        return doctorSlotRepository.findAllDoctorslotIdsAndTimeSlotsFree(doctorId, dayId);
+    }
+
+//    public List<DoctorSlotDTO> listAllIdRegistrationsByClientId(Long clientId) {
+//        return mapper.toDTOs(doctorSlotRepository.findAllByClientReserved(clientId));
+//    }
 }

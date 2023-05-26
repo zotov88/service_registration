@@ -1,21 +1,3 @@
-select * from doctors_slots;
-
-select * from doctors;
-
-select * from specializations;
-
-select * from days;
-
-select * from slots;
-
-select * from cabinets;
-
-select * from clients;
-
-select * from roles;
-
-select * from registrations;
-
 insert into specializations(description, title)
 values ('Врач общей практики', 'Терапевт'),
        ('Хирург', 'Хирург'),
@@ -87,13 +69,13 @@ where
     cabinets.id = 1;
 
 insert into registrations
-values (nextval('registrations_seq'), null, now(), null, null, false, null, true, 1, 1, 1),
-       (nextval('registrations_seq'), null, now(), null, null, false, null, true, 1, 1, 2),
-       (nextval('registrations_seq'), null, now(), null, null, false, null, true, 1, 1, 3);
+values (nextval('registrations_seq'), null, now(), null, null, false, null, true, 1, 1, 3);
+--        (nextval('registrations_seq'), null, now(), null, null, false, null, true, 1, 1, 2),
+--        (nextval('registrations_seq'), null, now(), null, null, false, null, true, 1, 1, 3);
 
 update doctors_slots
 set is_registered = true
-where id = 12;
+where id = 3;
 
 select login
 from (
@@ -121,14 +103,31 @@ from doctors d left join specializations s on d.specialization_id = s.id
 where last_name like '%'
 and first_name like '%'
 and mid_name like '%'
-and s.title like '%'
+and s.title like '%';
 
 select d.*
 from doctors d left join specializations s on d.specialization_id = s.id
 where last_name like '%'
   and first_name like '%'
-  and mid_name like '%'
+  and mid_name like '%';
 
+select id, slot_id
+from doctors_slots
+where doctor_id = 2
+  and day_id = 3
+  and is_registered = false
+
+select c.first_name as clientFirstName, c.mid_name as clientMidName, c.last_name as clientLastName,
+       d.first_name as doctorFirstName, d.mid_name as doctorMidName, d.last_name as doctorLastName,
+       d2.day as day, s.time_slot as slot, c2.number as cabinet
+from doctors_slots ds join registrations r on ds.id = r.doctor_slot_id join clients c on c.id = r.client_id
+                      join doctors d on d.id = ds.doctor_id join days d2 on ds.day_id = d2.id join cabinets c2 on c2.id = ds.cabinet_id
+                      join slots s on s.id = ds.slot_id
+where r.client_id = 1;
+
+select ds.id, s.time_slot
+from doctors_slots ds join slots s on s.id = ds.slot_id
+where ds.doctor_id = 1 and ds.day_id = 2 and ds.is_registered = false;
 
 
 

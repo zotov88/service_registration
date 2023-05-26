@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import serviceregistration.dto.custommodel.DoctorDay;
 import serviceregistration.dto.DoctorDTO;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.model.Cabinet;
@@ -91,4 +92,17 @@ public class DoctorSlotMVCController {
         doctorSlotService.deleteSchedule(doctorSlotDTO.getDoctor().getId(), doctorSlotDTO.getDay().getId());
         return "redirect:/doctorslots";
     }
+
+
+    @GetMapping("/makeMeet")
+    public String groupSlots(Model model) {
+        List<DoctorDay> doctorDays = doctorSlotService.groupByDoctorSlot();
+        List<DoctorDTO> doctors = doctorService.listAll();
+        List<Day> days = dayService.listAll();
+        model.addAttribute("doctorDays", doctorDays);
+        model.addAttribute("doctors", doctors);
+        model.addAttribute("days", days);
+        return "/doctorslots/makeMeet";
+    }
+
 }

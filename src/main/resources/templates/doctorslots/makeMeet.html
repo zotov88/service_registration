@@ -65,7 +65,8 @@
 
                 <td>
                     <a sec:authorize="hasRole('CLIENT')" class="btn btn-sm btn-outline-success"
-                       th:href="'/rent/book/' + ${doctors.get(__${ds.getDoctorId() - 1}__).id}">Выбрать время</a>
+                       th:href="'/registrations/slots/'
+                       + ${doctors.get(__${ds.getDoctorId() - 1}__).id} + '/' + ${days.get(__${ds.getDayId() - 1}__).id}">Выбрать время</a>
                 </td>
             </tr>
             </tbody>

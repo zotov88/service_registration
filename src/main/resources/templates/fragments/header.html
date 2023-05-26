@@ -24,7 +24,7 @@
                         <a class="nav-link active" aria-current="page" th:href="'/doctorslots/mySchedule/' + ${#authentication.getPrincipal().getUserId()}">Мое расписание</a>
                     </li>
                     <li sec:authorize="isAuthenticated() && hasRole('CLIENT')" class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/registrations/makeMeet">Записаться</a>
+                        <a class="nav-link active" aria-current="page" href="/doctorslots/makeMeet">Записаться</a>
                     </li>
                     <li sec:authorize="isAuthenticated() && hasRole('CLIENT')" class="nav-item">
                         <a class="nav-link active" aria-current="page" th:href="'/registrations/client-slots/' + ${#authentication.getPrincipal().getUserId()}">Мои записи</a>
@@ -36,6 +36,14 @@
                         <a class="nav-link active" aria-current="page" href="/registrations/doctorList">Мои записи</a>
                     </li>
                 </ul>
+                <div>
+                    <form class="d-flex" sec:authorize="isAuthenticated()">
+                        <span th:text="${#authentication.getPrincipal().getUsername()}"></span>
+                    </form>
+                </div>
+
+
+
                 <div sec:authorize="isAuthenticated() && !hasRole('ADMIN')">
                     <a class="nav-link active" style="float: right" th:href="'clients/profile/' + ${#authentication.getPrincipal().getUserId()}">Профиль</a>
                 </div>
