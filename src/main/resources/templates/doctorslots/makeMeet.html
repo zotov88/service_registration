@@ -56,22 +56,42 @@
             </thead>
             <tbody>
             <tr th:each="ds : ${doctorDays}" >
-                <td th:text="${doctors.get(__${ds.getDoctorId() - 1}__).getLastName() + ' '
-                              + doctors.get(__${ds.getDoctorId() - 1}__).getFirstName() + ' '
-                              + doctors.get(__${ds.getDoctorId() - 1}__).getMidName()}">
-                </td>
-                <td th:text="${doctors.get(__${ds.getDoctorId() - 1}__).getSpecialization().getTitleSpecialization()}"></td>
-                <td th:text="${days.get(__${ds.getDayId() - 1}__).getDay()}"></td>
+                <td th:text="${ds.getDoctorLastName() + ' ' + ds.getDoctorFirstName() + ' ' + ds.getDoctorMidName()}"></td>
+                <td th:text="${ds.getSpecialization()}"></td>
+                <td th:text="${ds.getDay()}"></td>
 
                 <td>
                     <a sec:authorize="hasRole('CLIENT')" class="btn btn-sm btn-outline-success"
-                       th:href="'/registrations/slots/'
-                       + ${doctors.get(__${ds.getDoctorId() - 1}__).id} + '/' + ${days.get(__${ds.getDayId() - 1}__).id}">Выбрать время</a>
+                       th:href="'/registrations/slots/' + ${ds.getDoctorId()} + '/' + ${ds.getDayId()}">Выбрать время</a>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
+    <nav aria-label="Pagination" th:if="${doctorDays.totalPages gt 0}">
+        <ul class="pagination justify-content-center font-weight-bold">
+            <li class="page-item" th:classappend="${doctorDays.number eq 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/doctorslots/makeMeet?page={id}(id=${doctorDays.number lt 2 ? 1 : doctorDays.number})}"
+                   aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(1, doctorDays.totalPages, 1)}"
+                th:classappend="${i eq doctorDays.number + 1} ? 'active'">
+                <a class="page-link" th:href="@{/doctorslots/makeMeet?page={id}(id=${i})}" th:text="${i}"
+                   th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+            </li>
+            <li class="page-item" th:classappend="${doctorDays.number eq doctorDays.totalPages - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/doctorslots/makeMeet?page={id}(id=${doctorDays.number + 2})}"
+                   aria-label="Next" title="Next Page" data-toggle="tooltip">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 </body>
 </html>

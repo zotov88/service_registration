@@ -33,8 +33,11 @@ public class ClientService extends GenericService<Client, ClientDTO> {
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setId(1L);
         clientDTO.setRole(roleDTO);
+        System.out.println("+++++++++++++++++++"+clientDTO.getPassword()+"+++++++++++++++++");
         clientDTO.setPassword(bCryptPasswordEncoder.encode(clientDTO.getPassword()));
-        userService.createUser(clientDTO.getLogin(), clientDTO.getRole().getId());
+        if (userService.findUserByLogin(clientDTO.getLogin()) == null) {
+            userService.createUser(clientDTO.getLogin(), clientDTO.getRole().getId());
+        }
         return mapper.toDTO(repository.save(mapper.toEntity(clientDTO)));
     }
 
@@ -43,11 +46,27 @@ public class ClientService extends GenericService<Client, ClientDTO> {
         repository.deleteById(id);
     }
 
+//    public void update(final Long id) {
+//
+//    }
+//
+//    public ClientDTO update(ClientDTO updObj) {
+//        return create(updObj);
+//    }
+
     public ClientDTO getClientByLogin(final String login) {
         return mapper.toDTO(((ClientRepository) repository).findClientByLogin(login));
     }
 
     public ClientDTO getClientByEmail(final String email) {
         return mapper.toDTO(((ClientRepository) repository).findClientByEmail(email));
+    }
+
+    public void changePassword(final String uuid,
+                               final String password) {
+        ClientDTO clientDTO = mapper.toDTO(((ClientRepository) repository).findClientByChangePasswordToken(uuid));
+        clientDTO.setChangePasswordToken(null);
+        clientDTO.setPassword(password);
+        update(clientDTO);
     }
 }

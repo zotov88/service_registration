@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль пользователя</title>
+</head>
+<body>
+<form layout:fragment="content">
+    <div class="mt-3">
+        <h3 th:text="'Профиль пользователя: ' + ${user.getFirstName() + ' ' + user.getLastName()}"></h3>
+        <form class="row g-1">
+            <div class="mb-2 row">
+                <label for="userLogin" class="col-sm-2 col-form-label no-border">Логин:</label>
+                <div class="col-sm-10">
+                    <p th:text="${user.getLogin()}" type="text" readonly class="form-control-plaintext" id="userLogin">
+                </div>
+            </div>
+            <div class="mb-2 row">
+                <label for="userName" class="col-sm-2 col-form-label no-border">Имя:</label>
+                <div class="col-sm-10">
+                    <p th:text="${user.getFirstName()}" type="text" readonly class="form-control-plaintext" id="userName">
+                </div>
+            </div>
+            <div class="mb-2 row">
+                <label for="lastName" class="col-sm-2 col-form-label no-border">Фамилия:</label>
+                <div class="col-sm-10">
+                    <p th:text="${user.getLastName()}" type="text" readonly class="form-control-plaintext" id="lastName">
+                </div>
+            </div>
+            <div class="mb-2 row">
+                <label for="middleName" class="col-sm-2 col-form-label no-border">Отчество:</label>
+                <div class="col-sm-10">
+                    <p th:text="${user.getMidName()}" type="text" readonly class="form-control-plaintext" id="middleName">
+                </div>
+            </div>
+            <div class="mb-2 row">
+                <label for="email" class="col-sm-2 col-form-label no-border">Почта:</label>
+                <div class="col-sm-10">
+                    <p th:text="${user.getEmail()}" type="text" readonly class="form-control-plaintext" id="email">
+                </div>
+            </div>
+            <div class="mb-2 row">
+                <label for="birthDate" class="col-sm-2 col-form-label no-border">Дата рождения:</label>
+                <div class="col-sm-10">
+                    <p th:text="${user.getBirthDate()}" type="text" readonly class="form-control-plaintext" id="birthDate">
+                </div>
+            </div>
+            <div class="mb-2 row">
+                <label for="phone" class="col-sm-2 col-form-label no-border">Телефон:</label>
+                <div class="col-sm-10">
+                    <p th:text="${user.getPhone()}" type="text" readonly class="form-control-plaintext" id="phone">
+                </div>
+            </div>
+            <div class="mb-2 row">
+                <label for="address" class="col-sm-2 col-form-label no-border">Адрес:</label>
+                <div class="col-sm-10">
+                    <p th:text="${user.getAddress()}" type="text" readonly class="form-control-plaintext" id="address">
+                </div>
+            </div>
+        </form>
+        <div class="mt-2">
+            <a sec:authorize="isAuthenticated() && !(hasRole('ADMIN'))"
+               th:if="${#authentication.getPrincipal().getUserId()} == ${user.id}" class="btn btn-primary"
+               th:href="'/users/profile/update/' + ${user.id}">Редактировать</a>
+            <a sec:authorize="isAuthenticated() && !(hasRole('ADMIN'))"
+               th:href="'/clients/change-password/client'"
+               class="btn btn-warning"
+               aria-disabled="true">Изменить пароль</a>
+            <a sec:authorize="isAuthenticated() && (hasRole('ADMIN'))"
+               th:href="'/rent/user-books/' + ${user.id}"
+               class="btn btn-primary"
+               aria-disabled="true">Арендованные книги</a>
+            <button type="button" class="btn btn-secondary" onclick="window.history.back()">Назад</button>
+        </div>
+    </div>
+</form>
+</body>
+</html>

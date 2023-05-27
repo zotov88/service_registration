@@ -62,6 +62,9 @@ public class Client
     @Column(name = "address", nullable = false)
     private String address;
 
+    @Column(name = "change_password_token")
+    private String changePasswordToken;
+
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false, foreignKey = @ForeignKey(name = "FK_CLIENTS_ROLES"))
     private Role role;

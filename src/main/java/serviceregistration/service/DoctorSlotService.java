@@ -46,6 +46,12 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         return doctorSlotRepository.groupByDoctorSlot();
     }
 
+    public Page<DoctorDay> groupByDoctorSlot(Pageable pageable) {
+        Page<DoctorDay> doctorDayPaginated = doctorSlotRepository.groupByDoctorSlot(pageable);
+        List<DoctorDay> result = doctorDayPaginated.getContent();
+        return new PageImpl<>(result, pageable, doctorDayPaginated.getTotalElements());
+    }
+
 
 
     public Page<DoctorSlotDTO> getAllDoctorSlot(Pageable pageable) {

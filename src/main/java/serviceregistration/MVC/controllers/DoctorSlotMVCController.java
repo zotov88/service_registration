@@ -6,9 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import serviceregistration.dto.custommodel.DoctorDay;
 import serviceregistration.dto.DoctorDTO;
 import serviceregistration.dto.DoctorSlotDTO;
+import serviceregistration.dto.custommodel.DoctorDay;
 import serviceregistration.model.Cabinet;
 import serviceregistration.model.Day;
 import serviceregistration.service.*;
@@ -22,18 +22,15 @@ public class DoctorSlotMVCController {
     private final DoctorSlotService doctorSlotService;
     private final DoctorService doctorService;
     private final DayService dayService;
-    private final SlotService slotService;
     private final CabinetService cabinetService;
 
     public DoctorSlotMVCController(DoctorSlotService doctorSlotService,
                                    DoctorService doctorService,
                                    DayService dayService,
-                                   SlotService slotService,
                                    CabinetService cabinetService) {
         this.doctorSlotService = doctorSlotService;
         this.doctorService = doctorService;
         this.dayService = dayService;
-        this.slotService = slotService;
         this.cabinetService = cabinetService;
     }
 
@@ -95,14 +92,25 @@ public class DoctorSlotMVCController {
 
 
     @GetMapping("/makeMeet")
-    public String groupSlots(Model model) {
-        List<DoctorDay> doctorDays = doctorSlotService.groupByDoctorSlot();
-        List<DoctorDTO> doctors = doctorService.listAll();
-        List<Day> days = dayService.listAll();
+    public String groupSlots(@RequestParam(value = "page", defaultValue = "1") int page,
+                             @RequestParam(value = "size", defaultValue = "8") int pageSize,
+                             Model model) {
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        Page<DoctorDay> doctorDays = doctorSlotService.groupByDoctorSlot(pageRequest);
         model.addAttribute("doctorDays", doctorDays);
-        model.addAttribute("doctors", doctors);
-        model.addAttribute("days", days);
         return "/doctorslots/makeMeet";
     }
+
+//    @GetMapping("")
+//    public String getAll(@RequestParam(value = "page", defaultValue = "1") int page,
+//                         @RequestParam(value = "size", defaultValue = "10") int pageSize,
+//                         Model model) {
+//        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+//        Page<DoctorDTO> doctors = doctorService.listAll(pageRequest);
+//        List<Specialization> specializations = specializationService.listAll();
+//        model.addAttribute("specializations", specializations);
+//        model.addAttribute("doctors", doctors);
+//        return "doctors/list";
+//    }
 
 }

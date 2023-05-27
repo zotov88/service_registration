@@ -42,10 +42,8 @@
                     </form>
                 </div>
 
-
-
                 <div sec:authorize="isAuthenticated() && !hasRole('ADMIN')">
-                    <a class="nav-link active" style="float: right" th:href="'clients/profile/' + ${#authentication.getPrincipal().getUserId()}">Профиль</a>
+                    <a class="nav-link active" style="float: right" th:href="'/clients/profile/' + ${#authentication.getPrincipal().getUserId()}">Профиль</a>
                 </div>
                 <form class="d-flex" sec:authorize="!isAuthenticated()">
                     <a href="/login" class="btn btn-primary" role="button" aria-disabled="true">Войти</a>

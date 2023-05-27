@@ -1,7 +1,11 @@
 package serviceregistration.MVC.controllers;
 
+import jakarta.security.auth.message.AuthException;
+import jakarta.websocket.server.PathParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,6 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import serviceregistration.dto.ClientDTO;
 import serviceregistration.service.ClientService;
 import serviceregistration.service.UserService;
+import serviceregistration.service.userdetails.CustomUserDetails;
+
+import java.util.Objects;
+import java.util.UUID;
 
 import static serviceregistration.constants.UserRolesConstants.ADMIN;
 
@@ -59,11 +67,43 @@ public class ClientMVCController {
         return "clients/list";
     }
 
-//    @GetMapping("/profile")
-//    public String profile() {
-//        SecurityContext context = SecurityContextHolder.getContext();
-//        Authentication auth = context.getAuthentication();
-//        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
-//        return "clients/profile/";
-//    }
+    @GetMapping("/profile/{id}")
+    public String userProfile(@PathVariable Integer id,
+                              Model model) throws AuthException {
+        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!Objects.isNull(customUserDetails.getUserId())) {
+            if (!ADMIN.equalsIgnoreCase(customUserDetails.getUsername())) {
+                if (!id.equals(customUserDetails.getUserId())) {
+                    throw new AuthException(HttpStatus.FORBIDDEN + ": " );
+                }
+            }
+        }
+        model.addAttribute("user", clientService.getOne(Long.valueOf(id)));
+        return "profile/viewProfile";
+    }
+
+    @GetMapping("/change-password")
+    public String changePassword(@PathParam(value = "uuid") String uuid,
+                                 Model model) {
+        model.addAttribute("uuid", uuid);
+        return "clients/changePassword";
+    }
+
+    @PostMapping("/change-password")
+    public String changePassword(@PathParam(value = "uuid") String uuid,
+                                 @ModelAttribute("changePasswordForm") ClientDTO clientDTO) {
+        clientService.changePassword(uuid, clientDTO.getPassword());
+        return "redirect:/login";
+    }
+
+    @GetMapping("/change-password/client")
+    public String changePassword(Model model) {
+        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ClientDTO clientDTO = clientService.getOne(Long.valueOf(customUserDetails.getUserId()));
+        UUID uuid = UUID.randomUUID();
+        clientDTO.setChangePasswordToken(uuid.toString());
+        clientService.update(clientDTO);
+        model.addAttribute("uuid", uuid);
+        return "clients/changePassword";
+    }
 }

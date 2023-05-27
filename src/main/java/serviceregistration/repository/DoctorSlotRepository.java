@@ -47,13 +47,27 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
 
     @Query(nativeQuery = true,
             value = """
-                    select dc.id as DoctorId, d.id as DayId
+                    select dc.first_name as DoctorFirstName, dc.mid_name as DoctorMidName, dc.last_name as DoctorLastName,
+                        s.title as Specialization, d.day as Day, dc.id as DoctorId, d.id as DayId
                     from doctors_slots ds
                         join days d on ds.day_id = d.id
                         join doctors dc on ds.doctor_id = dc.id
-                    where day > TIMESTAMP 'today' 
+                        join specializations s on s.id = dc.specialization_id
+                    where day > TIMESTAMP 'today'
                         and ds.is_registered = false
-                    group by dc.id, d.id""")
+                    group by dc.first_name, dc.mid_name, dc.last_name, s.title, d.day, dc.id, d.id""")
+    Page<DoctorDay> groupByDoctorSlot(Pageable pageable);
+    @Query(nativeQuery = true,
+            value = """
+                    select dc.first_name as DoctorFirstName, dc.mid_name as DoctorMidName, dc.last_name as DoctorLastName,
+                        s.title as Specialization, d.day as Day, dc.id as DoctorId, d.id as DayId
+                    from doctors_slots ds
+                        join days d on ds.day_id = d.id
+                        join doctors dc on ds.doctor_id = dc.id
+                        join specializations s on s.id = dc.specialization_id
+                    where day > TIMESTAMP 'today'
+                        and ds.is_registered = false
+                    group by dc.first_name, dc.mid_name, dc.last_name, s.title, d.day, dc.id, d.id""")
     List<DoctorDay> groupByDoctorSlot();
 
     @Query(nativeQuery = true,
@@ -76,12 +90,4 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     """)
     List<DoctorSlotIdTimeSlot> findAllDoctorslotIdsAndTimeSlotsFree(Long doctorId, Long dayId);
 
-//    @Query(nativeQuery = true,
-//            value = """
-//                    select *
-//                    from doctors_slots
-//                    where client_id = :doctorId
-//                    and day_id = :dayId
-//                    and is_registered = false""")
-//    List<DoctorSlot> findAllByClientReserved(Long clientId);
 }

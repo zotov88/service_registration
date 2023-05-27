@@ -1,10 +1,6 @@
 package serviceregistration.dto.custommodel;
 
-public interface DoctorDay {
-
-    Long getDoctorId();
-
-    Long getDayId();
+public interface RegistrationInfo {
 
     String getDoctorFirstName();
 
@@ -12,8 +8,13 @@ public interface DoctorDay {
 
     String getDoctorLastName();
 
-    String getSpecialization();
+    String getClientFirstName();
 
-    String getDay();
+    String getClientMidName();
+
+    String getClientLastName();
+
+
+
 
 }
