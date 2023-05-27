@@ -22,11 +22,11 @@
                role="button"
                style="float: right"
                aria-disabled="true">Создать</a>
-            <a href="/doctorslots/actual"
+            <a href="/doctorslots"
                class="btn btn-sm btn-success"
                role="button"
                style="float: left"
-               aria-disabled="true">Актуальное расписание</a>
+               aria-disabled="true">Все расписание</a>
         </div>
         <div><br></div>
         <table class="table table-hover">
@@ -61,7 +61,7 @@
         <ul class="pagination justify-content-center font-weight-bold">
             <li class="page-item" th:classappend="${doctorslots.number eq 0} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/doctorslots?page={id}(id=${doctorslots.number lt 2 ? 1 : doctorslots.number})}"
+                   th:href="@{/doctorslots/actual?page={id}(id=${doctorslots.number lt 2 ? 1 : doctorslots.number})}"
                    aria-label="Previous" title="Previous Page" data-toggle="tooltip">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -69,12 +69,12 @@
             <li class="page-item"
                 th:each="i : ${#numbers.sequence(1, doctorslots.totalPages, 1)}"
                 th:classappend="${i eq doctorslots.number + 1} ? 'active'">
-                <a class="page-link" th:href="@{/doctorslots?page={id}(id=${i})}" th:text="${i}"
+                <a class="page-link" th:href="@{/doctorslots/actual?page={id}(id=${i})}" th:text="${i}"
                    th:title="${'Page '+ i}" data-toggle="tooltip"></a>
             </li>
             <li class="page-item" th:classappend="${doctorslots.number eq doctorslots.totalPages - 1} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/doctorslots?page={id}(id=${doctorslots.number + 2})}"
+                   th:href="@{/doctorslots/actual?page={id}(id=${doctorslots.number + 2})}"
                    aria-label="Next" title="Next Page" data-toggle="tooltip">
                     <span aria-hidden="true">&raquo;</span>
                 </a>

@@ -2,6 +2,7 @@ package serviceregistration.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +55,13 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
     }
 
     public Page<DoctorSlotDTO> getAllDoctorSlot(Pageable pageable) {
-        Page<DoctorSlot> doctorSlotsPaginated = doctorSlotRepository.findAllNotLessThanToday(pageable);
+        Page<DoctorSlot> doctorSlotsPaginated = doctorSlotRepository.findAllSchedule(pageable);
+        List<DoctorSlotDTO> result = mapper.toDTOs(doctorSlotsPaginated.getContent());
+        return new PageImpl<>(result, pageable, doctorSlotsPaginated.getTotalElements());
+    }
+
+    public Page<DoctorSlotDTO> getActualDoctorSlot(PageRequest pageable) {
+        Page<DoctorSlot> doctorSlotsPaginated = doctorSlotRepository.findActualSchedule(pageable);
         List<DoctorSlotDTO> result = mapper.toDTOs(doctorSlotsPaginated.getContent());
         return new PageImpl<>(result, pageable, doctorSlotsPaginated.getTotalElements());
     }
@@ -72,7 +79,6 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         List<DoctorSchedule> result = doctorSchedulePage.getContent();
         return new PageImpl<>(result, pageable, doctorSchedulePage.getTotalElements());
     }
-
 
 
 //    public List<DoctorSlotDTO> listAllIdRegistrationsByClientId(Long clientId) {

@@ -1,6 +1,7 @@
 package serviceregistration.repository;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -41,11 +42,19 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     select ds.*
                     from doctors_slots ds
                         join days d on ds.day_id = d.id
-                        order by day
+                    order by day, doctor_id, slot_id
                     """)
-//    where day >= TIMESTAMP 'today'
-//    order by day_id
-    Page<DoctorSlot> findAllNotLessThanToday(Pageable pageable);
+    Page<DoctorSlot> findAllSchedule(Pageable pageable);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select ds.*
+                    from doctors_slots ds
+                        join days d on ds.day_id = d.id
+                    where day >= TIMESTAMP 'today'
+                    order by day, doctor_id, slot_id
+                    """)
+    Page<DoctorSlot> findActualSchedule(PageRequest pageable);
 
     @Query(nativeQuery = true,
             value = """
@@ -59,6 +68,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         and ds.is_registered = false
                     group by dc.first_name, dc.mid_name, dc.last_name, s.title, d.day, dc.id, d.id""")
     Page<DoctorDay> groupByDoctorSlot(Pageable pageable);
+
     @Query(nativeQuery = true,
             value = """
                     select dc.first_name as DoctorFirstName, dc.mid_name as DoctorMidName, dc.last_name as DoctorLastName,

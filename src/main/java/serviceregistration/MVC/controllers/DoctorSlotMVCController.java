@@ -40,12 +40,22 @@ public class DoctorSlotMVCController {
 
     @GetMapping("")
     public String getSchedule(@RequestParam(value = "page", defaultValue = "1") int page,
-                              @RequestParam(value = "size", defaultValue = "8") int pageSize,
+                              @RequestParam(value = "size", defaultValue = "12") int pageSize,
                               Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         Page<DoctorSlotDTO> doctorSlots = doctorSlotService.getAllDoctorSlot(pageRequest);
         model.addAttribute("doctorslots", doctorSlots);
         return "doctorslots/schedule";
+    }
+
+    @GetMapping("/actual")
+    public String getActualSchedule(@RequestParam(value = "page", defaultValue = "1") int page,
+                                    @RequestParam(value = "size", defaultValue = "12") int pageSize,
+                                    Model model) {
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        Page<DoctorSlotDTO> doctorSlots = doctorSlotService.getActualDoctorSlot(pageRequest);
+        model.addAttribute("doctorslots", doctorSlots);
+        return "doctorslots/actualSchedule";
     }
 
     @GetMapping("/doctor-schedule/{doctorId}")

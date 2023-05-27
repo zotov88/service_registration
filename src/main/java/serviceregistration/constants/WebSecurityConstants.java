@@ -29,10 +29,11 @@ public interface WebSecurityConstants {
 
     List<String> DOCTORSLOTS_PERMISSION_LIST_FOR_ADMIN = List.of
             (
-                    "/doctorslots",
-                    "/doctorslots/schedule",
-                    "/doctorslots/addSchedule",
-                    "/doctorslots/deleteSchedule"
+                    "/doctorslots/**"
+//                    "/doctorslots/schedule",
+//                    "/doctorslots/addSchedule",
+//                    "/doctorslots/deleteSchedule",
+//                    "/doctorslots/actual"
             );
 
     List<String> DOCTORSLOTS_PERMISSION_LIST_FOR_CLIENT = List.of
