@@ -7,11 +7,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import serviceregistration.dto.querymodel.ClientRegistration;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.dto.RegistrationDTO;
+import serviceregistration.dto.querymodel.ClientRegistration;
 import serviceregistration.dto.querymodel.DoctorRegistration;
-import serviceregistration.service.*;
+import serviceregistration.service.DoctorSlotService;
+import serviceregistration.service.RegistrationService;
 import serviceregistration.service.userdetails.CustomUserDetails;
 
 import java.util.List;
@@ -60,9 +61,12 @@ public class RegistrationMVCController {
     }
 
     @GetMapping("/doctor-slots/{doctorId}")
-    public String doctorSlots(@PathVariable Long doctorId,
+    public String doctorSlots(@RequestParam(value = "page", defaultValue = "1") int page,
+                              @RequestParam(value = "size", defaultValue = "5") int pageSize,
+                              @PathVariable Long doctorId,
                               Model model) {
-        List<DoctorRegistration> doctorRegistrations = registrationService.getAllRegistrationsByDoctor(doctorId);
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        Page<DoctorRegistration> doctorRegistrations = registrationService.getAllRegistrationsByDoctor(pageRequest, doctorId);
         model.addAttribute("doctorRegistrations", doctorRegistrations);
         return "registrations/doctorList";
     }

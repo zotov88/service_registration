@@ -51,5 +51,5 @@ public interface RegistrationRepository
                     where d.id = :doctorId
                     order by d2.day desc
                     """)
-    List<DoctorRegistration> getAllRegistrationsByDoctor(Long doctorId);
+    Page<DoctorRegistration> getAllRegistrationsByDoctor(Pageable pageable, Long doctorId);
 }

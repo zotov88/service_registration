@@ -42,8 +42,10 @@ public class RegistrationService extends GenericService<Registration, Registrati
         return ((RegistrationRepository)repository).getAllRegistrationsByClient(clientId);
     }
 
-    public List<DoctorRegistration> getAllRegistrationsByDoctor(Long doctorId) {
-        return ((RegistrationRepository)repository).getAllRegistrationsByDoctor(doctorId);
+    public Page<DoctorRegistration> getAllRegistrationsByDoctor(Pageable pageable, Long doctorId) {
+        Page<DoctorRegistration> doctorRegistrationPage = ((RegistrationRepository)repository).getAllRegistrationsByDoctor(pageable, doctorId);
+        List<DoctorRegistration> result = doctorRegistrationPage.getContent();
+        return new PageImpl<>(result, pageable, doctorRegistrationPage.getTotalElements());
     }
 
 
