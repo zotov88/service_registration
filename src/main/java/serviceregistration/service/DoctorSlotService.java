@@ -5,9 +5,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import serviceregistration.dto.custommodel.DoctorDay;
-import serviceregistration.dto.custommodel.DoctorSlotIdTimeSlot;
 import serviceregistration.dto.DoctorSlotDTO;
+import serviceregistration.dto.querymodel.DoctorDay;
+import serviceregistration.dto.querymodel.DoctorSchedule;
+import serviceregistration.dto.querymodel.DoctorSlotIdTimeSlot;
 import serviceregistration.mapper.GenericMapper;
 import serviceregistration.model.DoctorSlot;
 import serviceregistration.repository.DoctorSlotRepository;
@@ -52,8 +53,6 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         return new PageImpl<>(result, pageable, doctorDayPaginated.getTotalElements());
     }
 
-
-
     public Page<DoctorSlotDTO> getAllDoctorSlot(Pageable pageable) {
         Page<DoctorSlot> doctorSlotsPaginated = doctorSlotRepository.findAllNotLessThanToday(pageable);
         List<DoctorSlotDTO> result = mapper.toDTOs(doctorSlotsPaginated.getContent());
@@ -67,6 +66,14 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
     public List<DoctorSlotIdTimeSlot> getDoctorSlotsIdsAndTimeSlotsFree(Long doctorId, Long dayId) {
         return doctorSlotRepository.findAllDoctorslotIdsAndTimeSlotsFree(doctorId, dayId);
     }
+
+    public Page<DoctorSchedule> getScheduleByDoctor(Pageable pageable, Long doctorId) {
+        Page<DoctorSchedule> doctorSchedulePage = doctorSlotRepository.findScheduleByDoctorId(pageable, doctorId);
+        List<DoctorSchedule> result = doctorSchedulePage.getContent();
+        return new PageImpl<>(result, pageable, doctorSchedulePage.getTotalElements());
+    }
+
+
 
 //    public List<DoctorSlotDTO> listAllIdRegistrationsByClientId(Long clientId) {
 //        return mapper.toDTOs(doctorSlotRepository.findAllByClientReserved(clientId));

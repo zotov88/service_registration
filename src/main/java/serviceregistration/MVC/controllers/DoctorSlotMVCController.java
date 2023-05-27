@@ -8,10 +8,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import serviceregistration.dto.DoctorDTO;
 import serviceregistration.dto.DoctorSlotDTO;
-import serviceregistration.dto.custommodel.DoctorDay;
+import serviceregistration.dto.querymodel.DoctorDay;
+import serviceregistration.dto.querymodel.DoctorSchedule;
 import serviceregistration.model.Cabinet;
 import serviceregistration.model.Day;
-import serviceregistration.service.*;
+import serviceregistration.service.CabinetService;
+import serviceregistration.service.DayService;
+import serviceregistration.service.DoctorService;
+import serviceregistration.service.DoctorSlotService;
 
 import java.util.List;
 
@@ -42,6 +46,17 @@ public class DoctorSlotMVCController {
         Page<DoctorSlotDTO> doctorSlots = doctorSlotService.getAllDoctorSlot(pageRequest);
         model.addAttribute("doctorslots", doctorSlots);
         return "doctorslots/schedule";
+    }
+
+    @GetMapping("/doctor-schedule/{doctorId}")
+    public String doctorSlots(@RequestParam(value = "page", defaultValue = "1") int page,
+                              @RequestParam(value = "size", defaultValue = "8") int pageSize,
+                              @PathVariable Long doctorId,
+                              Model model) {
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        Page<DoctorSchedule> doctorSchedules = doctorSlotService.getScheduleByDoctor(pageRequest, doctorId);
+        model.addAttribute("doctorSchedules", doctorSchedules);
+        return "doctorslots/doctorSchedule";
     }
 
     @GetMapping("/addSchedule")

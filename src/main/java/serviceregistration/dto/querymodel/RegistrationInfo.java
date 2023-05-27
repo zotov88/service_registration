@@ -1,4 +1,4 @@
-package serviceregistration.dto.custommodel;
+package serviceregistration.dto.querymodel;
 
 public interface RegistrationInfo {
 

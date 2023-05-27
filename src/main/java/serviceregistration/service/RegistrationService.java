@@ -4,9 +4,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import serviceregistration.dto.custommodel.ClientRegistration;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.dto.RegistrationDTO;
+import serviceregistration.dto.querymodel.ClientRegistration;
+import serviceregistration.dto.querymodel.DoctorRegistration;
 import serviceregistration.mapper.RegistrationMapper;
 import serviceregistration.model.Registration;
 import serviceregistration.model.ResultMeet;
@@ -41,10 +42,13 @@ public class RegistrationService extends GenericService<Registration, Registrati
         return ((RegistrationRepository)repository).getAllRegistrationsByClient(clientId);
     }
 
+    public List<DoctorRegistration> getAllRegistrationsByDoctor(Long doctorId) {
+        return ((RegistrationRepository)repository).getAllRegistrationsByDoctor(doctorId);
+    }
+
 
     public RegistrationDTO registrationSlot(RegistrationDTO registrationDTO) {
         DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(registrationDTO.getDoctorSlotId());
-        System.out.println("++++++++++++++++++++++++++++"+registrationDTO.getDoctorSlotId());
         doctorSlotDTO.setIsRegistered(true);
         doctorSlotService.update(doctorSlotDTO);
         registrationDTO.setCreatedWhen(LocalDateTime.now());

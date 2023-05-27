@@ -4,8 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import serviceregistration.dto.custommodel.DoctorDay;
-import serviceregistration.dto.custommodel.DoctorSlotIdTimeSlot;
+import serviceregistration.dto.querymodel.DoctorDay;
+import serviceregistration.dto.querymodel.DoctorSchedule;
+import serviceregistration.dto.querymodel.DoctorSlotIdTimeSlot;
 import serviceregistration.model.DoctorSlot;
 
 import java.util.List;
@@ -40,9 +41,10 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     select ds.*
                     from doctors_slots ds
                         join days d on ds.day_id = d.id
-                    where day >= TIMESTAMP 'today'
-                    order by day_id
+                        order by day
                     """)
+//    where day >= TIMESTAMP 'today'
+//    order by day_id
     Page<DoctorSlot> findAllNotLessThanToday(Pageable pageable);
 
     @Query(nativeQuery = true,
@@ -90,4 +92,18 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     """)
     List<DoctorSlotIdTimeSlot> findAllDoctorslotIdsAndTimeSlotsFree(Long doctorId, Long dayId);
 
+    @Query(nativeQuery = true,
+            value = """
+                    select d2.day as Day, s.time_slot as Slot, c.number as Cabinet, ds.is_registered as IsActive
+                    from doctors d
+                        join doctors_slots ds on d.id = ds.doctor_id
+                        join days d2 on ds.day_id = d2.id
+                        join slots s on ds.slot_id = s.id
+                        join cabinets c on ds.cabinet_id = c.id
+                        left join registrations r on ds.id = r.doctor_slot_id
+                    where d.id = :doctorId
+                    and d2.day > TIMESTAMP 'today'
+                    order by d2.day, s.time_slot
+                    """)
+    Page<DoctorSchedule> findScheduleByDoctorId(Pageable pageable, Long doctorId);
 }

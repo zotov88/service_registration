@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Мое расписание</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="mt-5">
+        <h1>Мое расписание</h1>
+        <table class="table table-hover mt-3">
+            <thead>
+            <tr>
+                <th scope="col">День</th>
+                <th scope="col">Время</th>
+                <th scope="col">Кабинет</th>
+                <th scope="col">Статус</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ds: ${doctorSchedules}">
+                <td th:text="${ds.getDay()}"></td>
+                <td th:text="${ds.getSlot()}"></td>
+                <td th:text="${ds.getCabinet()}"></td>
+                <td th:classappend="${ds.getIsActive() == false} ? 'not-active-reg' : 'active-reg'"
+                    th:text="${ds.getIsActive() == false} ? 'Свободно' : 'Занято'"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <nav aria-label="Pagination" th:if="${doctorSchedules.totalPages gt 0}">
+        <ul class="pagination justify-content-center font-weight-bold">
+            <li class="page-item" th:classappend="${doctorSchedules.number eq 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="'/doctorslots/doctor-schedule/'+ (${#authentication.getPrincipal().getUsername().equalsIgnoreCase('ADMIN')}
+                   ? ${doctorId} : ${#authentication.getPrincipal().getUserId()}) + '?page=' + ${doctorSchedules.number lt 2 ? 1 : doctorSchedules.number}"
+                   aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(1, doctorSchedules.totalPages, 1)}"
+                th:classappend="${i eq doctorSchedules.number + 1} ? 'active'">
+                <a class="page-link" th:href="'/doctorslots/doctor-schedule/' + (${#authentication.getPrincipal().getUsername().equalsIgnoreCase('ADMIN')}
+                   ? ${doctorId} : ${#authentication.getPrincipal().getUserId()}) + '?page=' + ${i}"
+                   th:text="${i}"
+                   th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+            </li>
+            <li class="page-item" th:classappend="${doctorSchedules.number eq doctorSchedules.totalPages - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="'/doctorslots/doctor-schedule/' + (${#authentication.getPrincipal().getUsername().equalsIgnoreCase('ADMIN')}
+                   ? ${doctorId} : ${#authentication.getPrincipal().getUserId()}) + '?page=' + ${doctorSchedules.number + 2}"
+                   aria-label="Next" title="Next Page" data-toggle="tooltip">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    </button>
+</div>

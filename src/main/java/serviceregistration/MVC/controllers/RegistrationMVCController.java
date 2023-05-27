@@ -7,9 +7,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import serviceregistration.dto.custommodel.ClientRegistration;
+import serviceregistration.dto.querymodel.ClientRegistration;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.dto.RegistrationDTO;
+import serviceregistration.dto.querymodel.DoctorRegistration;
 import serviceregistration.service.*;
 import serviceregistration.service.userdetails.CustomUserDetails;
 
@@ -56,6 +57,14 @@ public class RegistrationMVCController {
         List<ClientRegistration> registrationsClients = registrationService.getAllRegistrationsByClient(clientId);
         model.addAttribute("registrationsClients", registrationsClients);
         return "registrations/clientList";
+    }
+
+    @GetMapping("/doctor-slots/{doctorId}")
+    public String doctorSlots(@PathVariable Long doctorId,
+                              Model model) {
+        List<DoctorRegistration> doctorRegistrations = registrationService.getAllRegistrationsByDoctor(doctorId);
+        model.addAttribute("doctorRegistrations", doctorRegistrations);
+        return "registrations/doctorList";
     }
 
     @GetMapping("/slots/{doctorId}/{dayId}")

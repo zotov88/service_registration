@@ -117,17 +117,17 @@ where doctor_id = 2
   and day_id = 3
   and is_registered = false
 
-select c.first_name as clientFirstName, c.mid_name as clientMidName, c.last_name as clientLastName,
-       d.first_name as doctorFirstName, d.mid_name as doctorMidName, d.last_name as doctorLastName,
-       d2.day as day, s.time_slot as slot, c2.number as cabinet
-from doctors_slots ds join registrations r on ds.id = r.doctor_slot_id join clients c on c.id = r.client_id
-                      join doctors d on d.id = ds.doctor_id join days d2 on ds.day_id = d2.id join cabinets c2 on c2.id = ds.cabinet_id
-                      join slots s on s.id = ds.slot_id
-where r.client_id = 1;
+select *
+from doctors d
+         join doctors_slots ds on d.id = ds.doctor_id
+         join days d2 on ds.day_id = d2.id
+         join slots s on ds.slot_id = s.id
+         join cabinets c on ds.cabinet_id = c.id
+         left join registrations r on ds.id = r.doctor_slot_id
+where d.id = 4
+    and d2.day > TIMESTAMP 'today'
+order by d2.day desc
 
-select ds.id, s.time_slot
-from doctors_slots ds join slots s on s.id = ds.slot_id
-where ds.doctor_id = 1 and ds.day_id = 2 and ds.is_registered = false;
 
 
 
