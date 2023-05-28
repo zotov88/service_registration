@@ -8,14 +8,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import serviceregistration.dto.DoctorDTO;
 import serviceregistration.dto.DoctorSlotDTO;
+import serviceregistration.dto.DoctorSlotSearchDTO;
 import serviceregistration.dto.querymodel.DoctorDay;
 import serviceregistration.dto.querymodel.DoctorSchedule;
 import serviceregistration.model.Cabinet;
 import serviceregistration.model.Day;
-import serviceregistration.service.CabinetService;
-import serviceregistration.service.DayService;
-import serviceregistration.service.DoctorService;
-import serviceregistration.service.DoctorSlotService;
+import serviceregistration.service.*;
 
 import java.util.List;
 
@@ -27,25 +25,46 @@ public class DoctorSlotMVCController {
     private final DoctorService doctorService;
     private final DayService dayService;
     private final CabinetService cabinetService;
+    private final SpecializationService specializationService;
 
     public DoctorSlotMVCController(DoctorSlotService doctorSlotService,
                                    DoctorService doctorService,
                                    DayService dayService,
-                                   CabinetService cabinetService) {
+                                   CabinetService cabinetService,
+                                   SpecializationService specializationService) {
         this.doctorSlotService = doctorSlotService;
         this.doctorService = doctorService;
         this.dayService = dayService;
         this.cabinetService = cabinetService;
+        this.specializationService = specializationService;
     }
 
     @GetMapping("")
     public String getSchedule(@RequestParam(value = "page", defaultValue = "1") int page,
-                              @RequestParam(value = "size", defaultValue = "12") int pageSize,
+                                  @RequestParam(value = "size", defaultValue = "12") int pageSize,
                               Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         Page<DoctorSlotDTO> doctorSlots = doctorSlotService.getAllDoctorSlot(pageRequest);
         model.addAttribute("doctorslots", doctorSlots);
+        model.addAttribute("specializations", specializationService.listAll());
+        model.addAttribute("days", dayService.listAll());
+        model.addAttribute("cabinets", cabinetService.listAll());
         return "doctorslots/schedule";
+    }
+
+
+    @PostMapping("/search")
+    public String searchDoctorSlot(@RequestParam(value = "page", defaultValue = "1") int page,
+                                   @RequestParam(value = "size", defaultValue = "12") int pageSize,
+                                   @ModelAttribute("doctorSlotSearchForm") DoctorSlotSearchDTO doctorSlotSearchDTO,
+                                   Model model) {
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        model.addAttribute("doctorslots", doctorSlotService.findDoctorSlots(pageRequest, doctorSlotSearchDTO));
+        model.addAttribute("days", dayService.listAll());
+        model.addAttribute("cabinets", cabinetService.listAll());
+        model.addAttribute("specializations", specializationService.listAll());
+        return "doctorslots/schedule";
+
     }
 
     @GetMapping("/actual")

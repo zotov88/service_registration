@@ -2,11 +2,11 @@ package serviceregistration.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import serviceregistration.dto.DoctorSlotDTO;
+import serviceregistration.dto.DoctorSlotSearchDTO;
 import serviceregistration.dto.querymodel.DoctorDay;
 import serviceregistration.dto.querymodel.DoctorSchedule;
 import serviceregistration.dto.querymodel.DoctorSlotIdTimeSlot;
@@ -29,7 +29,7 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
     }
 
     public void addSchedule(final Long doctorId, final Long dayId, final Long cabinetId) {
-         doctorSlotRepository.addSchedule(doctorId, dayId, cabinetId);
+        doctorSlotRepository.addSchedule(doctorId, dayId, cabinetId);
     }
 
     public void deleteSchedule(final Long doctorId, final Long dayId) {
@@ -60,7 +60,21 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         return new PageImpl<>(result, pageable, doctorSlotsPaginated.getTotalElements());
     }
 
-    public Page<DoctorSlotDTO> getActualDoctorSlot(PageRequest pageable) {
+    public Page<DoctorSlotDTO> findDoctorSlots(Pageable pageable, DoctorSlotSearchDTO doctorSlotSearchDTO) {
+        Page<DoctorSlot> doctorSlotPage = doctorSlotRepository.searchDoctorSlots(
+                doctorSlotSearchDTO.getLastName(),
+                doctorSlotSearchDTO.getFirstName(),
+                doctorSlotSearchDTO.getMidName(),
+                doctorSlotSearchDTO.getSpecialization(),
+                doctorSlotSearchDTO.getDay(),
+                doctorSlotSearchDTO.getCabinetNumber(),
+
+                pageable);
+        List<DoctorSlotDTO> result = mapper.toDTOs(doctorSlotPage.getContent());
+        return new PageImpl<>(result, pageable, doctorSlotPage.getTotalElements());
+    }
+
+    public Page<DoctorSlotDTO> getActualDoctorSlot(Pageable pageable) {
         Page<DoctorSlot> doctorSlotsPaginated = doctorSlotRepository.findActualSchedule(pageable);
         List<DoctorSlotDTO> result = mapper.toDTOs(doctorSlotsPaginated.getContent());
         return new PageImpl<>(result, pageable, doctorSlotsPaginated.getTotalElements());

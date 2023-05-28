@@ -24,10 +24,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jdbc</artifactId>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-jdbc</artifactId>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
@@ -101,22 +101,22 @@
 			<version>3.1.1</version>
 		</dependency>
 		<!--JWT Token-->
-		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt</artifactId>
-			<version>0.9.1</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>io.jsonwebtoken</groupId>-->
+<!--			<artifactId>jjwt</artifactId>-->
+<!--			<version>0.9.1</version>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 			<version>2.1</version>
 		</dependency>
 		<!--Bootstrap Dependency-->
-		<dependency>
-			<groupId>org.webjars.npm</groupId>
-			<artifactId>bootstrap</artifactId>
-			<version>5.0.2</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.webjars.npm</groupId>-->
+<!--			<artifactId>bootstrap</artifactId>-->
+<!--			<version>5.0.2</version>-->
+<!--		</dependency>-->
 
 	</dependencies>
 

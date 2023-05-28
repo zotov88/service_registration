@@ -35,21 +35,21 @@ public class DoctorMVCController {
                          Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         Page<DoctorDTO> doctors = doctorService.listAll(pageRequest);
-        List<Specialization> specializations = specializationService.listAll();
-        model.addAttribute("specializations", specializations);
+//        List<Specialization> specializations = specializationService.listAll();
+        model.addAttribute("specializations", specializationService.listAll());
         model.addAttribute("doctors", doctors);
         return "doctors/list";
     }
 
     @PostMapping("/search")
     public String searchDoctor(@RequestParam(value = "page", defaultValue = "1") int page,
-                              @RequestParam(value = "size", defaultValue = "10") int pageSize,
-                              @ModelAttribute("doctorSearchForm") DoctorSearchDTO doctorSearchDTO,
-                              Model model) {
+                               @RequestParam(value = "size", defaultValue = "10") int pageSize,
+                               @ModelAttribute("doctorSearchForm") DoctorSearchDTO doctorSearchDTO,
+                               Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         model.addAttribute("doctors", doctorService.findDoctors(doctorSearchDTO, pageRequest));
-        List<Specialization> specializations = specializationService.listAll();
-        model.addAttribute("specializations", specializations);
+//        List<Specialization> specializations = specializationService.listAll();
+        model.addAttribute("specializations", specializationService.listAll());
         return "doctors/list";
     }
 

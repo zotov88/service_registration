@@ -18,4 +18,5 @@ public class SlotService {
     public List<Slot> listAll() {
         return slotRepository.findAll();
     }
+
 }

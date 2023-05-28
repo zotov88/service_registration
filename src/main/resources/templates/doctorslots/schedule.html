@@ -9,6 +9,68 @@
 </head>
 <body>
 <div layout:fragment="content">
+    <div>
+        <hr class="hr"/>
+        <h3>Поиск расписания</h3>
+        <form method="POST" th:action="@{/doctorslots/search}" th:object="${doctorSlotSearchForm}">
+            <div class="mt-0 row g-2">
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input name="lastName" type="text" class="form-control" id="lastName" placeholder="Фамилия">
+                        <label for="lastName">Фамилия</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input name="firstName" type="text" class="form-control" id="firstName" placeholder="Имя">
+                        <label for="firstName">Имя</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input name="midName" type="text" class="form-control" id="midName" placeholder="Отчество">
+                        <label for="midName">Отчество</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <select class="form-select" name="specialization" id="specialization">
+                            <option selected th:value="null">Выберете специализацию</option>
+                            <option th:each="s : ${specializations}"
+                                    th:value="${s.getTitleSpecialization()}"
+                                    th:text="${s.getTitleSpecialization()}"></option>
+                        </select>
+                        <label for="specialization">Специализация</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <select class="form-select" name="day" id="day">
+                            <option selected th:value="null">Выберете день</option>
+                            <option th:each="d : ${days}"
+                                    th:value="${d.getDay()}"
+                                    th:text="${d.getDay()}"></option>
+                        </select>
+                        <label for="day">День</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <select class="form-select" name="cabinetNumber" id="cabinetNumber">
+                            <option selected th:value="null">Выберете кабинет</option>
+                            <option th:each="cab : ${cabinets}"
+                                    th:value="${cab.getCabinetNumber()}"
+                                    th:text="${cab.getCabinetNumber()}"></option>
+                        </select>
+                        <label for="cabinetNumber">Кабинет</label>
+                    </div>
+                </div>
+                <div class="row g-2">
+                    <button type="submit" class="btn btn-secondary">Фильтровать расписание</button>
+                </div>
+            </div>
+        </form>
+    </div>
     <h1 align="center">Расписание</h1>
     <div class="row">
         <div class="col">
@@ -49,10 +111,6 @@
                 <td th:text="${d.getCabinet().getCabinetNumber()}"></td>
                 <td th:classappend="${d.getIsRegistered() == false} ? 'not-active-reg' : 'active-reg'"
                     th:text="${d.getIsRegistered()} == false ? 'Свободно' : 'Занято'"></td>
-<!--                <td>-->
-<!--                    <a sec:authorize="hasRole('CLIENT')" class="btn btn-sm btn-outline-success"-->
-<!--                       th:href="'/rent/book/' + ${d.id}">Записаться</a>-->
-<!--                </td>-->
             </tr>
             </tbody>
         </table>
@@ -81,6 +139,7 @@
             </li>
         </ul>
     </nav>
+    <div><br><br></div>
 </div>
 </body>
 </html>

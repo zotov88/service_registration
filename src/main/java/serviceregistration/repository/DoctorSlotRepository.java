@@ -1,10 +1,10 @@
 package serviceregistration.repository;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import serviceregistration.dto.querymodel.DoctorDay;
 import serviceregistration.dto.querymodel.DoctorSchedule;
 import serviceregistration.dto.querymodel.DoctorSlotIdTimeSlot;
@@ -54,7 +54,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     where day >= TIMESTAMP 'today'
                     order by day, doctor_id, slot_id
                     """)
-    Page<DoctorSlot> findActualSchedule(PageRequest pageable);
+    Page<DoctorSlot> findActualSchedule(Pageable pageable);
 
     @Query(nativeQuery = true,
             value = """
@@ -116,4 +116,27 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     order by d2.day, s.time_slot
                     """)
     Page<DoctorSchedule> findScheduleByDoctorId(Pageable pageable, Long doctorId);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select ds.*
+                    from doctors_slots ds
+                        join doctors doc on ds.doctor_id = doc.id
+                        join specializations s on s.id = doc.specialization_id
+                        join days d on ds.day_id = d.id
+                        join cabinets c on c.id = ds.cabinet_id
+                    where doc.last_name ilike '%' || coalesce(:lastName, '%')  || '%'
+                        and doc.first_name ilike '%' || coalesce(:firstName, '%')  || '%'
+                        and doc.mid_name ilike'%' || coalesce(:midName, '%')  || '%'
+                        and s.title ilike'%' || coalesce(:specialization, '%')  || '%'
+                        and to_char(d.day, 'yyyy-mm-dd') ilike'%' || coalesce(:day, '%')  || '%'
+                        and cast(c.number as varchar) ilike coalesce(cast(:cabinetNumber as varchar), '%')
+                        """)
+    Page<DoctorSlot> searchDoctorSlots(@Param(value = "lastName") String lastName,
+                                       @Param(value = "firstName") String firstName,
+                                       @Param(value = "midName") String midName,
+                                       @Param(value = "specialization") String specialization,
+                                       @Param(value = "day") String day,
+                                       @Param(value = "cabinetNumber") Integer cabinetNumber,
+                                       Pageable pageable);
 }

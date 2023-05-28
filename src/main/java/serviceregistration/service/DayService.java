@@ -18,4 +18,8 @@ public class DayService {
     public List<Day> listAll() {
         return dayRepository.findAll();
     }
+
+    public List<Day> getActualDays() {
+        return dayRepository.findActualDays();
+    }
 }

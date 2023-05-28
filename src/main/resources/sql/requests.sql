@@ -128,6 +128,17 @@ where d.id = 4
     and d2.day > TIMESTAMP 'today'
 order by d2.day desc
 
+select ds.*
+from doctors_slots ds
+         join doctors doc on ds.doctor_id = doc.id
+         join specializations s on s.id = doc.specialization_id
+         join days d on ds.day_id = d.id
+where doc.last_name ilike '%'
+  and doc.first_name ilike '%'
+  and doc.mid_name ilike'%'
+  and s.title ilike'%'
+  and d.day::text ilike '2023-05-01'
+
 
 
 
