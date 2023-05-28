@@ -1,13 +1,12 @@
 package serviceregistration.repository;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import serviceregistration.dto.querymodel.DoctorDay;
-import serviceregistration.dto.querymodel.DoctorSchedule;
-import serviceregistration.dto.querymodel.DoctorSlotIdTimeSlot;
+import serviceregistration.dto.querymodel.*;
 import serviceregistration.model.DoctorSlot;
 
 import java.util.List;
@@ -39,12 +38,89 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
 
     @Query(nativeQuery = true,
             value = """
-                    select ds.*
+                    select doc.id as DoctorId, d.id as DayId,
+                            doc.first_name as DoctorFirstName, doc.mid_name as DoctorMidName, doc.last_name as DoctorLastName,
+                            s.title as Specialization, d.day as Day, c.number as Cabinet
                     from doctors_slots ds
+                        join cabinets c on c.id = ds.cabinet_id
                         join days d on ds.day_id = d.id
-                    order by day, doctor_id, slot_id
+                        join doctors doc on ds.doctor_id = doc.id
+                        join specializations s on s.id = doc.specialization_id
+                    where day >= TIMESTAMP 'today'
+                    group by doc.id, d.id, doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, c.number
+                    order by d.day, doc.last_name, s.title
                     """)
-    Page<DoctorSlot> findAllSchedule(Pageable pageable);
+    Page<DoctorSlotForSchedule> findActualScheduleGroup(Pageable pageable);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select doc.id as DoctorId, d.id as DayId,
+                            doc.first_name as DoctorFirstName, doc.mid_name as DoctorMidName, doc.last_name as DoctorLastName,
+                            s.title as Specialization, d.day as Day, c.number as Cabinet
+                    from doctors_slots ds
+                        join cabinets c on c.id = ds.cabinet_id
+                        join days d on ds.day_id = d.id
+                        join doctors doc on ds.doctor_id = doc.id
+                        join specializations s on s.id = doc.specialization_id
+                    group by doc.id, d.id, doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, c.number
+                    order by d.day, doc.last_name, s.title
+                    """)
+    Page<DoctorSlotForSchedule> findArchiveScheduleGroup(PageRequest pageable);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select doc.id as DoctorId, d.id as DayId,
+                            doc.first_name as DoctorFirstName, doc.mid_name as DoctorMidName, doc.last_name as DoctorLastName,
+                            s.title as Specialization, d.day as Day, c.number as Cabinet
+                    from doctors_slots ds
+                        join doctors doc on ds.doctor_id = doc.id
+                        join specializations s on s.id = doc.specialization_id
+                        join days d on ds.day_id = d.id
+                        join cabinets c on c.id = ds.cabinet_id
+                    where doc.last_name ilike '%' || coalesce(:lastName, '%')  || '%'
+                        and doc.first_name ilike '%' || coalesce(:firstName, '%')  || '%'
+                        and doc.mid_name ilike'%' || coalesce(:midName, '%')  || '%'
+                        and s.title ilike'%' || coalesce(:specialization, '%')  || '%'
+                        and to_char(d.day, 'yyyy-mm-dd') ilike'%' || coalesce(:day, '%')  || '%'
+                        and cast(c.number as varchar) ilike coalesce(cast(:cabinetNumber as varchar), '%')
+                        and d.day >= TIMESTAMP 'today'
+                    group by doc.id, d.id, doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, c.number
+                    order by d.day, doc.last_name, s.title
+                        """)
+    Page<DoctorSlotForSchedule> searchActualScheduleGroup(@Param(value = "lastName") String lastName,
+                                                          @Param(value = "firstName") String firstName,
+                                                          @Param(value = "midName") String midName,
+                                                          @Param(value = "specialization") String specialization,
+                                                          @Param(value = "day") String day,
+                                                          @Param(value = "cabinetNumber") Integer cabinetNumber,
+                                                          Pageable pageable);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select doc.id as DoctorId, d.id as DayId,
+                            doc.first_name as DoctorFirstName, doc.mid_name as DoctorMidName, doc.last_name as DoctorLastName,
+                            s.title as Specialization, d.day as Day, c.number as Cabinet
+                    from doctors_slots ds
+                        join doctors doc on ds.doctor_id = doc.id
+                        join specializations s on s.id = doc.specialization_id
+                        join days d on ds.day_id = d.id
+                        join cabinets c on c.id = ds.cabinet_id
+                    where doc.last_name ilike '%' || coalesce(:lastName, '%')  || '%'
+                        and doc.first_name ilike '%' || coalesce(:firstName, '%')  || '%'
+                        and doc.mid_name ilike'%' || coalesce(:midName, '%')  || '%'
+                        and s.title ilike'%' || coalesce(:specialization, '%')  || '%'
+                        and to_char(d.day, 'yyyy-mm-dd') ilike'%' || coalesce(:day, '%')  || '%'
+                        and cast(c.number as varchar) ilike coalesce(cast(:cabinetNumber as varchar), '%')
+                    group by doc.id, d.id, doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, c.number
+                    order by d.day, doc.last_name, s.title
+                        """)
+    Page<DoctorSlotForSchedule> searchArchiveScheduleGroup(@Param(value = "lastName") String lastName,
+                                                          @Param(value = "firstName") String firstName,
+                                                          @Param(value = "midName") String midName,
+                                                          @Param(value = "specialization") String specialization,
+                                                          @Param(value = "day") String day,
+                                                          @Param(value = "cabinetNumber") Integer cabinetNumber,
+                                                          Pageable pageable);
 
     @Query(nativeQuery = true,
             value = """
@@ -119,24 +195,16 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
 
     @Query(nativeQuery = true,
             value = """
-                    select ds.*
+                    select s.time_slot as Slot, ds.is_registered as Registered
                     from doctors_slots ds
-                        join doctors doc on ds.doctor_id = doc.id
-                        join specializations s on s.id = doc.specialization_id
+                        join slots s on s.id = ds.slot_id
+                        join doctors doc on doc.id = ds.doctor_id
                         join days d on ds.day_id = d.id
-                        join cabinets c on c.id = ds.cabinet_id
-                    where doc.last_name ilike '%' || coalesce(:lastName, '%')  || '%'
-                        and doc.first_name ilike '%' || coalesce(:firstName, '%')  || '%'
-                        and doc.mid_name ilike'%' || coalesce(:midName, '%')  || '%'
-                        and s.title ilike'%' || coalesce(:specialization, '%')  || '%'
-                        and to_char(d.day, 'yyyy-mm-dd') ilike'%' || coalesce(:day, '%')  || '%'
-                        and cast(c.number as varchar) ilike coalesce(cast(:cabinetNumber as varchar), '%')
-                        """)
-    Page<DoctorSlot> searchDoctorSlots(@Param(value = "lastName") String lastName,
-                                       @Param(value = "firstName") String firstName,
-                                       @Param(value = "midName") String midName,
-                                       @Param(value = "specialization") String specialization,
-                                       @Param(value = "day") String day,
-                                       @Param(value = "cabinetNumber") Integer cabinetNumber,
-                                       Pageable pageable);
+                    where doc.id = :doctorId
+                        and d.id = :dayId
+                    order by ds.is_registered desc, s.time_slot
+                    """)
+    List<SlotRegistered> getSlotsOneDayForDoctor(Long doctorId, Long dayId);
+
+
 }

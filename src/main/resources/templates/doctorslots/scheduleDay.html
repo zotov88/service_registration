@@ -11,141 +11,29 @@
 <div layout:fragment="content">
     <div>
         <hr class="hr"/>
-        <h3>Поиск расписания</h3>
-        <form method="POST" th:action="@{/doctorslots/search}" th:object="${doctorSlotSearchForm}">
-            <div class="mt-0 row g-2">
-                <div class="col-md">
-                    <div class="form-floating">
-                        <input name="lastName" type="text" class="form-control" id="lastName" placeholder="Фамилия">
-                        <label for="lastName">Фамилия</label>
-                    </div>
-                </div>
-                <div class="col-md">
-                    <div class="form-floating">
-                        <input name="firstName" type="text" class="form-control" id="firstName" placeholder="Имя">
-                        <label for="firstName">Имя</label>
-                    </div>
-                </div>
-                <div class="col-md">
-                    <div class="form-floating">
-                        <input name="midName" type="text" class="form-control" id="midName" placeholder="Отчество">
-                        <label for="midName">Отчество</label>
-                    </div>
-                </div>
-                <div class="col-md">
-                    <div class="form-floating">
-                        <select class="form-select" name="specialization" id="specialization">
-                            <option selected th:value="null">Выберете специализацию</option>
-                            <option th:each="s : ${specializations}"
-                                    th:value="${s.getTitleSpecialization()}"
-                                    th:text="${s.getTitleSpecialization()}"></option>
-                        </select>
-                        <label for="specialization">Специализация</label>
-                    </div>
-                </div>
-                <div class="col-md">
-                    <div class="form-floating">
-                        <select class="form-select" name="day" id="day">
-                            <option selected th:value="null">Выберете день</option>
-                            <option th:each="d : ${days}"
-                                    th:value="${d.getDay()}"
-                                    th:text="${d.getDay()}"></option>
-                        </select>
-                        <label for="day">День</label>
-                    </div>
-                </div>
-                <div class="col-md">
-                    <div class="form-floating">
-                        <select class="form-select" name="cabinetNumber" id="cabinetNumber">
-                            <option selected th:value="null">Выберете кабинет</option>
-                            <option th:each="cab : ${cabinets}"
-                                    th:value="${cab.getCabinetNumber()}"
-                                    th:text="${cab.getCabinetNumber()}"></option>
-                        </select>
-                        <label for="cabinetNumber">Кабинет</label>
-                    </div>
-                </div>
-                <div class="row g-2">
-                    <button type="submit" class="btn btn-secondary">Фильтровать расписание</button>
-                </div>
-            </div>
-        </form>
-    </div>
-    <div><br></div>
-    <h3 align="center">Актуальное расписание</h3>
-    <div class="row">
-        <div class="col">
-            <a href="/doctorslots/deleteSchedule"
-               class="btn btn-sm btn-success"
-               role="button"
-               style="float: right"
-               aria-disabled="true">Удалить</a>
-            <a href="/doctorslots/addSchedule"
-               class="btn btn-sm btn-success"
-               role="button"
-               style="float: right"
-               aria-disabled="true">Создать</a>
-            <a href="/doctorslots/archive"
-               class="btn btn-sm btn-success"
-               role="button"
-               style="float: left"
-               aria-disabled="true">Архивное расписание</a>
-        </div>
+        <h3>Время</h3>
         <div><br></div>
         <table class="table table-hover">
             <thead>
             <tr>
-                <th scope="col">ФИО</th>
-                <th scope="col">Специализация</th>
-                <th scope="col">День</th>
-                <th scope="col">Кабинет</th>
-                <th scope="col"></th>
+                <th scope="col">Время</th>
+                <th scope="col">Статус</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="d : ${doctorslots}">
-                <td th:text="${d.getDoctorLastName() + ' ' + d.getDoctorFirstName() + ' ' + d.getDoctorMidName()}"></td>
-                <td th:text="${d.getSpecialization()}"></td>
-                <td th:text="${d.getDay()}"></td>
-                <td th:text="${d.getCabinet()}"></td>
-                <td>
-                    <a sec:authorize="hasRole('ADMIN')" class="btn btn-sm btn-outline-success"
-                       th:href="'/doctorslots/slots/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}">Подробнее
-                    </a>
-                    <a sec:authorize="hasRole('ADMIN')" class="btn btn-sm btn-outline-danger"
-                       th:href="'/doctorslots/slots/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}">Удалить
-                    </a>
-                </td>
+            <tr th:each="t : ${timeSlots}">
+                <td th:text="${t.getSlot()}"></td>
+                <td th:classappend="${t.getRegistered() == false} ? 'not-active-reg' : 'active-reg'"
+                    th:text="${t.getRegistered()} == false ? 'Свободно' : 'Занято'"></td>
 
+<!--                <td>-->
+<!--                    <a sec:authorize="hasRole('ADMIN')" class="btn btn-sm btn-outline-success"-->
+<!--                       th:href="'/doctorslots/slots/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}">Подробнее</a>-->
+<!--                </td>-->
             </tr>
             </tbody>
         </table>
     </div>
-    <nav aria-label="Pagination" th:if="${doctorslots.totalPages gt 0}">
-        <ul class="pagination justify-content-center font-weight-bold">
-            <li class="page-item" th:classappend="${doctorslots.number eq 0} ? 'disabled'">
-                <a class="page-link"
-                   th:href="@{/doctorslots?page={id}(id=${doctorslots.number lt 2 ? 1 : doctorslots.number})}"
-                   aria-label="Previous" title="Previous Page" data-toggle="tooltip">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item"
-                th:each="i : ${#numbers.sequence(1, doctorslots.totalPages, 1)}"
-                th:classappend="${i eq doctorslots.number + 1} ? 'active'">
-                <a class="page-link" th:href="@{/doctorslots?page={id}(id=${i})}" th:text="${i}"
-                   th:title="${'Page '+ i}" data-toggle="tooltip"></a>
-            </li>
-            <li class="page-item" th:classappend="${doctorslots.number eq doctorslots.totalPages - 1} ? 'disabled'">
-                <a class="page-link"
-                   th:href="@{/doctorslots?page={id}(id=${doctorslots.number + 2})}"
-                   aria-label="Next" title="Next Page" data-toggle="tooltip">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-    <div><br><br></div>
 </div>
 </body>
 </html>

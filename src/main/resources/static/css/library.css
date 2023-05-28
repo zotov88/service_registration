@@ -36,6 +36,22 @@
     border-color: #27afe5 !important;
 }
 
+.btn-secondary {
+    margin: 0 auto !important;
+    display: block !important;
+    width: auto !important;
+    color: #000000 !important;
+    background-color: #27e59c !important;
+    border-color: #27e59c !important;
+}
+
+.btn-secondary:hover {
+
+    color: #000000 !important;
+    background-color: #20c384 !important;
+    border-color: #27e59c !important;
+}
+
 .text-link {
     text-decoration: none;
 }
@@ -44,13 +60,5 @@
     color: #001445;
 }
 
-.btn-outline-success {
-    color: #106a0e !important;
-    border-color: #50b314 !important;
-}
 
-.btn-outline-success:hover {
-    color: #e0f3e8 !important;
-    background: #2ac3ff !important;
-    border-color: #2ac3ff !important;
-}
+

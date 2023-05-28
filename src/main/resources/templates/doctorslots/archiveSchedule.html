@@ -12,7 +12,7 @@
     <div>
         <hr class="hr"/>
         <h3>Поиск расписания</h3>
-        <form method="POST" th:action="@{/doctorslots/search}" th:object="${doctorSlotSearchForm}">
+        <form method="POST" th:action="@{/doctorslots/archive/search}" th:object="${doctorSlotSearchForm}">
             <div class="mt-0 row g-2">
                 <div class="col-md">
                     <div class="form-floating">
@@ -72,24 +72,14 @@
         </form>
     </div>
     <div><br></div>
-    <h3 align="center">Актуальное расписание</h3>
+    <h3 align="center">Архивное расписание</h3>
     <div class="row">
         <div class="col">
-            <a href="/doctorslots/deleteSchedule"
-               class="btn btn-sm btn-success"
-               role="button"
-               style="float: right"
-               aria-disabled="true">Удалить</a>
-            <a href="/doctorslots/addSchedule"
-               class="btn btn-sm btn-success"
-               role="button"
-               style="float: right"
-               aria-disabled="true">Создать</a>
-            <a href="/doctorslots/archive"
+            <a href="/doctorslots"
                class="btn btn-sm btn-success"
                role="button"
                style="float: left"
-               aria-disabled="true">Архивное расписание</a>
+               aria-disabled="true">Актуальное расписание</a>
         </div>
         <div><br></div>
         <table class="table table-hover">
@@ -116,7 +106,6 @@
                        th:href="'/doctorslots/slots/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}">Удалить
                     </a>
                 </td>
-
             </tr>
             </tbody>
         </table>
@@ -125,7 +114,7 @@
         <ul class="pagination justify-content-center font-weight-bold">
             <li class="page-item" th:classappend="${doctorslots.number eq 0} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/doctorslots?page={id}(id=${doctorslots.number lt 2 ? 1 : doctorslots.number})}"
+                   th:href="@{/doctorslots/archive?page={id}(id=${doctorslots.number lt 2 ? 1 : doctorslots.number})}"
                    aria-label="Previous" title="Previous Page" data-toggle="tooltip">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -133,12 +122,12 @@
             <li class="page-item"
                 th:each="i : ${#numbers.sequence(1, doctorslots.totalPages, 1)}"
                 th:classappend="${i eq doctorslots.number + 1} ? 'active'">
-                <a class="page-link" th:href="@{/doctorslots?page={id}(id=${i})}" th:text="${i}"
+                <a class="page-link" th:href="@{/doctorslots/archive?page={id}(id=${i})}" th:text="${i}"
                    th:title="${'Page '+ i}" data-toggle="tooltip"></a>
             </li>
             <li class="page-item" th:classappend="${doctorslots.number eq doctorslots.totalPages - 1} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/doctorslots?page={id}(id=${doctorslots.number + 2})}"
+                   th:href="@{/doctorslots/archive?page={id}(id=${doctorslots.number + 2})}"
                    aria-label="Next" title="Next Page" data-toggle="tooltip">
                     <span aria-hidden="true">&raquo;</span>
                 </a>

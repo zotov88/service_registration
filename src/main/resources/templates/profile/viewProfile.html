@@ -69,11 +69,6 @@
                th:href="'/clients/change-password/client'"
                class="btn btn-warning"
                aria-disabled="true">Изменить пароль</a>
-            <a sec:authorize="isAuthenticated() && (hasRole('ADMIN'))"
-               th:href="'/rent/user-books/' + ${user.id}"
-               class="btn btn-primary"
-               aria-disabled="true">Арендованные книги</a>
-            <button type="button" class="btn btn-secondary" onclick="window.history.back()">Назад</button>
         </div>
     </div>
 </form>

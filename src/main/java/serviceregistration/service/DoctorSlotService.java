@@ -2,14 +2,13 @@ package serviceregistration.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.dto.DoctorSlotSearchDTO;
-import serviceregistration.dto.querymodel.DoctorDay;
-import serviceregistration.dto.querymodel.DoctorSchedule;
-import serviceregistration.dto.querymodel.DoctorSlotIdTimeSlot;
+import serviceregistration.dto.querymodel.*;
 import serviceregistration.mapper.GenericMapper;
 import serviceregistration.model.DoctorSlot;
 import serviceregistration.repository.DoctorSlotRepository;
@@ -54,23 +53,41 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         return new PageImpl<>(result, pageable, doctorDayPaginated.getTotalElements());
     }
 
-    public Page<DoctorSlotDTO> getAllDoctorSlot(Pageable pageable) {
-        Page<DoctorSlot> doctorSlotsPaginated = doctorSlotRepository.findAllSchedule(pageable);
-        List<DoctorSlotDTO> result = mapper.toDTOs(doctorSlotsPaginated.getContent());
+    public Page<DoctorSlotForSchedule> getActualSchedule(Pageable pageable) {
+        Page<DoctorSlotForSchedule> doctorSlotsPaginated = doctorSlotRepository.findActualScheduleGroup(pageable);
+        List<DoctorSlotForSchedule> result = doctorSlotsPaginated.getContent();
         return new PageImpl<>(result, pageable, doctorSlotsPaginated.getTotalElements());
     }
 
-    public Page<DoctorSlotDTO> findDoctorSlots(Pageable pageable, DoctorSlotSearchDTO doctorSlotSearchDTO) {
-        Page<DoctorSlot> doctorSlotPage = doctorSlotRepository.searchDoctorSlots(
+    public Page<DoctorSlotForSchedule> getArchiveSchedule(PageRequest pageable) {
+        Page<DoctorSlotForSchedule> doctorSlotsPaginated = doctorSlotRepository.findArchiveScheduleGroup(pageable);
+        List<DoctorSlotForSchedule> result = doctorSlotsPaginated.getContent();
+        return new PageImpl<>(result, pageable, doctorSlotsPaginated.getTotalElements());
+    }
+
+    public Page<DoctorSlotForSchedule> findAmongActualSchedule(Pageable pageable, DoctorSlotSearchDTO doctorSlotSearchDTO) {
+        Page<DoctorSlotForSchedule> doctorSlotPage = doctorSlotRepository.searchActualScheduleGroup(
                 doctorSlotSearchDTO.getLastName(),
                 doctorSlotSearchDTO.getFirstName(),
                 doctorSlotSearchDTO.getMidName(),
                 doctorSlotSearchDTO.getSpecialization(),
                 doctorSlotSearchDTO.getDay(),
                 doctorSlotSearchDTO.getCabinetNumber(),
-
                 pageable);
-        List<DoctorSlotDTO> result = mapper.toDTOs(doctorSlotPage.getContent());
+        List<DoctorSlotForSchedule> result = doctorSlotPage.getContent();
+        return new PageImpl<>(result, pageable, doctorSlotPage.getTotalElements());
+    }
+
+    public Page<DoctorSlotForSchedule> findAmongAllSchedule(Pageable pageable, DoctorSlotSearchDTO doctorSlotSearchDTO) {
+        Page<DoctorSlotForSchedule> doctorSlotPage = doctorSlotRepository.searchArchiveScheduleGroup(
+                doctorSlotSearchDTO.getLastName(),
+                doctorSlotSearchDTO.getFirstName(),
+                doctorSlotSearchDTO.getMidName(),
+                doctorSlotSearchDTO.getSpecialization(),
+                doctorSlotSearchDTO.getDay(),
+                doctorSlotSearchDTO.getCabinetNumber(),
+                pageable);
+        List<DoctorSlotForSchedule> result = doctorSlotPage.getContent();
         return new PageImpl<>(result, pageable, doctorSlotPage.getTotalElements());
     }
 
@@ -93,6 +110,13 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         List<DoctorSchedule> result = doctorSchedulePage.getContent();
         return new PageImpl<>(result, pageable, doctorSchedulePage.getTotalElements());
     }
+
+    public List<SlotRegistered> getSlotsForDoctorDay(Long doctorId, Long dayId) {
+        return doctorSlotRepository.getSlotsOneDayForDoctor(doctorId, dayId);
+    }
+
+
+
 
 
 //    public List<DoctorSlotDTO> listAllIdRegistrationsByClientId(Long clientId) {
