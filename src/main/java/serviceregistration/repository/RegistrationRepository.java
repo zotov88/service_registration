@@ -24,8 +24,10 @@ public interface RegistrationRepository
 
     @Query(nativeQuery = true,
             value = """
-                    select d.first_name as DoctorFirstName, d.mid_name as DoctorMidName, d.last_name as DoctorLastName,
-                            sp.title as Specialization, d2.day as Day, s.time_slot as Slot, c2.number as Cabinet
+                    select r.id as RegistrationId,
+                            d.first_name as DoctorFirstName, d.mid_name as DoctorMidName, d.last_name as DoctorLastName,
+                            sp.title as Specialization, d2.day as Day, s.time_slot as Slot, c2.number as Cabinet,
+                            r.is_active as IsActive
                     from doctors_slots ds
                         join registrations r on ds.id = r.doctor_slot_id
                         join doctors d on d.id = ds.doctor_id
@@ -34,6 +36,7 @@ public interface RegistrationRepository
                         join cabinets c2 on c2.id = ds.cabinet_id
                         join slots s on s.id = ds.slot_id
                     where r.client_id = :clientId
+                    order by r.is_active desc, d2.day, s.time_slot, sp.title, d.last_name
                     """)
     List<ClientRegistration> getAllRegistrationsByClient(Long clientId);
 

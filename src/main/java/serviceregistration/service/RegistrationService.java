@@ -20,12 +20,15 @@ import java.util.List;
 public class RegistrationService extends GenericService<Registration, RegistrationDTO> {
 
     private final DoctorSlotService doctorSlotService;
+    private final ClientService clientService;
     
     public RegistrationService(RegistrationRepository repository,
                                RegistrationMapper mapper,
-                               DoctorSlotService doctorSlotService) {
+                               DoctorSlotService doctorSlotService,
+                               ClientService clientService) {
         super(repository, mapper);
         this.doctorSlotService = doctorSlotService;
+        this.clientService = clientService;
     }
 
     public Page<RegistrationDTO> getAllByClientId(Pageable pageable, Long clientId) {
@@ -57,6 +60,15 @@ public class RegistrationService extends GenericService<Registration, Registrati
         registrationDTO.setIsActive(true);
         registrationDTO.setResultMeet(ResultMeet.SUCCESSFULLY);
         return mapper.toDTO(repository.save(mapper.toEntity(registrationDTO)));
+    }
+
+    public void cancelMeet(Long registrationId) {
+        RegistrationDTO registrationDTO = mapper.toDTO(mapper.toEntity(getOne(registrationId)));
+        DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(registrationDTO.getDoctorSlotId());
+        doctorSlotDTO.setIsRegistered(false);
+        registrationDTO.setIsActive(false);
+        doctorSlotService.update(doctorSlotDTO);
+        update(registrationDTO);
     }
 
 //    public RegistrationDTO registrationSlot(RegistrationDTO registrationDTO) {

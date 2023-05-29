@@ -1,6 +1,7 @@
 package serviceregistration.service;
 
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 import serviceregistration.model.Day;
 import serviceregistration.repository.DayRepository;
 
@@ -21,5 +22,9 @@ public class DayService {
 
     public List<Day> getActualDays() {
         return dayRepository.findActualDays();
+    }
+
+    public Day getOne(Long dayId) {
+        return dayRepository.findById(dayId).orElseThrow(() -> new NotFoundException("На этот день нет расписания"));
     }
 }

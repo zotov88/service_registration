@@ -70,6 +70,7 @@
                 </div>
             </div>
         </form>
+        <hr class="hr"/>
     </div>
     <div><br></div>
     <h3 align="center">Архивное расписание</h3>
@@ -100,11 +101,14 @@
                 <td th:text="${d.getCabinet()}"></td>
                 <td>
                     <a sec:authorize="hasRole('ADMIN')" class="btn btn-sm btn-outline-success"
-                       th:href="'/doctorslots/slots/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}">Подробнее
-                    </a>
-                    <a sec:authorize="hasRole('ADMIN')" class="btn btn-sm btn-outline-danger"
-                       th:href="'/doctorslots/slots/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}">Удалить
-                    </a>
+                       th:href="'/doctorslots/slots/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}">Подробнее</a>
+                    <a th:if="${!d.getIsDeleted()}" sec:authorize="hasRole('ADMIN')"
+                       class="btn btn-sm btn-outline-danger"
+                       th:href="'/doctorslots/delete/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}"
+                       onclick="return confirm('Вы хотите удалить расписание?')">Удалить</a>
+                    <a th:if="${d.getIsDeleted()}" class="btn btn-sm btn-outline-warning"
+                       th:href="'/doctorslots/restore/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}"
+                       onclick="return confirm('Вы хотите восстановить расписание?')">Восстановить</a>
                 </td>
             </tr>
             </tbody>
@@ -134,7 +138,6 @@
             </li>
         </ul>
     </nav>
-    <div><br><br></div>
 </div>
 </body>
 </html>

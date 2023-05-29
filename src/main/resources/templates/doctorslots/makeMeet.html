@@ -9,46 +9,67 @@
 </head>
 <body>
 <div layout:fragment="content">
-<!--    <div>-->
-<!--        <hr class="hr"/>-->
-<!--        <h3>Поиск книги</h3>-->
-<!--        <form method="POST" th:action="@{/books/search}" th:object="${bookSearchForm}">-->
-<!--            <div class="mt-0 row g-2">-->
-<!--                <div class="col-md">-->
-<!--                    <div class="form-floating">-->
-<!--                        <input name="bookTitle" type="text" class="form-control" id="bookTitle" placeholder="Название книги">-->
-<!--                        <label for="bookTitle">Название книги</label>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md">-->
-<!--                    <div class="form-floating">-->
-<!--                        <input name="authorFio" type="text" class="form-control" id="authorFio" placeholder="ФИО автора">-->
-<!--                        <label for="authorFio">Автор</label>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md">-->
-<!--                    <div class="form-floating">-->
-<!--                        <select class="form-select" name="genre" id="genre">-->
-<!--                            <option selected th:value="null">Выберете жанр из списка</option>-->
-<!--                            <option th:each="genre : ${T(com.sber.java15.spring.springprojectlibrary.library.model.Genre).values()}"-->
-<!--                                    th:value="${genre}" th:text="${genre.getGenreTextDisplay()}"></option>-->
-<!--                        </select>-->
-<!--                        <label for="genre">Жанр</label>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="row g-2">-->
-<!--                    <button type="submit" class="btn btn-secondary">Найти книгу</button>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </form>-->
-<!--    </div>-->
+    <div>
+        <hr class="hr"/>
+        <h3>Поиск по расписанию</h3>
+        <form method="POST" th:action="@{/doctorslots/makeMeet/search}" th:object="${doctorSlotSearchForm}">
+            <div class="mt-0 row g-2">
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input name="lastName" type="text" class="form-control" id="lastName" placeholder="Фамилия">
+                        <label for="lastName">Фамилия</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input name="firstName" type="text" class="form-control" id="firstName" placeholder="Имя">
+                        <label for="firstName">Имя</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input name="midName" type="text" class="form-control" id="midName" placeholder="Отчество">
+                        <label for="midName">Отчество</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <select class="form-select" name="specialization" id="specialization">
+                            <option selected th:value="null">Выберете специализацию</option>
+                            <option th:each="s : ${specializations}"
+                                    th:value="${s.getTitleSpecialization()}"
+                                    th:text="${s.getTitleSpecialization()}"></option>
+                        </select>
+                        <label for="specialization">Специализация</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <select class="form-select" name="day" id="day">
+                            <option selected th:value="null">Выберете день</option>
+                            <option th:each="d : ${days}"
+                                    th:value="${d.getDay()}"
+                                    th:text="${d.getDay()}"></option>
+                        </select>
+                        <label for="day">День</label>
+                    </div>
+                </div>
+                <div class="row g-2">
+                    <button type="submit" class="btn btn-secondary">Фильтровать расписание</button>
+                </div>
+            </div>
+        </form>
+        <hr class="hr"/>
+    </div>
+    <div><br></div>
+
     <h3 align="center">Доступно для записи</h3>
     <div><br></div>
     <div class="row">
         <table class="table table-hover">
             <thead>
             <tr>
-                <th scope="col">ФИО</th>
+                <th scope="col">Врач</th>
                 <th scope="col">Специализация</th>
                 <th scope="col">Дата</th>
                 <th scope="col"></th>

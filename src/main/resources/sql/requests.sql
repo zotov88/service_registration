@@ -128,14 +128,16 @@ where d.id = 4
     and d2.day > TIMESTAMP 'today'
 order by d2.day desc
 
-select doc.id, d.id, doc.first_name as DoctorFirstName, doc.mid_name as DoctorMidName, doc.last_name as DoctorLastName,
-       s.title as Specialization, d.day as Day, c.number as Cabinet
-from doctors_slots ds
-         join cabinets c on c.id = ds.cabinet_id
-         join days d on ds.day_id = d.id
-         join doctors doc on ds.doctor_id = doc.id
-         join specializations s on s.id = doc.specialization_id
-group by doc.id, d.id, doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, c.number
+select count(*)
+from clients c
+         join registrations r on c.id = r.client_id
+         join doctors_slots ds on ds.id = r.doctor_slot_id
+         join doctors doc on doc.id = ds.doctor_id
+         join slots s on s.id = ds.slot_id
+where r.is_active = true
+  and day_id = 2
+  and s.id = 3
+  and c.id = 3
 
 
 

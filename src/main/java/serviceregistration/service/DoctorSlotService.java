@@ -43,12 +43,24 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         return mapper.toDTO(doctorSlotRepository.findFirstByDoctorIdAndDayId(doctorId, dayId));
     }
 
-    public List<DoctorDay> groupByDoctorSlot() {
-        return doctorSlotRepository.groupByDoctorSlot();
-    }
+//    public List<DoctorDay> groupByDoctorSlot() {
+//        return doctorSlotRepository.groupByDoctorSlot();
+//    }
 
     public Page<DoctorDay> groupByDoctorSlot(Pageable pageable) {
         Page<DoctorDay> doctorDayPaginated = doctorSlotRepository.groupByDoctorSlot(pageable);
+        List<DoctorDay> result = doctorDayPaginated.getContent();
+        return new PageImpl<>(result, pageable, doctorDayPaginated.getTotalElements());
+    }
+
+    public Page<DoctorDay> findAmongGroupByDoctorSlot(Pageable pageable, DoctorSlotSearchDTO doctorSlotSearchDTO) {
+        Page<DoctorDay> doctorDayPaginated = doctorSlotRepository.searchGroupByDoctorSlot(
+                doctorSlotSearchDTO.getLastName(),
+                doctorSlotSearchDTO.getFirstName(),
+                doctorSlotSearchDTO.getMidName(),
+                doctorSlotSearchDTO.getSpecialization(),
+                doctorSlotSearchDTO.getDay(),
+                pageable);
         List<DoctorDay> result = doctorDayPaginated.getContent();
         return new PageImpl<>(result, pageable, doctorDayPaginated.getTotalElements());
     }
@@ -101,10 +113,6 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         return doctorSlotRepository.findAllTimeForDoctorDay(doctorId, dayId);
     }
 
-    public List<DoctorSlotIdTimeSlot> getDoctorSlotsIdsAndTimeSlotsFree(Long doctorId, Long dayId) {
-        return doctorSlotRepository.findAllDoctorslotIdsAndTimeSlotsFree(doctorId, dayId);
-    }
-
     public Page<DoctorSchedule> getScheduleByDoctor(Pageable pageable, Long doctorId) {
         Page<DoctorSchedule> doctorSchedulePage = doctorSlotRepository.findScheduleByDoctorId(pageable, doctorId);
         List<DoctorSchedule> result = doctorSchedulePage.getContent();
@@ -115,11 +123,12 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         return doctorSlotRepository.getSlotsOneDayForDoctor(doctorId, dayId);
     }
 
+    public void deleteSoft(final Long doctorId, final Long dayId) {
+        doctorSlotRepository.markAsDeletedSlots(doctorId, dayId);
+    }
 
+    public void restore(Long doctorId, Long dayId) {
+        doctorSlotRepository.unMarkAsDeletedSlots(doctorId, dayId);
+    }
 
-
-
-//    public List<DoctorSlotDTO> listAllIdRegistrationsByClientId(Long clientId) {
-//        return mapper.toDTOs(doctorSlotRepository.findAllByClientReserved(clientId));
-//    }
 }

@@ -7,5 +7,6 @@ public interface DoctorSlotForSchedule extends DoctorName {
     String getSpecialization();
     String getDay();
     String getCabinet();
+    Boolean getIsDeleted();
 
 }

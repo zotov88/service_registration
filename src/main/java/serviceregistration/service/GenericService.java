@@ -31,8 +31,7 @@ public abstract class GenericService<E extends GenericModel, D extends GenericDT
     }
 
     public D getOne(final Long id) {
-        return mapper.toDTO(repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Нет данных с id " + id)));
+        return mapper.toDTO(repository.findById(id).orElseThrow(() -> new NotFoundException("Нет данных с id " + id)));
     }
 
     public D update(D updObj) {

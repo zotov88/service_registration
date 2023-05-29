@@ -3,6 +3,7 @@ package serviceregistration.service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import serviceregistration.dto.ClientDTO;
+import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.dto.RoleDTO;
 import serviceregistration.mapper.ClientMapper;
 import serviceregistration.model.Client;
@@ -33,7 +34,6 @@ public class ClientService extends GenericService<Client, ClientDTO> {
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setId(1L);
         clientDTO.setRole(roleDTO);
-        System.out.println("+++++++++++++++++++"+clientDTO.getPassword()+"+++++++++++++++++");
         clientDTO.setPassword(bCryptPasswordEncoder.encode(clientDTO.getPassword()));
         if (userService.findUserByLogin(clientDTO.getLogin()) == null) {
             userService.createUser(clientDTO.getLogin(), clientDTO.getRole().getId());
@@ -68,5 +68,18 @@ public class ClientService extends GenericService<Client, ClientDTO> {
         clientDTO.setChangePasswordToken(null);
         clientDTO.setPassword(password);
         update(clientDTO);
+    }
+
+    public boolean isActiveRegistrationBySpecialization(DoctorSlotDTO doctorSlot, Long clientId) {
+        return ((ClientRepository)(repository)).findActiveRegistrationBySpecialization(
+                doctorSlot.getDoctor().getSpecialization().getTitleSpecialization(),
+                clientId) == 1L;
+    }
+
+    public boolean isActiveRegistrationByDayAndTime(DoctorSlotDTO doctorSlot, Long clientId) {
+        return ((ClientRepository)(repository)).findActiveRegistrationByDay(
+                doctorSlot.getDay().getId(),
+                doctorSlot.getSlot().getId(),
+                clientId) == 1L;
     }
 }
