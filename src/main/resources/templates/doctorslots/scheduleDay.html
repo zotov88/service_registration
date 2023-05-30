@@ -11,13 +11,14 @@
 <div layout:fragment="content">
     <div>
         <hr class="hr"/>
-        <h3>Время</h3>
+        <h3 align="center" th:text="'Расписание на ' + ${day.getDay()}"></h3>
         <div><br></div>
         <table class="table table-hover">
             <thead>
             <tr>
                 <th scope="col">Время</th>
                 <th scope="col">Статус</th>
+                <th scope="col">Информация</th>
             </tr>
             </thead>
             <tbody>
@@ -25,11 +26,10 @@
                 <td th:text="${t.getSlot()}"></td>
                 <td th:classappend="${t.getRegistered() == false} ? 'not-active-reg' : 'active-reg'"
                     th:text="${t.getRegistered()} == false ? 'Свободно' : 'Занято'"></td>
-
-<!--                <td>-->
-<!--                    <a sec:authorize="hasRole('ADMIN')" class="btn btn-sm btn-outline-success"-->
-<!--                       th:href="'/doctorslots/slots/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}">Подробнее</a>-->
-<!--                </td>-->
+                <td>
+                    <a th:if="${t.getRegistered()}" sec:authorize="hasRole('DOCTOR')" class="btn btn-sm btn-outline-success"
+                       th:href="'/doctorslots/doctor-schedule/day/slot/' + ${t.getDoctorSlotId()}">Подробнее</a>
+                </td>
             </tr>
             </tbody>
         </table>

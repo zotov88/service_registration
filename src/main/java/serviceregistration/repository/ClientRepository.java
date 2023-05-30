@@ -40,6 +40,16 @@ public interface ClientRepository extends GenericRepository<Client> {
                     """)
     Long findActiveRegistrationByDay(Long dayId, Long slotId, Long clientId);
 
+    @Query(nativeQuery = true,
+            value = """
+                    select c.*
+                    from registrations
+                        join doctors_slots ds on ds.id = registrations.doctor_slot_id
+                        join clients c on c.id = registrations.client_id
+                    where ds.id = :doctorSlotId
+                    """)
+    Client findClientIdByDoctorSlot(Long doctorSlotId);
+
 //    @Query(nativeQuery = true,
 //            value = """
 //                    select c.*

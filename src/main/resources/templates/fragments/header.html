@@ -1,7 +1,7 @@
 <div xmlns:th="http://www.thymeleaf.org"
      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
      th:fragment="header">
-    <nav class="navbar navbar-expand-lg" style="background-color: #00CED1">
+    <nav class="navbar fixed-top navbar-expand-lg" style="background-color: #00CED1">
         <div class="container-fluid">
             <a class="navbar-brand" href="/" style="color: #000000">Запись к врачу</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -33,7 +33,8 @@
                         <a class="nav-link active" aria-current="page" href="/registrations/listAll">Архив записей</a>
                     </li>
                     <li sec:authorize="isAuthenticated() && hasRole('DOCTOR')" class="nav-item">
-                        <a class="nav-link active" aria-current="page" th:href="'/registrations/doctor-slots/' + ${#authentication.getPrincipal().getUserId()}">Мои записи</a>
+                        <a class="nav-link active" aria-current="page"
+                           th:href="'/registrations/doctor-slots-today/' + ${#authentication.getPrincipal().getUserId()}">Расписание сегодня</a>
                     </li>
                 </ul>
                 <div>

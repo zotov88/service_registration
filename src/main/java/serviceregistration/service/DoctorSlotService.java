@@ -8,10 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.dto.DoctorSlotSearchDTO;
-import serviceregistration.dto.querymodel.*;
-import serviceregistration.mapper.GenericMapper;
+import serviceregistration.dto.querymodel.DoctorDay;
+import serviceregistration.dto.querymodel.DoctorSchedule;
+import serviceregistration.dto.querymodel.DoctorSlotForSchedule;
+import serviceregistration.dto.querymodel.SlotRegistered;
+import serviceregistration.mapper.DoctorSlotMapper;
+import serviceregistration.mapper.RegistrationMapper;
 import serviceregistration.model.DoctorSlot;
 import serviceregistration.repository.DoctorSlotRepository;
+import serviceregistration.repository.RegistrationRepository;
 
 import java.util.List;
 
@@ -20,11 +25,17 @@ import java.util.List;
 public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO> {
 
     private final DoctorSlotRepository doctorSlotRepository;
+    private final RegistrationRepository registrationRepository;
+    private final RegistrationMapper registrationMapper;
 
     public DoctorSlotService(DoctorSlotRepository doctorSlotRepository,
-                             GenericMapper<DoctorSlot, DoctorSlotDTO> mapper) {
+                             DoctorSlotMapper mapper,
+                             RegistrationRepository registrationRepository,
+                             RegistrationMapper registrationMapper) {
         super(doctorSlotRepository, mapper);
         this.doctorSlotRepository = doctorSlotRepository;
+        this.registrationRepository = registrationRepository;
+        this.registrationMapper = registrationMapper;
     }
 
     public void addSchedule(final Long doctorId, final Long dayId, final Long cabinetId) {
@@ -119,16 +130,17 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         return new PageImpl<>(result, pageable, doctorSchedulePage.getTotalElements());
     }
 
-    public List<SlotRegistered> getSlotsForDoctorDay(Long doctorId, Long dayId) {
-        return doctorSlotRepository.getSlotsOneDayForDoctor(doctorId, dayId);
+    public List<SlotRegistered> getScheduleByDoctorToday(Long doctorId) {
+        return doctorSlotRepository.findScheduleByDoctorIdToday(doctorId);
     }
 
-    public void deleteSoft(final Long doctorId, final Long dayId) {
-        doctorSlotRepository.markAsDeletedSlots(doctorId, dayId);
+    public List<SlotRegistered> getSlotsForDoctorDay(Long doctorId, Long dayId) {
+        return doctorSlotRepository.getSlotsOneDayForDoctor(doctorId, dayId);
     }
 
     public void restore(Long doctorId, Long dayId) {
         doctorSlotRepository.unMarkAsDeletedSlots(doctorId, dayId);
     }
+
 
 }

@@ -10,25 +10,23 @@
 <body>
 <div layout:fragment="content">
     <div class="mt-5">
-        <h1>Мое расписание</h1>
+        <h3 align="center">Мое расписание</h3>
         <table class="table table-hover mt-3">
             <thead>
             <tr>
                 <th scope="col">День</th>
-                <th scope="col">Время</th>
                 <th scope="col">Кабинет</th>
-                <th scope="col">Статус</th>
                 <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="ds: ${doctorSchedules}">
                 <td th:text="${ds.getDay()}"></td>
-                <td th:text="${ds.getSlot()}"></td>
                 <td th:text="${ds.getCabinet()}"></td>
-                <td th:classappend="${ds.getIsActive() == false} ? 'not-active-reg' : 'active-reg'"
-                    th:text="${ds.getIsActive() == false} ? 'Свободно' : 'Занято'"></td>
-            </tr>
+                <td>
+                    <a class="btn btn-sm btn-outline-success"
+                       th:href="'/doctorslots/doctor-schedule/day/' + ${#authentication.getPrincipal().getUserId()} + '/' + ${ds.getDayId()}">Подробнее</a>
+                </td>
             </tbody>
         </table>
     </div>
@@ -50,7 +48,8 @@
                    th:text="${i}"
                    th:title="${'Page '+ i}" data-toggle="tooltip"></a>
             </li>
-            <li class="page-item" th:classappend="${doctorSchedules.number eq doctorSchedules.totalPages - 1} ? 'disabled'">
+            <li class="page-item"
+                th:classappend="${doctorSchedules.number eq doctorSchedules.totalPages - 1} ? 'disabled'">
                 <a class="page-link"
                    th:href="'/doctorslots/doctor-schedule/' + (${#authentication.getPrincipal().getUsername().equalsIgnoreCase('ADMIN')}
                    ? ${doctorId} : ${#authentication.getPrincipal().getUserId()}) + '?page=' + ${doctorSchedules.number + 2}"

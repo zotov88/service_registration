@@ -43,6 +43,10 @@ values
     ('2023-07-01'),
     ('2023-07-02');
 
+insert into days(day)
+values
+    ('2023-05-30');
+
 
 insert into doctors
 values (nextval('doctors_seq'), null, now(), null, null, false, 'Петр', 'Иванов', 'l', 'Иванович', 'p', 2, 1),
@@ -128,16 +132,14 @@ where d.id = 4
     and d2.day > TIMESTAMP 'today'
 order by d2.day desc
 
-select count(*)
-from clients c
-         join registrations r on c.id = r.client_id
-         join doctors_slots ds on ds.id = r.doctor_slot_id
-         join doctors doc on doc.id = ds.doctor_id
-         join slots s on s.id = ds.slot_id
-where r.is_active = true
-  and day_id = 2
-  and s.id = 3
-  and c.id = 3
+select ds.id as DoctorSlotId, s.time_slot as Slot, ds.is_registered as Registered
+from doctors d
+         join doctors_slots ds on d.id = ds.doctor_id
+         join days d2 on ds.day_id = d2.id
+         join cabinets c on ds.cabinet_id = c.id
+         join slots s on ds.slot_id = s.id
+where d2.day = TIMESTAMP 'today'
+  and d.id = 7
 
 
 

@@ -140,7 +140,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         join days d on ds.day_id = d.id
                         join doctors doc on ds.doctor_id = doc.id
                         join specializations s on s.id = doc.specialization_id
-                    where day > TIMESTAMP 'today'
+                    where day >= TIMESTAMP 'today'
                         and ds.is_registered = false
                         and ds.is_deleted = false
                     group by doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, doc.id, d.id
@@ -198,17 +198,32 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
 
     @Query(nativeQuery = true,
             value = """
-                    select d2.day as Day, s.time_slot as Slot, c.number as Cabinet, ds.is_registered as IsActive
+                    select d2.day as Day, c.number as Cabinet, d2.id as DayId
                     from doctors d
                         join doctors_slots ds on d.id = ds.doctor_id
                         join days d2 on ds.day_id = d2.id
-                        join slots s on ds.slot_id = s.id
                         join cabinets c on ds.cabinet_id = c.id
-                        left join registrations r on ds.id = r.doctor_slot_id
                     where d.id = :doctorId
-                    and d2.day > TIMESTAMP 'today'
-                    order by d2.day, s.time_slot""")
+                    and d2.day >= TIMESTAMP 'today'
+                    group by d2.day, c.number, d2.id
+                    order by d2.day
+                    """)
     Page<DoctorSchedule> findScheduleByDoctorId(Pageable pageable, Long doctorId);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select ds.id as DoctorSlotId, s.time_slot as Slot, c.number as Cabinet,
+                            ds.is_registered as Registered
+                    from doctors d
+                        join doctors_slots ds on d.id = ds.doctor_id
+                        join days d2 on ds.day_id = d2.id
+                        join cabinets c on ds.cabinet_id = c.id
+                        join slots s on ds.slot_id = s.id
+                    where d2.day = TIMESTAMP 'today'
+                        and d.id = :doctorId
+                    order by s.time_slot
+                    """)
+    List<SlotRegistered> findScheduleByDoctorIdToday(Long doctorId);
 
     @Query(nativeQuery = true,
             value = """
@@ -239,6 +254,17 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     where doctor_id = :doctorId and day_id = :dayId
                     """)
     void unMarkAsDeletedSlots(Long doctorId, Long dayId);
+
+    @Modifying
+    @Query(nativeQuery = true,
+            value = """
+                    select id
+                    from doctors_slots
+                    where is_registered = true
+                        and doctor_id = :doctorId
+                        and day_id = :dayId
+                    """)
+    List<Long> findIdsWhereActiveSlots(Long doctorId, Long dayId);
 
 
 }

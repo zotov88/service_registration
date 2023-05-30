@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import serviceregistration.dto.ClientDTO;
 import serviceregistration.dto.DoctorDTO;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.dto.DoctorSlotSearchDTO;
@@ -27,17 +28,23 @@ public class DoctorSlotMVCController {
     private final DayService dayService;
     private final CabinetService cabinetService;
     private final SpecializationService specializationService;
+    private final DoctorSlotRegistrationService doctorSlotRegistrationService;
+    private final ClientService clientService;
 
     public DoctorSlotMVCController(DoctorSlotService doctorSlotService,
                                    DoctorService doctorService,
                                    DayService dayService,
                                    CabinetService cabinetService,
-                                   SpecializationService specializationService) {
+                                   SpecializationService specializationService,
+                                   DoctorSlotRegistrationService doctorSlotRegistrationService,
+                                   ClientService clientService) {
         this.doctorSlotService = doctorSlotService;
         this.doctorService = doctorService;
         this.dayService = dayService;
         this.cabinetService = cabinetService;
         this.specializationService = specializationService;
+        this.doctorSlotRegistrationService = doctorSlotRegistrationService;
+        this.clientService = clientService;
     }
 
     @GetMapping("")
@@ -111,6 +118,23 @@ public class DoctorSlotMVCController {
         return "doctorslots/doctorSchedule";
     }
 
+    @GetMapping("/doctor-schedule/day/{doctorId}/{dayId}")
+    public String getSlotsForDoctorDayByLogin(@PathVariable Long doctorId,
+                                              @PathVariable Long dayId,
+                                              Model model) {
+        model.addAttribute("timeSlots", doctorSlotService.getSlotsForDoctorDay(doctorId, dayId));
+        model.addAttribute("day", dayService.getOne(dayId));
+        return "doctorslots/scheduleDay";
+    }
+
+    @GetMapping("/doctor-schedule/day/slot/{doctorSlotId}")
+    public String getInfoAboutClient(@PathVariable Long doctorSlotId,
+                                     Model model) {
+        ClientDTO clientDTO = clientService.getClientIdByDoctorSlot(doctorSlotId);
+        model.addAttribute("clientDTO", clientDTO);
+        return "clients/viewClient";
+    }
+
     @GetMapping("/addSchedule")
     public String addSchedule(Model model) {
         List<DoctorDTO> doctors = doctorService.listAll();
@@ -145,7 +169,7 @@ public class DoctorSlotMVCController {
     @GetMapping("/delete/{doctorId}/{dayId}")
     public String deleteSoft(@PathVariable Long doctorId,
                              @PathVariable Long dayId) {
-        doctorSlotService.deleteSoft(doctorId, dayId);
+        doctorSlotRegistrationService.deleteSoft(doctorId, dayId);
         return "redirect:/doctorslots";
     }
 

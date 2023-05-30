@@ -71,6 +71,10 @@ public class RegistrationService extends GenericService<Registration, Registrati
         update(registrationDTO);
     }
 
+    public Registration getOnByDoctorSlotId(Long id) {
+        return ((RegistrationRepository)repository).findOnByDoctorSlotId(id);
+    }
+
 //    public RegistrationDTO registrationSlot(RegistrationDTO registrationDTO) {
 //
 //    }

@@ -82,4 +82,8 @@ public class ClientService extends GenericService<Client, ClientDTO> {
                 doctorSlot.getSlot().getId(),
                 clientId) == 1L;
     }
+
+    public ClientDTO getClientIdByDoctorSlot(Long doctorSlotId) {
+        return mapper.toDTO(((ClientRepository)(repository)).findClientIdByDoctorSlot(doctorSlotId));
+    }
 }

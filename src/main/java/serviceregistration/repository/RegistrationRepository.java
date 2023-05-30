@@ -55,4 +55,13 @@ public interface RegistrationRepository
                     order by d2.day desc
                     """)
     Page<DoctorRegistration> getAllRegistrationsByDoctor(Pageable pageable, Long doctorId);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select *
+                    from registrations
+                    where doctor_slot_id = :doctorSlotId
+                    """)
+    Registration findOnByDoctorSlotId(Long doctorSlotId);
+
 }

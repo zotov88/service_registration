@@ -11,7 +11,7 @@ import serviceregistration.dto.ClientDTO;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.dto.RegistrationDTO;
 import serviceregistration.dto.querymodel.ClientRegistration;
-import serviceregistration.dto.querymodel.DoctorRegistration;
+import serviceregistration.dto.querymodel.SlotRegistered;
 import serviceregistration.service.*;
 import serviceregistration.service.userdetails.CustomUserDetails;
 
@@ -72,16 +72,25 @@ public class RegistrationMVCController {
         return "registrations/clientList";
     }
 
-    @GetMapping("/doctor-slots/{doctorId}")
-    public String doctorSlots(@RequestParam(value = "page", defaultValue = "1") int page,
-                              @RequestParam(value = "size", defaultValue = "5") int pageSize,
-                              @PathVariable Long doctorId,
+    @GetMapping("/doctor-slots-today/{doctorId}")
+    public String doctorSlots(@PathVariable Long doctorId,
                               Model model) {
-        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
-        Page<DoctorRegistration> doctorRegistrations = registrationService.getAllRegistrationsByDoctor(pageRequest, doctorId);
-        model.addAttribute("doctorRegistrations", doctorRegistrations);
+        List<SlotRegistered> slotRegistereds = doctorSlotService.getScheduleByDoctorToday(doctorId);
+        model.addAttribute("slotRegistered", slotRegistereds);
         return "registrations/doctorList";
     }
+
+//    @GetMapping("/doctor-slots/{doctorId}")
+//    public String doctorSlots(@RequestParam(value = "page", defaultValue = "1") int page,
+//                              @RequestParam(value = "size", defaultValue = "5") int pageSize,
+//                              @PathVariable Long doctorId,
+//                              Model model) {
+//        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+//        Page<DoctorSchedule> doctorSchedules = doctorSlotService.getScheduleByDoctor(pageRequest, doctorId);
+//        model.addAttribute("doctorSchedules", doctorSchedules);
+////        model.addAttribute("doctorRegistrations", doctorRegistrations);
+//        return "registrations/doctorList";
+//    }
 
     @GetMapping("/slots/{doctorId}/{dayId}")
     public String createMeet(@PathVariable Long doctorId,
