@@ -72,6 +72,7 @@
                 <th scope="col">Врач</th>
                 <th scope="col">Специализация</th>
                 <th scope="col">Дата</th>
+                <th scope="col">Кабинет</th>
                 <th scope="col"></th>
             </tr>
             </thead>
@@ -80,7 +81,7 @@
                 <td th:text="${ds.getDoctorLastName() + ' ' + ds.getDoctorFirstName() + ' ' + ds.getDoctorMidName()}"></td>
                 <td th:text="${ds.getSpecialization()}"></td>
                 <td th:text="${ds.getDay()}"></td>
-
+                <td th:text="${ds.getCabinet()}"></td>
                 <td>
                     <a sec:authorize="hasRole('CLIENT')" class="btn btn-sm btn-outline-success"
                        th:href="'/registrations/slots/' + ${ds.getDoctorId()} + '/' + ${ds.getDayId()}">Выбрать время</a>

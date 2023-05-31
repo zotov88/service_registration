@@ -19,7 +19,8 @@ public interface WebSecurityConstants {
     List<String> DOCTORS_WHITE_LIST = List.of
             (
                     "/doctors",
-                    "doctors/search/**"
+                    "doctors/search/**",
+                    "/doctors/{id}"
             );
 
     List<String> DOCTORS_PERMISSION_LIST_FOR_ADMIN = List.of

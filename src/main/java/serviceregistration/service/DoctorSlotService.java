@@ -54,10 +54,6 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         return mapper.toDTO(doctorSlotRepository.findFirstByDoctorIdAndDayId(doctorId, dayId));
     }
 
-//    public List<DoctorDay> groupByDoctorSlot() {
-//        return doctorSlotRepository.groupByDoctorSlot();
-//    }
-
     public Page<DoctorDay> groupByDoctorSlot(Pageable pageable) {
         Page<DoctorDay> doctorDayPaginated = doctorSlotRepository.groupByDoctorSlot(pageable);
         List<DoctorDay> result = doctorDayPaginated.getContent();
@@ -149,5 +145,9 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
 
     public List<Long> getAllRegistrationsByDoctorId(Long doctorId) {
         return doctorSlotRepository.findAllRegistrationsByDoctorId(doctorId);
+    }
+
+    public Integer getCabinetByDoctorIdAndDayId(Long doctorId, Long dayId) {
+        return doctorSlotRepository.findCabinetByDoctorIdAndDayId(doctorId, dayId);
     }
 }

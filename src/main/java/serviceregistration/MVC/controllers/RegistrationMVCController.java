@@ -84,7 +84,7 @@ public class RegistrationMVCController {
         Long registrationId = registrationService.getIdByDoctorSlotId(doctorSlotId);
         registrationService.cancelMeet(registrationId);
         DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(doctorSlotId);
-        return "redirect:/doctorslots/slots/" + doctorSlotDTO.getDoctor().getId() + "/" + doctorSlotDTO.getDay().getId();
+        return "redirect:/doctorslots/doctor-schedule/day/" + doctorSlotDTO.getDoctor().getId() + "/" + doctorSlotDTO.getDay().getId();
     }
 
     @GetMapping("/doctor-slots-today/{doctorId}")
@@ -103,6 +103,7 @@ public class RegistrationMVCController {
         model.addAttribute("doctor", doctorService.getOne(doctorId));
         model.addAttribute("day", dayService.getOne(dayId));
         model.addAttribute("specialization", specializationService.listAll());
+        model.addAttribute("cabinet", doctorSlotService.getCabinetByDoctorIdAndDayId(doctorId, dayId));
         return "registrations/chooseTime";
     }
 

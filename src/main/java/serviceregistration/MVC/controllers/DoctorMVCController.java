@@ -42,7 +42,7 @@ public class DoctorMVCController {
                          @RequestParam(value = "size", defaultValue = "10") int pageSize,
                          Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
-        Page<DoctorDTO> doctors = doctorService.listAll(pageRequest);
+        Page<DoctorDTO> doctors = doctorService.listAllSort(pageRequest);
         model.addAttribute("specializations", specializationService.listAll());
         model.addAttribute("doctors", doctors);
         return "doctors/list";
@@ -57,6 +57,13 @@ public class DoctorMVCController {
         model.addAttribute("doctors", doctorService.findDoctors(doctorSearchDTO, pageRequest));
         model.addAttribute("specializations", specializationService.listAll());
         return "doctors/list";
+    }
+
+    @GetMapping("/{id}")
+    public String viewDoctor(@PathVariable Long id,
+                             Model model) {
+        model.addAttribute("doctor", doctorService.getOne(id));
+        return "doctors/viewDoctor";
     }
 
     @GetMapping("/addDoctor")

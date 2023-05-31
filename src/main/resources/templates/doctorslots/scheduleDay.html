@@ -12,7 +12,9 @@
     <div>
         <hr class="hr"/>
         <h3 th:text="'Расписание на ' + ${day.getDay()}"></h3>
-        <h3 sec:authorize="hasRole('ADMIN')" th:text="'Врач: ' + ${doctor.getLastName()} + ' ' + ${doctor.getFirstName()} + ' ' + ${doctor.getMidName()}"></h3>
+        <h3 sec:authorize="hasRole('ADMIN')"
+            th:text="'Врач: ' + ${doctor.getLastName()} + ' ' + ${doctor.getFirstName()} + ' ' + ${doctor.getMidName()}"></h3>
+        <h3 th:text="'Кабинет ' + ${cabinet}"></h3>
         <hr class="hr"/>
         <div><br></div>
         <table class="table table-bordered mt-3">
@@ -26,7 +28,7 @@
             <tbody>
             <tr th:each="t : ${timeSlots}">
                 <td th:text="${t.getSlot()}"></td>
-                <td th:classappend="${t.getRegistered() == false} ? 'not-active-reg' : 'active-reg'"
+                <td th:classappend="${t.getRegistered() == false} ? 'active-reg' : 'not-active-reg'"
                     th:text="${t.getRegistered()} == false ? 'Свободно' : 'Занято'"></td>
                 <td>
                     <a th:if="${t.getRegistered()}" class="btn btn-sm btn-outline-success"

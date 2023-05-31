@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Просмотр автора</title>
+</head>
+<body>
+<form layout:fragment="content">
+    <div class="mt-3">
+        <h3>Информация о враче</h3>
+        <form class="row g-1">
+            <div class="mb-2 row">
+                <label for="name" class="col-sm-2 col-form-label">Имя:</label>
+                <div class="col-sm-10">
+                    <p th:text="${doctor.getLastName()} + ' ' + ${doctor.getFirstName()} + ' ' + ${doctor.getMidName()}"
+                       class="form-control-plaintext" id="name">
+                </div>
+            </div>
+            <div class="mb-2 row">
+                <label for="specialization" class="col-sm-2 col-form-label">Специализация: </label>
+                <div class="col-sm-10">
+                    <p th:text="${doctor.getSpecialization().getTitleSpecialization()}" class="form-control-plaintext"
+                       id="specialization">
+                </div>
+            </div>
+            <div class="mb-2 row">
+                <label for="experience" class="col-sm-2 col-form-label">Стаж:</label>
+                <div class="col-sm-10">
+                    <p class="form-control-plaintext" id="experience">
+                </div>
+            </div>
+            <div class="mb-2 row">
+                <label for="edu" class="col-sm-2 col-form-label">Образование: </label>
+                <div class="col-sm-10">
+                    <p class="form-control-plaintext" id="edu">
+                </div>
+            </div>
+        </form>
+        <hr class="hr"/>
+        <div class="mt-2">
+            <form>
+                <a sec:authorize="isAuthenticated() && hasRole('CLIENT')" class="btn btn-primary"
+                   th:href="'/doctorslots/schedule/actual/' + ${doctor.getId()}">Записаться</a>
+                <button style="float: right" type="button" class="btn btn-secondary" onclick="window.history.back()">
+                    Назад</button>
+            </form>
+        </div>
+    </div>
+</form>
+</body>
+</html>

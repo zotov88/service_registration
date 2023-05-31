@@ -14,21 +14,20 @@
         <h3 th:text="'Врач: ' + ${doctor.getLastName()} + ' ' + ${doctor.getFirstName()} + ' ' + ${doctor.getMidName()}" ></h3>
         <h3 th:text="'Специализация: ' + ${specialization.get(__${doctor.getSpecialization().getId() - 1}__).getTitleSpecialization()}" ></h3>
         <h3 th:text="'День: ' + ${day.getDay()}"></h3>
+        <h3 th:text="'Кабинет: ' + ${cabinet}"></h3>
+
         <hr class="hr"/>
         <div><br></div>
         <table class="table table-hover">
             <thead>
             <tr>
                 <th scope="col">Время</th>
-                <th scope="col">Статус</th>
-                <th scope="col"></th>
+                <th scope="col">Запись</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="t : ${timeSlots}">
+            <tr th:if="${!t.getRegistered()}" th:each="t : ${timeSlots}">
                 <td th:text="${t.getSlot()}"></td>
-                <td th:classappend="${t.getRegistered() == false} ? 'not-active-reg' : 'active-reg'"
-                    th:text="${t.getRegistered()} == false ? 'Свободно' : 'Занято'"></td>
                 <td>
                     <a th:if="${!t.getRegistered()}" class="btn btn-sm btn-outline-success"
                        th:href="'/registrations/slots/create/' + ${t.getDoctorSlotId()}"
@@ -37,6 +36,11 @@
             </tr>
             </tbody>
         </table>
+        <form>
+
+            <button style="float: left" type="button" class="btn btn-secondary" onclick="window.history.back()">
+                Назад</button>
+        </form>
     </div>
 </div>
 </body>

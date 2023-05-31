@@ -139,7 +139,8 @@ where doctor_id = 4
 select *
 from doctors_slots;
 
-update doctors_slots
-set is_registered = false
-where id = 6
-
+select *
+from doctors_slots ds
+         join registrations r on ds.id = r.doctor_slot_id
+where ds.id = 14
+    and r.is_deleted = false

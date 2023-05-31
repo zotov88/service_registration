@@ -76,7 +76,7 @@
                 <td th:text="${d.getSpecialization().getTitleSpecialization()}"></td>
                 <td>
                     <a class="btn btn-sm btn-outline-success"
-                       th:href="'/doctors/' + ${d.getId()}">Подробнее</a>
+                       th:href="'/doctors/' + ${d.getId()}">О враче</a>
                     <a sec:authorize="hasRole('ADMIN')" th:if="${!d.isDeleted()}"
                        class="btn btn-sm btn-outline-danger"
                        th:href="'/doctors/softdelete/' + ${d.getId()}"

@@ -6,10 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import serviceregistration.dto.ClientDTO;
-import serviceregistration.dto.DoctorDTO;
-import serviceregistration.dto.DoctorSlotDTO;
-import serviceregistration.dto.DoctorSlotSearchDTO;
+import serviceregistration.dto.*;
 import serviceregistration.dto.querymodel.DoctorDay;
 import serviceregistration.dto.querymodel.DoctorSchedule;
 import serviceregistration.dto.querymodel.DoctorSlotForSchedule;
@@ -100,15 +97,15 @@ public class DoctorSlotMVCController {
         return "doctorslots/archiveSchedule";
     }
 
-    @GetMapping("/slots/{doctorId}/{dayId}")
-    public String getSlotsForDoctorDay(@PathVariable Long doctorId,
-                                       @PathVariable Long dayId,
-                                       Model model) {
-        model.addAttribute("timeSlots", doctorSlotService.getSlotsForDoctorDay(doctorId, dayId));
-        model.addAttribute("doctor", doctorService.getOne(doctorId));
-        model.addAttribute("day", dayService.getOne(dayId));
-        return "doctorslots/scheduleDay";
-    }
+//    @GetMapping("/slots/{doctorId}/{dayId}")
+//    public String getSlotsForDoctorDay(@PathVariable Long doctorId,
+//                                       @PathVariable Long dayId,
+//                                       Model model) {
+//        model.addAttribute("timeSlots", doctorSlotService.getSlotsForDoctorDay(doctorId, dayId));
+//        model.addAttribute("doctor", doctorService.getOne(doctorId));
+//        model.addAttribute("day", dayService.getOne(dayId));
+//        return "doctorslots/scheduleDay";
+//    }
 
     @GetMapping("/doctor-schedule/{doctorId}")
     public String doctorSlots(@RequestParam(value = "page", defaultValue = "1") int page,
@@ -126,7 +123,9 @@ public class DoctorSlotMVCController {
                                               @PathVariable Long dayId,
                                               Model model) {
         model.addAttribute("timeSlots", doctorSlotService.getSlotsForDoctorDay(doctorId, dayId));
+        model.addAttribute("doctor", doctorService.getOne(doctorId));
         model.addAttribute("day", dayService.getOne(dayId));
+        model.addAttribute("cabinet", doctorSlotService.getCabinetByDoctorIdAndDayId(doctorId, dayId));
         return "doctorslots/scheduleDay";
     }
 
@@ -206,6 +205,19 @@ public class DoctorSlotMVCController {
         model.addAttribute("specializations", specializationService.listAll());
         model.addAttribute("days", dayService.getActualDays());
         return "doctorslots/makeMeet";
+    }
+
+    @GetMapping("/schedule/actual/{doctorId}")
+    public String filterDoctorSchedule(@PathVariable Long doctorId,
+                                       Model model) {
+        DoctorDTO doctorDTO = doctorService.getOne(doctorId);
+        DoctorSlotSearchDTO doctorSlotSearchDTO = new DoctorSlotSearchDTO();
+        doctorSlotSearchDTO.setFirstName(doctorDTO.getFirstName());
+        doctorSlotSearchDTO.setMidName(doctorDTO.getMidName());
+        doctorSlotSearchDTO.setLastName(doctorDTO.getLastName());
+        doctorSlotSearchDTO.setSpecialization(doctorDTO.getSpecialization().getTitleSpecialization());
+        return searchGroupSlots(1, 12, doctorSlotSearchDTO, model);
+
     }
 
 }

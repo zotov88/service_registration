@@ -97,4 +97,10 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
         doctorDTO.setDeleted(false);
         repository.save(mapper.toEntity(doctorDTO));
     }
+
+    public Page<DoctorDTO> listAllSort(Pageable pageable) {
+        Page<Doctor> doctorsSortPaginated = ((DoctorRepository) repository).findDoctorsSort(pageable);
+        List<DoctorDTO> result = mapper.toDTOs(doctorsSortPaginated.getContent());
+        return new PageImpl<>(result, pageable, doctorsSortPaginated.getTotalElements());
+    }
 }

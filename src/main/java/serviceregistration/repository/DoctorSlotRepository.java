@@ -138,27 +138,29 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
     @Query(nativeQuery = true,
             value = """
                     select doc.first_name as DoctorFirstName, doc.mid_name as DoctorMidName, doc.last_name as DoctorLastName,
-                        s.title as Specialization, d.day as Day, doc.id as DoctorId, d.id as DayId
+                        s.title as Specialization, d.day as Day, doc.id as DoctorId, d.id as DayId, c.number as Cabinet
                     from doctors_slots ds
                         join days d on ds.day_id = d.id
                         join doctors doc on ds.doctor_id = doc.id
                         join specializations s on s.id = doc.specialization_id
+                        join cabinets c on c.id = ds.cabinet_id
                     where day >= TIMESTAMP 'today'
                         and ds.is_registered = false
                         and ds.is_deleted = false
-                    group by doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, doc.id, d.id
-                    order by d.day, s.title, doc.last_name
+                    group by doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, doc.id, d.id, c.number
+                    order by d.day, s.title, doc.last_name, c.number
                     """)
     Page<DoctorDay> groupByDoctorSlot(Pageable pageable);
 
     @Query(nativeQuery = true,
             value = """
                     select doc.first_name as DoctorFirstName, doc.mid_name as DoctorMidName, doc.last_name as DoctorLastName,
-                        s.title as Specialization, d.day as Day, doc.id as DoctorId, d.id as DayId
+                        s.title as Specialization, d.day as Day, doc.id as DoctorId, d.id as DayId, c.number as Cabinet
                     from doctors_slots ds
                         join days d on ds.day_id = d.id
                         join doctors doc on ds.doctor_id = doc.id
                         join specializations s on s.id = doc.specialization_id
+                        join cabinets c on c.id = ds.cabinet_id
                     where day >= TIMESTAMP 'today'
                         and doc.last_name ilike '%' || coalesce(:lastName, '%')  || '%'
                         and doc.first_name ilike '%' || coalesce(:firstName, '%')  || '%'
@@ -167,8 +169,8 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         and to_char(d.day, 'yyyy-mm-dd') ilike'%' || coalesce(:day, '%')  || '%'
                         and ds.is_registered = false
                         and ds.is_deleted = false
-                    group by doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, doc.id, d.id
-                    order by d.day, s.title, doc.last_name
+                    group by doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, doc.id, d.id, c.number
+                    order by d.day, s.title, doc.last_name, c.number
                     """)
     Page<DoctorDay> searchGroupByDoctorSlot(@Param(value = "lastName") String lastName,
                                             @Param(value = "firstName") String firstName,
@@ -224,7 +226,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         join days d on ds.day_id = d.id
                     where doc.id = :doctorId
                         and d.id = :dayId
-                    order by s.time_slot""")
+                    order by ds.is_registered desc, s.time_slot""")
     List<SlotRegistered> getSlotsOneDayForDoctor(Long doctorId, Long dayId);
 
     @Modifying
@@ -274,4 +276,16 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         and r.is_active = true
                     """)
     List<Long> findAllRegistrationsByDoctorId(Long doctorId);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select c.number
+                    from doctors_slots ds
+                        join cabinets c on c.id = ds.cabinet_id
+                        join doctors doc on doc.id = ds.doctor_id
+                        join days d on d.id = ds.day_id
+                    where doc.id = :doctorId
+                        and d.id = :dayId
+                    """)
+    Integer findCabinetByDoctorIdAndDayId(Long doctorId, Long dayId);
 }

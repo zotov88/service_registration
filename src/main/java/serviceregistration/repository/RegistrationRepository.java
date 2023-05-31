@@ -70,6 +70,7 @@ public interface RegistrationRepository
                     from doctors_slots ds
                         join registrations r on ds.id = r.doctor_slot_id
                     where ds.id = :doctorSlotId
+                        and r.is_deleted = false
                     """)
     Long findIdByDoctorSlotId(Long doctorSlotId);
 }

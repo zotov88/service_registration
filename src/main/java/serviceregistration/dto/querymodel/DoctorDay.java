@@ -6,5 +6,6 @@ public interface DoctorDay extends DoctorName {
     Long getDayId();
     String getSpecialization();
     String getDay();
+    Integer getCabinet();
 
 }

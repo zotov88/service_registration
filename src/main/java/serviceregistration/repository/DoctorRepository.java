@@ -19,6 +19,7 @@ public interface DoctorRepository extends GenericRepository<Doctor> {
                         and first_name ilike '%' || coalesce(:firstName, '%')  || '%'
                         and mid_name ilike '%' || coalesce(:midName, '%')  || '%'
                         and s.title like '%' || coalesce(:specialization, '%')  || '%'
+                    order by s.title, d.last_name, d.first_name, d.mid_name
                     """)
     Page<Doctor> searchDoctors(@Param(value = "lastName") String lastName,
                                @Param(value = "firstName") String firstName,
@@ -26,4 +27,12 @@ public interface DoctorRepository extends GenericRepository<Doctor> {
                                @Param(value = "specialization") String specialization,
                                Pageable page);
 
+    @Query(nativeQuery = true,
+            value = """
+                    select d.*
+                    from doctors d
+                        join specializations s on s.id = d.specialization_id
+                    order by s.title, d.last_name, d.first_name, d.mid_name
+                    """)
+    Page<Doctor> findDoctorsSort(Pageable pageable);
 }
