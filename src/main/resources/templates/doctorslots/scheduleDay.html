@@ -11,14 +11,16 @@
 <div layout:fragment="content">
     <div>
         <hr class="hr"/>
-        <h3 align="center" th:text="'Расписание на ' + ${day.getDay()}"></h3>
+        <h3 th:text="'Расписание на ' + ${day.getDay()}"></h3>
+        <h3 sec:authorize="hasRole('ADMIN')" th:text="'Врач: ' + ${doctor.getLastName()} + ' ' + ${doctor.getFirstName()} + ' ' + ${doctor.getMidName()}"></h3>
+        <hr class="hr"/>
         <div><br></div>
-        <table class="table table-hover">
+        <table class="table table-bordered mt-3">
             <thead>
             <tr>
                 <th scope="col">Время</th>
                 <th scope="col">Статус</th>
-                <th scope="col">Информация</th>
+                <th scope="col">Действия</th>
             </tr>
             </thead>
             <tbody>
@@ -27,8 +29,11 @@
                 <td th:classappend="${t.getRegistered() == false} ? 'not-active-reg' : 'active-reg'"
                     th:text="${t.getRegistered()} == false ? 'Свободно' : 'Занято'"></td>
                 <td>
-                    <a th:if="${t.getRegistered()}" sec:authorize="hasRole('DOCTOR')" class="btn btn-sm btn-outline-success"
-                       th:href="'/doctorslots/doctor-schedule/day/slot/' + ${t.getDoctorSlotId()}">Подробнее</a>
+                    <a th:if="${t.getRegistered()}" class="btn btn-sm btn-outline-success"
+                       th:href="'/doctorslots/doctor-schedule/day/slot/' + ${t.getDoctorSlotId()}">Посетитель</a>
+                    <a th:if="${t.getRegistered()}" class="btn btn-sm btn-outline-danger"
+                       th:href="'/registrations/client-slots/cancel/ds/' + ${t.getDoctorSlotId()}"
+                       onclick="return confirm('Вы хотите отменить запись?')">Отменить</a>
                 </td>
             </tr>
             </tbody>

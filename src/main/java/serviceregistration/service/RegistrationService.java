@@ -67,12 +67,17 @@ public class RegistrationService extends GenericService<Registration, Registrati
         DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(registrationDTO.getDoctorSlotId());
         doctorSlotDTO.setIsRegistered(false);
         registrationDTO.setIsActive(false);
+        registrationDTO.setDeleted(true);
         doctorSlotService.update(doctorSlotDTO);
         update(registrationDTO);
     }
 
     public Registration getOnByDoctorSlotId(Long id) {
         return ((RegistrationRepository)repository).findOnByDoctorSlotId(id);
+    }
+
+    public Long getIdByDoctorSlotId(Long doctorSlotId) {
+        return ((RegistrationRepository)repository).findIdByDoctorSlotId(doctorSlotId);
     }
 
 //    public RegistrationDTO registrationSlot(RegistrationDTO registrationDTO) {

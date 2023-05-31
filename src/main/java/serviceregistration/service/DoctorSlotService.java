@@ -143,4 +143,11 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
     }
 
 
+    public List<DoctorSlotDTO> getAllByDoctorId(Long doctorId) {
+        return mapper.toDTOs(doctorSlotRepository.findAllByDoctorId(doctorId));
+    }
+
+    public List<Long> getAllRegistrationsByDoctorId(Long doctorId) {
+        return doctorSlotRepository.findAllRegistrationsByDoctorId(doctorId);
+    }
 }

@@ -6,7 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import serviceregistration.dto.querymodel.*;
+import serviceregistration.dto.querymodel.DoctorDay;
+import serviceregistration.dto.querymodel.DoctorSchedule;
+import serviceregistration.dto.querymodel.DoctorSlotForSchedule;
+import serviceregistration.dto.querymodel.SlotRegistered;
 import serviceregistration.model.DoctorSlot;
 
 import java.util.List;
@@ -156,7 +159,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         join days d on ds.day_id = d.id
                         join doctors doc on ds.doctor_id = doc.id
                         join specializations s on s.id = doc.specialization_id
-                    where day > TIMESTAMP 'today'
+                    where day >= TIMESTAMP 'today'
                         and doc.last_name ilike '%' || coalesce(:lastName, '%')  || '%'
                         and doc.first_name ilike '%' || coalesce(:firstName, '%')  || '%'
                         and doc.mid_name ilike'%' || coalesce(:midName, '%')  || '%'
@@ -173,19 +176,6 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                                             @Param(value = "specialization") String specialization,
                                             @Param(value = "day") String day,
                                             Pageable pageable);
-
-//    @Query(nativeQuery = true,
-//            value = """
-//                    select dc.first_name as DoctorFirstName, dc.mid_name as DoctorMidName, dc.last_name as DoctorLastName,
-//                        s.title as Specialization, d.day as Day, dc.id as DoctorId, d.id as DayId
-//                    from doctors_slots ds
-//                        join days d on ds.day_id = d.id
-//                        join doctors dc on ds.doctor_id = dc.id
-//                        join specializations s on s.id = dc.specialization_id
-//                    where day > TIMESTAMP 'today'
-//                        and ds.is_registered = false
-//                    group by dc.first_name, dc.mid_name, dc.last_name, s.title, d.day, dc.id, d.id""")
-//    List<DoctorDay> groupByDoctorSlot();
 
     @Query(nativeQuery = true,
             value = """
@@ -266,5 +256,22 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     """)
     List<Long> findIdsWhereActiveSlots(Long doctorId, Long dayId);
 
+    @Query(nativeQuery = true,
+            value = """
+                    select *
+                    from doctors_slots
+                    where doctor_id = :doctorId
+                    """)
+    List<DoctorSlot> findAllByDoctorId(Long doctorId);
 
+    @Query(nativeQuery = true,
+            value = """
+                    select r.id
+                    from doctors_slots
+                        join doctors d on doctors_slots.doctor_id = d.id
+                        join registrations r on doctors_slots.id = r.doctor_slot_id
+                    where doctor_id = :doctorId
+                        and r.is_active = true
+                    """)
+    List<Long> findAllRegistrationsByDoctorId(Long doctorId);
 }

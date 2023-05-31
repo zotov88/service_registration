@@ -10,6 +10,8 @@ import serviceregistration.dto.DoctorDTO;
 import serviceregistration.dto.DoctorSearchDTO;
 import serviceregistration.model.Specialization;
 import serviceregistration.service.DoctorService;
+import serviceregistration.service.DoctorSlotService;
+import serviceregistration.service.RegistrationService;
 import serviceregistration.service.SpecializationService;
 
 import java.util.List;
@@ -21,12 +23,18 @@ import static serviceregistration.constants.UserRolesConstants.ADMIN;
 public class DoctorMVCController {
 
     private final DoctorService doctorService;
+    private final DoctorSlotService doctorSlotService;
     private final SpecializationService specializationService;
+    private final RegistrationService registrationService;
 
     public DoctorMVCController(DoctorService doctorService,
-                               SpecializationService specializationService) {
+                               DoctorSlotService doctorSlotService,
+                               SpecializationService specializationService,
+                               RegistrationService registrationService) {
         this.doctorService = doctorService;
+        this.doctorSlotService = doctorSlotService;
         this.specializationService = specializationService;
+        this.registrationService = registrationService;
     }
 
     @GetMapping("")
@@ -35,7 +43,6 @@ public class DoctorMVCController {
                          Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         Page<DoctorDTO> doctors = doctorService.listAll(pageRequest);
-//        List<Specialization> specializations = specializationService.listAll();
         model.addAttribute("specializations", specializationService.listAll());
         model.addAttribute("doctors", doctors);
         return "doctors/list";
@@ -48,7 +55,6 @@ public class DoctorMVCController {
                                Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         model.addAttribute("doctors", doctorService.findDoctors(doctorSearchDTO, pageRequest));
-//        List<Specialization> specializations = specializationService.listAll();
         model.addAttribute("specializations", specializationService.listAll());
         return "doctors/list";
     }
@@ -74,6 +80,18 @@ public class DoctorMVCController {
             return "doctors/addDoctor";
         }
         doctorService.create(doctorDTO);
+        return "redirect:/doctors";
+    }
+
+    @GetMapping("/softdelete/{doctorId}")
+    public String softDelete(@PathVariable Long doctorId) {
+        doctorService.softDelete(doctorId);
+        return "redirect:/doctors";
+    }
+
+    @GetMapping("/restore/{doctorId}")
+    public String restore(@PathVariable Long doctorId) {
+        doctorService.restore(doctorId);
         return "redirect:/doctors";
     }
 

@@ -37,7 +37,8 @@ public class DoctorSlotMVCController {
                                    CabinetService cabinetService,
                                    SpecializationService specializationService,
                                    DoctorSlotRegistrationService doctorSlotRegistrationService,
-                                   ClientService clientService) {
+                                   ClientService clientService,
+                                   RegistrationService registrationService) {
         this.doctorSlotService = doctorSlotService;
         this.doctorService = doctorService;
         this.dayService = dayService;
@@ -104,6 +105,8 @@ public class DoctorSlotMVCController {
                                        @PathVariable Long dayId,
                                        Model model) {
         model.addAttribute("timeSlots", doctorSlotService.getSlotsForDoctorDay(doctorId, dayId));
+        model.addAttribute("doctor", doctorService.getOne(doctorId));
+        model.addAttribute("day", dayService.getOne(dayId));
         return "doctorslots/scheduleDay";
     }
 

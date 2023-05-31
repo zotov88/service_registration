@@ -48,37 +48,44 @@
                 </div>
             </div>
         </form>
-        <hr class="hr"/>
+        <hr class="mt-3 hr"/>
     </div>
     <div><br></div>
     <h3 align="center">Врачи</h3>
     <div class="row">
         <div class="col">
             <a sec:authorize="isAuthenticated() && hasRole('ADMIN')"
-               href="/doctors/deleteDoctor"
-               class="btn btn-sm btn-success"
-               role="button"
-               style="float: right"
-               aria-disabled="true">Удалить</a>
-            <a sec:authorize="isAuthenticated() && hasRole('ADMIN')"
                href="/doctors/addDoctor"
                class="btn btn-sm btn-success"
                role="button"
                style="float: right"
-               aria-disabled="true">Добавить</a>
+               aria-disabled="true">Регистрация врача</a>
         </div>
         <div><br></div>
-        <table class="table table-hover">
+        <table class="table table-bordered table-sm mt-3">
             <thead>
             <tr>
                 <th scope="col">Врач</th>
                 <th scope="col">Специализация</th>
+                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="d : ${doctors}">
                 <td th:text="${d.getLastName() + ' ' + d.getFirstName() + ' ' + d.getMidName()}"></td>
                 <td th:text="${d.getSpecialization().getTitleSpecialization()}"></td>
+                <td>
+                    <a class="btn btn-sm btn-outline-success"
+                       th:href="'/doctors/' + ${d.getId()}">Подробнее</a>
+                    <a sec:authorize="hasRole('ADMIN')" th:if="${!d.isDeleted()}"
+                       class="btn btn-sm btn-outline-danger"
+                       th:href="'/doctors/softdelete/' + ${d.getId()}"
+                       onclick="return confirm('Вы хотите удалить врача? ' +
+                        '\nУдалится все его расписание и отменятся все вктивные записи!')">Удалить</a>
+                    <a sec:authorize="hasRole('ADMIN')" th:if="${d.isDeleted()}" class="btn btn-sm btn-outline-warning"
+                       th:href="'/doctors/restore/' + ${d.getId()}"
+                       onclick="return confirm('Вы хотите восстановить врача?' + '\nБудет восстановлено его расписание')">Восстановить</a>
+                </td>
             </tr>
             </tbody>
         </table>

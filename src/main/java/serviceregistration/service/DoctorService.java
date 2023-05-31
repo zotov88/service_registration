@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import serviceregistration.dto.DoctorDTO;
 import serviceregistration.dto.DoctorSearchDTO;
+import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.dto.RoleDTO;
 import serviceregistration.mapper.DoctorMapper;
 import serviceregistration.model.Doctor;
@@ -20,23 +21,32 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
 
     private final UserService userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final DoctorSlotService doctorSlotService;
+    private final RegistrationService registrationService;
 
     public DoctorService(DoctorRepository repository,
                          DoctorMapper mapper,
-                         UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+                         UserService userService,
+                         BCryptPasswordEncoder bCryptPasswordEncoder,
+                         DoctorSlotService doctorSlotService,
+                         RegistrationService registrationService) {
         super(repository, mapper);
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.doctorSlotService = doctorSlotService;
+        this.registrationService = registrationService;
     }
 
-    public DoctorDTO create(DoctorDTO newObj) {
+    public DoctorDTO create(DoctorDTO doctorDTO) {
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setId(2L);
-        newObj.setRole(roleDTO);
-        newObj.setPassword(bCryptPasswordEncoder.encode(newObj.getPassword()));
-        newObj.setCreatedWhen(LocalDateTime.now());
-        userService.createUser(newObj.getLogin(), newObj.getRole().getId());
-        return mapper.toDTO(repository.save(mapper.toEntity(newObj)));
+        doctorDTO.setRole(roleDTO);
+        doctorDTO.setPassword(bCryptPasswordEncoder.encode(doctorDTO.getPassword()));
+        doctorDTO.setCreatedWhen(LocalDateTime.now());
+        if (userService.findUserByLogin(doctorDTO.getLogin()) == null) {
+            userService.createUser(doctorDTO.getLogin(), doctorDTO.getRole().getId());
+        }
+        return mapper.toDTO(repository.save(mapper.toEntity(doctorDTO)));
     }
 
     @Override
@@ -61,4 +71,30 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
         return new PageImpl<>(result, pageRequest, doctorsPaginated.getTotalElements());
     }
 
+    public void softDelete(Long doctorId) {
+        DoctorDTO doctorDTO = getOne(doctorId);
+        List<DoctorSlotDTO> allSchedule = doctorSlotService.getAllByDoctorId(doctorDTO.getId());
+        List<Long> registrationIds = doctorSlotService.getAllRegistrationsByDoctorId(doctorDTO.getId());
+        for (Long id : registrationIds) {
+            registrationService.cancelMeet(id);
+        }
+        for (DoctorSlotDTO schedule : allSchedule) {
+            schedule.setDeleted(true);
+            schedule.setIsRegistered(false);
+            doctorSlotService.update(schedule);
+        }
+        doctorDTO.setDeleted(true);
+        repository.save(mapper.toEntity(doctorDTO));
+    }
+
+    public void restore(Long doctorId) {
+        DoctorDTO doctorDTO = getOne(doctorId);
+        List<DoctorSlotDTO> allSchedule = doctorSlotService.getAllByDoctorId(doctorDTO.getId());
+        for (DoctorSlotDTO schedule : allSchedule) {
+            schedule.setDeleted(false);
+            doctorSlotService.update(schedule);
+        }
+        doctorDTO.setDeleted(false);
+        repository.save(mapper.toEntity(doctorDTO));
+    }
 }

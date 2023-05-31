@@ -64,4 +64,12 @@ public interface RegistrationRepository
                     """)
     Registration findOnByDoctorSlotId(Long doctorSlotId);
 
+    @Query(nativeQuery = true,
+            value = """
+                    select r.id
+                    from doctors_slots ds
+                        join registrations r on ds.id = r.doctor_slot_id
+                    where ds.id = :doctorSlotId
+                    """)
+    Long findIdByDoctorSlotId(Long doctorSlotId);
 }

@@ -72,6 +72,21 @@ public class RegistrationMVCController {
         return "registrations/clientList";
     }
 
+    @GetMapping("/client-slots/cancel/{registrationId}")
+    public String cancelMeet(@PathVariable Long registrationId) {
+        registrationService.cancelMeet(registrationId);
+        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return "redirect:/registrations/client-slots/" + customUserDetails.getUserId();
+    }
+
+    @GetMapping("/client-slots/cancel/ds/{doctorSlotId}")
+    public String cancelMeetByDs(@PathVariable Long doctorSlotId) {
+        Long registrationId = registrationService.getIdByDoctorSlotId(doctorSlotId);
+        registrationService.cancelMeet(registrationId);
+        DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(doctorSlotId);
+        return "redirect:/doctorslots/slots/" + doctorSlotDTO.getDoctor().getId() + "/" + doctorSlotDTO.getDay().getId();
+    }
+
     @GetMapping("/doctor-slots-today/{doctorId}")
     public String doctorSlots(@PathVariable Long doctorId,
                               Model model) {
@@ -79,18 +94,6 @@ public class RegistrationMVCController {
         model.addAttribute("slotRegistered", slotRegistereds);
         return "registrations/doctorList";
     }
-
-//    @GetMapping("/doctor-slots/{doctorId}")
-//    public String doctorSlots(@RequestParam(value = "page", defaultValue = "1") int page,
-//                              @RequestParam(value = "size", defaultValue = "5") int pageSize,
-//                              @PathVariable Long doctorId,
-//                              Model model) {
-//        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
-//        Page<DoctorSchedule> doctorSchedules = doctorSlotService.getScheduleByDoctor(pageRequest, doctorId);
-//        model.addAttribute("doctorSchedules", doctorSchedules);
-////        model.addAttribute("doctorRegistrations", doctorRegistrations);
-//        return "registrations/doctorList";
-//    }
 
     @GetMapping("/slots/{doctorId}/{dayId}")
     public String createMeet(@PathVariable Long doctorId,
@@ -121,12 +124,7 @@ public class RegistrationMVCController {
         return "redirect:/registrations/client-slots/" + customUserDetails.getUserId();
     }
 
-    @GetMapping("/client-slots/cancel/{registrationId}")
-    public String cancelMeet(@PathVariable Long registrationId) {
-        registrationService.cancelMeet(registrationId);
-        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return "redirect:/registrations/client-slots/" + customUserDetails.getUserId();
-    }
+
 
 
 //    @GetMapping("/restore/{doctorId}/{dayId}")

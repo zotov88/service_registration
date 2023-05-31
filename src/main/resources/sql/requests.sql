@@ -39,14 +39,10 @@ values
 
 insert into days(day)
 values
-    ('2023-05-01'),
+    ('2023-05-31'),
     ('2023-07-01'),
-    ('2023-07-02');
-
-insert into days(day)
-values
-    ('2023-05-30');
-
+    ('2023-07-02'),
+    ('2023-07-03');
 
 insert into doctors
 values (nextval('doctors_seq'), null, now(), null, null, false, 'Петр', 'Иванов', 'l', 'Иванович', 'p', 2, 1),
@@ -132,15 +128,18 @@ where d.id = 4
     and d2.day > TIMESTAMP 'today'
 order by d2.day desc
 
-select ds.id as DoctorSlotId, s.time_slot as Slot, ds.is_registered as Registered
-from doctors d
-         join doctors_slots ds on d.id = ds.doctor_id
-         join days d2 on ds.day_id = d2.id
-         join cabinets c on ds.cabinet_id = c.id
-         join slots s on ds.slot_id = s.id
-where d2.day = TIMESTAMP 'today'
-  and d.id = 7
+select r.id
+from doctors_slots
+         join doctors d on doctors_slots.doctor_id = d.id
+         join registrations r on doctors_slots.id = r.doctor_slot_id
+where doctor_id = 4
+    and r.is_active = true
 
 
+select *
+from doctors_slots;
 
+update doctors_slots
+set is_registered = false
+where id = 6
 

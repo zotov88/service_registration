@@ -41,7 +41,7 @@ public interface WebSecurityConstants {
                     "doctorslots/makeMeet"
             );
 
-    List<String> DOCTORSLOTS_PERMISSION_LIST_FOR_DOCTOR = List.of
+    List<String> DOCTORSLOTS_PERMISSION_LIST = List.of
             (
                     "doctorslots/doctor-schedule/**"
             );
