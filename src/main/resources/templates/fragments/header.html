@@ -14,8 +14,8 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/doctors">Врачи</a>
                     </li>
-                    <li sec:authorize="isAuthenticated() && hasRole('ADMIN')" class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/clients/list">Клиенты</a>
+                    <li sec:authorize="isAuthenticated() && (hasRole('ADMIN') || hasRole('DOCTOR'))" class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/clients">Клиенты</a>
                     </li>
                     <li sec:authorize="isAuthenticated() && hasRole('ADMIN')" class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/doctorslots">Расписание</a>
@@ -28,9 +28,6 @@
                     </li>
                     <li sec:authorize="isAuthenticated() && hasRole('CLIENT')" class="nav-item">
                         <a class="nav-link active" aria-current="page" th:href="'/registrations/client-slots/' + ${#authentication.getPrincipal().getUserId()}">Мои записи</a>
-                    </li>
-                    <li sec:authorize="isAuthenticated() && hasRole('ADMIN')" class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/registrations/listAll">Архив записей</a>
                     </li>
                     <li sec:authorize="isAuthenticated() && hasRole('DOCTOR')" class="nav-item">
                         <a class="nav-link active" aria-current="page"

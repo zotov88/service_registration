@@ -59,9 +59,21 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
         return mapper.toDTO(((DoctorRepository) repository).findDoctorByLogin(login));
     }
 
-    public Page<DoctorDTO> findDoctors(DoctorSearchDTO doctorSearchDTO,
-                                       Pageable pageRequest) {
-        Page<Doctor> doctorsPaginated = ((DoctorRepository) repository).searchDoctors(
+    public Page<DoctorDTO> searchDoctorsSort(DoctorSearchDTO doctorSearchDTO,
+                                             Pageable pageRequest) {
+        Page<Doctor> doctorsPaginated = ((DoctorRepository) repository).findSearchDoctorsSort(
+                doctorSearchDTO.getLastName(),
+                doctorSearchDTO.getFirstName(),
+                doctorSearchDTO.getMidName(),
+                doctorSearchDTO.getSpecialization(),
+                pageRequest);
+        List<DoctorDTO> result = mapper.toDTOs(doctorsPaginated.getContent());
+        return new PageImpl<>(result, pageRequest, doctorsPaginated.getTotalElements());
+    }
+
+    public Page<DoctorDTO> searchDoctorsSortWithDeletedFalse(DoctorSearchDTO doctorSearchDTO, 
+                                                             Pageable pageRequest) {
+        Page<Doctor> doctorsPaginated = ((DoctorRepository) repository).findSearchDoctorsSortWithDeletedFalse(
                 doctorSearchDTO.getLastName(),
                 doctorSearchDTO.getFirstName(),
                 doctorSearchDTO.getMidName(),
@@ -98,9 +110,17 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
         repository.save(mapper.toEntity(doctorDTO));
     }
 
-    public Page<DoctorDTO> listAllSort(Pageable pageable) {
+    public Page<DoctorDTO> listAllDoctorsSort(Pageable pageable) {
         Page<Doctor> doctorsSortPaginated = ((DoctorRepository) repository).findDoctorsSort(pageable);
         List<DoctorDTO> result = mapper.toDTOs(doctorsSortPaginated.getContent());
         return new PageImpl<>(result, pageable, doctorsSortPaginated.getTotalElements());
     }
+
+    public Page<DoctorDTO> listAllDoctorsSortWithDeletedFalse(Pageable pageable) {
+        Page<Doctor> doctorsSortPaginated = ((DoctorRepository) repository).findAllDoctorsSortWithDeletedFalse(pageable);
+        List<DoctorDTO> result = mapper.toDTOs(doctorsSortPaginated.getContent());
+        return new PageImpl<>(result, pageable, doctorsSortPaginated.getTotalElements());
+    }
+
+    
 }

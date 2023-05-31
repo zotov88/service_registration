@@ -1,11 +1,14 @@
 package serviceregistration.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import serviceregistration.model.Client;
 
 public interface ClientRepository extends GenericRepository<Client> {
 
-    Client findClientByLogin(String login);
+    Client findClientByLoginAndIsDeletedFalse(String login);
 
     Client findClientByEmail(String email);
 
@@ -43,12 +46,53 @@ public interface ClientRepository extends GenericRepository<Client> {
     @Query(nativeQuery = true,
             value = """
                     select c.*
-                    from registrations
-                        join doctors_slots ds on ds.id = registrations.doctor_slot_id
-                        join clients c on c.id = registrations.client_id
+                    from registrations r
+                        join doctors_slots ds on ds.id = r.doctor_slot_id
+                        join clients c on c.id = r.client_id
                     where ds.id = :doctorSlotId
+                        and r.is_active= true
                     """)
     Client findClientIdByDoctorSlot(Long doctorSlotId);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select c.*
+                    from clients c
+                    where last_name ilike '%' || coalesce(:lastName, '%')  || '%'
+                        and first_name ilike '%' || coalesce(:firstName, '%')  || '%'
+                        and mid_name ilike '%' || coalesce(:midName, '%')  || '%'
+                    order by c.last_name, c.first_name, c.mid_name
+                    """)
+    Page<Client> searchClients(@Param(value = "lastName") String lastName,
+                               @Param(value = "firstName") String firstName,
+                               @Param(value = "midName") String midName,
+                               Pageable page);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select c.*
+                    from clients c
+                    where last_name ilike '%' || coalesce(:lastName, '%')  || '%'
+                        and first_name ilike '%' || coalesce(:firstName, '%')  || '%'
+                        and mid_name ilike '%' || coalesce(:midName, '%')  || '%'
+                        and is_deleted = false
+                    order by c.last_name, c.first_name, c.mid_name
+                    """)
+    Page<Client> searchClientsWithDeletedFalse(@Param(value = "lastName") String lastName,
+                                               @Param(value = "firstName") String firstName,
+                                               @Param(value = "midName") String midName,
+                                               Pageable page);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select c.*
+                    from clients c
+                    where is_deleted = false
+                    order by c.last_name, c.first_name, c.mid_name
+                    """)
+    Page<Client> findListAllWithDeletedFalse(Pageable pageRequest);
+
+
 
 //    @Query(nativeQuery = true,
 //            value = """

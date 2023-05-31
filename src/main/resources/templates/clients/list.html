@@ -9,7 +9,40 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <h1 align="center">Клиенты</h1>
+
+    <div>
+        <hr class="hr"/>
+        <h3 align="center">Поиск клиента</h3>
+        <form method="POST" th:action="@{/clients/search}" th:object="${clientSearchForm}">
+            <div class="mt-0 row g-2">
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input name="lastName" type="text" class="form-control" id="lastName" placeholder="Фамилия">
+                        <label for="lastName">Фамилия</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input name="firstName" type="text" class="form-control" id="firstName" placeholder="Имя">
+                        <label for="firstName">Имя</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input name="midName" type="text" class="form-control" id="midName" placeholder="Отчество">
+                        <label for="midName">Отчество</label>
+                    </div>
+                </div>
+                <div class="row g-2">
+                    <button type="submit" class="btn btn-secondary">Найти клиента</button>
+                </div>
+            </div>
+        </form>
+        <hr class="mt-3 hr"/>
+    </div>
+    <div><br></div>
+
+    <h3 align="center">Клиенты</h3>
     <div class="row">
         <div class="col">
         </div>
@@ -33,11 +66,14 @@
                 <td th:text="${c.getPhone()}"></td>
                 <td th:text="${c.getEmail()}"></td>
                 <td>
-                    <a href="/clients"
-                       class="btn btn-success"
-                       role="button"
-                       style="float: right"
-                       aria-disabled="true">Архив</a>
+                    <a class="btn btn-sm btn-outline-success"
+                       th:href="'/clients/profile/' + ${c.getId()}">О клиенте</a>
+                    <a sec:authorize="isAuthenticated() && hasRole('ADMIN')" th:if="${!c.isDeleted()}" class="btn btn-sm btn-outline-danger"
+                       th:href="'/clients/softdelete/' + ${c.getId()}"
+                       onclick="return confirm('Вы хотите удалить клиента?')">Удалить</a>
+                    <a sec:authorize="isAuthenticated() && hasRole('ADMIN')" th:if="${c.isDeleted()}" class="btn btn-sm btn-outline-warning"
+                       th:href="'/clients/restore/' + ${c.getId()}"
+                       onclick="return confirm('Вы хотите восстановить клиента?')">Восстановить</a>
                 </td>
             </tr>
             </tbody>
@@ -47,7 +83,7 @@
         <ul class="pagination justify-content-center font-weight-bold">
             <li class="page-item" th:classappend="${clients.number eq 0} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/clients/list?page={id}(id=${clients.number lt 2 ? 1 : clients.number})}"
+                   th:href="@{/clients?page={id}(id=${clients.number lt 2 ? 1 : clients.number})}"
                    aria-label="Previous" title="Previous Page" data-toggle="tooltip">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
@@ -55,12 +91,12 @@
             <li class="page-item"
                 th:each="i : ${#numbers.sequence(1, clients.totalPages, 1)}"
                 th:classappend="${i eq clients.number + 1} ? 'active'">
-                <a class="page-link" th:href="@{/clients/list?page={id}(id=${i})}" th:text="${i}"
+                <a class="page-link" th:href="@{/clients?page={id}(id=${i})}" th:text="${i}"
                    th:title="${'Page '+ i}" data-toggle="tooltip"></a>
             </li>
             <li class="page-item" th:classappend="${clients.number eq clients.totalPages - 1} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/clients/list?page={id}(id=${clients.number + 2})}"
+                   th:href="@{/clients?page={id}(id=${clients.number + 2})}"
                    aria-label="Next" title="Next Page" data-toggle="tooltip">
                     <span aria-hidden="true">&raquo;</span>
                 </a>

@@ -6,10 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import serviceregistration.dto.querymodel.DoctorDay;
-import serviceregistration.dto.querymodel.DoctorSchedule;
-import serviceregistration.dto.querymodel.DoctorSlotForSchedule;
-import serviceregistration.dto.querymodel.SlotRegistered;
+import serviceregistration.querymodel.UniversalQueryModel;
 import serviceregistration.model.DoctorSlot;
 
 import java.util.List;
@@ -53,7 +50,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     group by doc.id, d.id, doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, c.number, ds.is_deleted
                     order by d.day, doc.last_name, s.title
                     """)
-    Page<DoctorSlotForSchedule> findActualScheduleGroup(Pageable pageable);
+    Page<UniversalQueryModel> findActualScheduleGroup(Pageable pageable);
 
     @Query(nativeQuery = true,
             value = """
@@ -75,7 +72,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     group by doc.id, d.id, doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, c.number, ds.is_deleted
                     order by d.day, doc.last_name, s.title
                         """)
-    Page<DoctorSlotForSchedule> searchActualScheduleGroup(@Param(value = "lastName") String lastName,
+    Page<UniversalQueryModel> searchActualScheduleGroup(@Param(value = "lastName") String lastName,
                                                           @Param(value = "firstName") String firstName,
                                                           @Param(value = "midName") String midName,
                                                           @Param(value = "specialization") String specialization,
@@ -96,7 +93,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     group by doc.id, d.id, doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, c.number, ds.is_deleted
                     order by d.day, doc.last_name, s.title
                     """)
-    Page<DoctorSlotForSchedule> findArchiveScheduleGroup(PageRequest pageable);
+    Page<UniversalQueryModel> findArchiveScheduleGroup(PageRequest pageable);
 
     @Query(nativeQuery = true,
             value = """
@@ -117,7 +114,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     group by doc.id, d.id, doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, c.number, ds.is_deleted
                     order by d.day, doc.last_name, s.title
                         """)
-    Page<DoctorSlotForSchedule> searchArchiveScheduleGroup(@Param(value = "lastName") String lastName,
+    Page<UniversalQueryModel> searchArchiveScheduleGroup(@Param(value = "lastName") String lastName,
                                                            @Param(value = "firstName") String firstName,
                                                            @Param(value = "midName") String midName,
                                                            @Param(value = "specialization") String specialization,
@@ -150,7 +147,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     group by doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, doc.id, d.id, c.number
                     order by d.day, s.title, doc.last_name, c.number
                     """)
-    Page<DoctorDay> groupByDoctorSlot(Pageable pageable);
+    Page<UniversalQueryModel> groupByDoctorSlot(Pageable pageable);
 
     @Query(nativeQuery = true,
             value = """
@@ -172,7 +169,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     group by doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, doc.id, d.id, c.number
                     order by d.day, s.title, doc.last_name, c.number
                     """)
-    Page<DoctorDay> searchGroupByDoctorSlot(@Param(value = "lastName") String lastName,
+    Page<UniversalQueryModel> searchGroupByDoctorSlot(@Param(value = "lastName") String lastName,
                                             @Param(value = "firstName") String firstName,
                                             @Param(value = "midName") String midName,
                                             @Param(value = "specialization") String specialization,
@@ -200,7 +197,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     group by d2.day, c.number, d2.id
                     order by d2.day
                     """)
-    Page<DoctorSchedule> findScheduleByDoctorId(Pageable pageable, Long doctorId);
+    Page<UniversalQueryModel> findScheduleByDoctorId(Pageable pageable, Long doctorId);
 
     @Query(nativeQuery = true,
             value = """
@@ -215,7 +212,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         and d.id = :doctorId
                     order by s.time_slot
                     """)
-    List<SlotRegistered> findScheduleByDoctorIdToday(Long doctorId);
+    List<UniversalQueryModel> findScheduleByDoctorIdToday(Long doctorId);
 
     @Query(nativeQuery = true,
             value = """
@@ -227,7 +224,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     where doc.id = :doctorId
                         and d.id = :dayId
                     order by ds.is_registered desc, s.time_slot""")
-    List<SlotRegistered> getSlotsOneDayForDoctor(Long doctorId, Long dayId);
+    List<UniversalQueryModel> getSlotsOneDayForDoctor(Long doctorId, Long dayId);
 
     @Modifying
     @Query(nativeQuery = true,
@@ -288,4 +285,16 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         and d.id = :dayId
                     """)
     Integer findCabinetByDoctorIdAndDayId(Long doctorId, Long dayId);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select ds.*
+                    from doctors_slots ds
+                        join registrations r on ds.id = r.doctor_slot_id
+                        join clients c on c.id = r.client_id
+                    where c.id = :clientId
+                        and ds.is_registered = true
+                        and r.is_active = true
+                    """)
+    List<DoctorSlot> findAllActiveDoctorSlotsByClientId(Long clientId);
 }

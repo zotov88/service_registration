@@ -10,6 +10,8 @@ public interface DoctorRepository extends GenericRepository<Doctor> {
 
     Doctor findDoctorByLogin(String login);
 
+    Doctor findDoctorByLoginAndIsDeletedFalse(String login);
+
     @Query(nativeQuery = true,
             value = """
                     select d.*
@@ -21,11 +23,29 @@ public interface DoctorRepository extends GenericRepository<Doctor> {
                         and s.title like '%' || coalesce(:specialization, '%')  || '%'
                     order by s.title, d.last_name, d.first_name, d.mid_name
                     """)
-    Page<Doctor> searchDoctors(@Param(value = "lastName") String lastName,
-                               @Param(value = "firstName") String firstName,
-                               @Param(value = "midName") String midName,
-                               @Param(value = "specialization") String specialization,
-                               Pageable page);
+    Page<Doctor> findSearchDoctorsSort(@Param(value = "lastName") String lastName,
+                                       @Param(value = "firstName") String firstName,
+                                       @Param(value = "midName") String midName,
+                                       @Param(value = "specialization") String specialization,
+                                       Pageable page);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select d.*
+                    from doctors d
+                        left join specializations s on d.specialization_id = s.id
+                    where last_name ilike '%' || coalesce(:lastName, '%')  || '%'
+                        and first_name ilike '%' || coalesce(:firstName, '%')  || '%'
+                        and mid_name ilike '%' || coalesce(:midName, '%')  || '%'
+                        and s.title like '%' || coalesce(:specialization, '%')  || '%'
+                        and d.is_deleted = false
+                    order by s.title, d.last_name, d.first_name, d.mid_name
+                    """)
+    Page<Doctor> findSearchDoctorsSortWithDeletedFalse(@Param(value = "lastName") String lastName,
+                                                       @Param(value = "firstName") String firstName,
+                                                       @Param(value = "midName") String midName,
+                                                       @Param(value = "specialization") String specialization,
+                                                       Pageable page);
 
     @Query(nativeQuery = true,
             value = """
@@ -35,4 +55,16 @@ public interface DoctorRepository extends GenericRepository<Doctor> {
                     order by s.title, d.last_name, d.first_name, d.mid_name
                     """)
     Page<Doctor> findDoctorsSort(Pageable pageable);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select d.*
+                    from doctors d
+                        join specializations s on s.id = d.specialization_id
+                    where is_deleted = false
+                    order by s.title, d.last_name, d.first_name, d.mid_name
+                    """)
+    Page<Doctor> findAllDoctorsSortWithDeletedFalse(Pageable pageable);
+
+
 }

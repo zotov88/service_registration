@@ -2,6 +2,7 @@ package serviceregistration.MVC.controllers;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,9 +43,15 @@ public class DoctorMVCController {
                          @RequestParam(value = "size", defaultValue = "10") int pageSize,
                          Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
-        Page<DoctorDTO> doctors = doctorService.listAllSort(pageRequest);
-        model.addAttribute("specializations", specializationService.listAll());
+        Page<DoctorDTO> doctors;
+        final String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (ADMIN.equalsIgnoreCase(username)) {
+            doctors = doctorService.listAllDoctorsSort(pageRequest);
+        } else {
+            doctors = doctorService.listAllDoctorsSortWithDeletedFalse(pageRequest);
+        }
         model.addAttribute("doctors", doctors);
+        model.addAttribute("specializations", specializationService.listAll());
         return "doctors/list";
     }
 
@@ -54,7 +61,14 @@ public class DoctorMVCController {
                                @ModelAttribute("doctorSearchForm") DoctorSearchDTO doctorSearchDTO,
                                Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
-        model.addAttribute("doctors", doctorService.findDoctors(doctorSearchDTO, pageRequest));
+        Page<DoctorDTO> doctors;
+        final String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (ADMIN.equalsIgnoreCase(username)) {
+            doctors = doctorService.searchDoctorsSort(doctorSearchDTO, pageRequest);
+        } else {
+            doctors = doctorService.searchDoctorsSortWithDeletedFalse(doctorSearchDTO, pageRequest);
+        }
+        model.addAttribute("doctors", doctors);
         model.addAttribute("specializations", specializationService.listAll());
         return "doctors/list";
     }

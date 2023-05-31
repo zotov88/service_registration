@@ -10,7 +10,10 @@
 <body>
 <div layout:fragment="content">
     <div class="mt-5">
-        <h3 align="center">Мои записи</h3>
+        <h3 th:text="${#authentication.getPrincipal().getUserId() == null} ?
+            'Записи клиента ' + ${client.getLastName()} + ' ' + ${client.getFirstName()} + ' ' + ${client.getMidName()}
+            : 'Мои записи'" align="center"></h3>
+        <div><br></div>
         <table class="table table-hover mt-3">
             <thead>
             <tr>
@@ -37,12 +40,62 @@
                        th:href="'/registrations/client-slots/cancel/' + ${rs.getRegistrationId()}"
                        onclick="return confirm('Вы хотите отменить запись?')">Отменить</a>
                 </td>
-
             </tr>
             </tbody>
         </table>
-        <button type="button" style="float: right" class="btn btn-secondary" onclick="window.history.back()">Назад</button>
+        <button type="button" style="float: right" class="btn btn-secondary" onclick="window.history.back()">Назад
+        </button>
     </div>
+    <nav aria-label="Pagination" th:if="${registrationsClients.totalPages gt 0}">
+        <ul class="pagination justify-content-center font-weight-bold">
+            <li class="page-item" th:classappend="${registrationsClients.number eq 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="'/registrations/client-slots/' + ${clientId} + '?page=' + ${registrationsClients.number lt 2 ? 1 : registrationsClients.number}"
+                   aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(1, registrationsClients.totalPages, 1)}"
+                th:classappend="${i eq registrationsClients.number + 1} ? 'active'">
+                <a class="page-link" th:href="'/registrations/client-slots/' + ${clientId} + '?page=' + ${i}"
+                   th:text="${i}"
+                   th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+            </li>
+            <li class="page-item"
+                th:classappend="${registrationsClients.number eq registrationsClients.totalPages - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="'/registrations/client-slots/' + ${clientId} + '?page=' + ${registrationsClients.number + 2}"
+                   aria-label="Next" title="Next Page" data-toggle="tooltip">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!--    <nav aria-label="Pagination" th:if="${registrationsClients.totalPages gt 0}">-->
+    <!--        <ul class="pagination justify-content-center font-weight-bold">-->
+    <!--            <li class="page-item" th:classappend="${registrationsClients.number eq 0} ? 'disabled'">-->
+    <!--                <a class="page-link"-->
+    <!--                   th:href="'/registrations/client-slots/' + ${#authentication.getPrincipal().getUserId()} + '?page=' + ${registrationsClients.number lt 2 ? 1 : registrationsClients.number}"-->
+    <!--                   aria-label="Previous" title="Previous Page" data-toggle="tooltip">-->
+    <!--                    <span aria-hidden="true">&laquo;</span>-->
+    <!--                </a>-->
+    <!--            </li>-->
+    <!--            <li class="page-item"-->
+    <!--                th:each="i : ${#numbers.sequence(1, registrationsClients.totalPages, 1)}"-->
+    <!--                th:classappend="${i eq registrationsClients.number + 1} ? 'active'">-->
+    <!--                <a class="page-link" th:href="'/registrations/client-slots/' + ${#authentication.getPrincipal().getUserId()} + '?page=' + ${i}" th:text="${i}"-->
+    <!--                   th:title="${'Page '+ i}" data-toggle="tooltip"></a>-->
+    <!--            </li>-->
+    <!--            <li class="page-item" th:classappend="${registrationsClients.number eq registrationsClients.totalPages - 1} ? 'disabled'">-->
+    <!--                <a class="page-link"-->
+    <!--                   th:href="'/registrations/client-slots/' + ${#authentication.getPrincipal().getUserId()} + '?page=' + ${registrationsClients.number + 2}"-->
+    <!--                   aria-label="Next" title="Next Page" data-toggle="tooltip">-->
+    <!--                    <span aria-hidden="true">&raquo;</span>-->
+    <!--                </a>-->
+    <!--            </li>-->
+    <!--        </ul>-->
+    <!--    </nav>-->
 </div>
 </body>
 </html>

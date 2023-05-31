@@ -6,8 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.dto.RegistrationDTO;
-import serviceregistration.dto.querymodel.ClientRegistration;
-import serviceregistration.dto.querymodel.DoctorRegistration;
+import serviceregistration.querymodel.UniversalQueryModel;
 import serviceregistration.mapper.RegistrationMapper;
 import serviceregistration.model.Registration;
 import serviceregistration.model.ResultMeet;
@@ -20,15 +19,12 @@ import java.util.List;
 public class RegistrationService extends GenericService<Registration, RegistrationDTO> {
 
     private final DoctorSlotService doctorSlotService;
-    private final ClientService clientService;
     
     public RegistrationService(RegistrationRepository repository,
                                RegistrationMapper mapper,
-                               DoctorSlotService doctorSlotService,
-                               ClientService clientService) {
+                               DoctorSlotService doctorSlotService) {
         super(repository, mapper);
         this.doctorSlotService = doctorSlotService;
-        this.clientService = clientService;
     }
 
     public Page<RegistrationDTO> getAllByClientId(Pageable pageable, Long clientId) {
@@ -41,13 +37,15 @@ public class RegistrationService extends GenericService<Registration, Registrati
         return ((RegistrationRepository)repository).getAllByClientId(clientId);
     }
 
-    public List<ClientRegistration> getAllRegistrationsByClient(Long clientId) {
-        return ((RegistrationRepository)repository).getAllRegistrationsByClient(clientId);
+    public Page<UniversalQueryModel> getAllRegistrationsByClient(Long clientId, Pageable pageable) {
+        Page<UniversalQueryModel> registrations = ((RegistrationRepository)repository).getAllRegistrationsByClient(clientId, pageable);
+        List<UniversalQueryModel> result = registrations.getContent();
+        return new PageImpl<>(result, pageable, registrations.getTotalElements());
     }
 
-    public Page<DoctorRegistration> getAllRegistrationsByDoctor(Pageable pageable, Long doctorId) {
-        Page<DoctorRegistration> doctorRegistrationPage = ((RegistrationRepository)repository).getAllRegistrationsByDoctor(pageable, doctorId);
-        List<DoctorRegistration> result = doctorRegistrationPage.getContent();
+    public Page<UniversalQueryModel> getAllRegistrationsByDoctor(Pageable pageable, Long doctorId) {
+        Page<UniversalQueryModel> doctorRegistrationPage = ((RegistrationRepository)repository).getAllRegistrationsByDoctor(pageable, doctorId);
+        List<UniversalQueryModel> result = doctorRegistrationPage.getContent();
         return new PageImpl<>(result, pageable, doctorRegistrationPage.getTotalElements());
     }
 
@@ -80,13 +78,12 @@ public class RegistrationService extends GenericService<Registration, Registrati
         return ((RegistrationRepository)repository).findIdByDoctorSlotId(doctorSlotId);
     }
 
-//    public RegistrationDTO registrationSlot(RegistrationDTO registrationDTO) {
-//
-//    }
+    public List<RegistrationDTO> listAllActiveRegistrationByClientId(Long clientId) {
+        return mapper.toDTOs(((RegistrationRepository)repository).findAllActiveRegistrationByClientId(clientId));
+    }
 
-//    public Page<DoctorSlotDTO> getAllDoctorSlot(Pageable pageable) {
-//        Page<DoctorSlot> doctorSlotsPaginated = doctorSlotRepository.findAllNotLessThanToday(pageable);
-//        List<DoctorSlotDTO> result = mapper.toDTOs(doctorSlotsPaginated.getContent());
-//        return new PageImpl<>(result, pageable, doctorSlotsPaginated.getTotalElements());
-//    }
+    public Long getClientIdByRegistrationId(Long registrationId) {
+        return ((RegistrationRepository)repository).findClientIdByRegistrationId(registrationId);
+    }
+
 }

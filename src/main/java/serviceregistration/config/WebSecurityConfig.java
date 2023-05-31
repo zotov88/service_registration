@@ -21,8 +21,6 @@ public class WebSecurityConfig {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final CustomUserDetailsService customUserDetailsService;
 
-
-
     public WebSecurityConfig(BCryptPasswordEncoder bCryptPasswordEncoder,
                              CustomUserDetailsService customUserDetailsService) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -42,10 +40,10 @@ public class WebSecurityConfig {
                         .requestMatchers(DOCTORSLOTS_PERMISSION_LIST_FOR_CLIENT.toArray(String[]::new)).hasRole(CLIENT)
                         .requestMatchers(DOCTORSLOTS_PERMISSION_LIST_FOR_ADMIN.toArray(String[]::new)).hasRole(ADMIN)
                         .requestMatchers(DOCTORSLOTS_PERMISSION_LIST.toArray(String[]::new)).hasAnyRole(DOCTOR, ADMIN)
-                        .requestMatchers(CLIENTS_PERMISSION_LIST_FOR_ADMIN.toArray(String[]::new)).hasRole(ADMIN)
+                        .requestMatchers(CLIENTS_PERMISSION_LIST.toArray(String[]::new)).hasAnyRole(DOCTOR, ADMIN, CLIENT)
                         .requestMatchers(REGISTRATIONS_PERMISSION_LIST_FOR_CLIENT.toArray(String[]::new)).hasRole(CLIENT)
                         .requestMatchers(REGISTRATIONS_PERMISSION_LIST_FOR_ADMIN.toArray(String[]::new)).hasRole(ADMIN)
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/")

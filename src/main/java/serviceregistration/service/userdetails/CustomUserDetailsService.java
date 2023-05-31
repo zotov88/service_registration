@@ -46,8 +46,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                     List.of(new SimpleGrantedAuthority("ROLE_" + adminRole)));
         } else {
             return getUserDetails(userRepository.findRoleByLogin(username) == 1
-                            ? clientRepository.findClientByLogin(username)
-                            : doctorRepository.findDoctorByLogin(username),
+                            ? clientRepository.findClientByLoginAndIsDeletedFalse(username)
+                            : doctorRepository.findDoctorByLoginAndIsDeletedFalse(username),
                             username);
         }
     }

@@ -139,8 +139,7 @@ where doctor_id = 4
 select *
 from doctors_slots;
 
-select *
-from doctors_slots ds
-         join registrations r on ds.id = r.doctor_slot_id
-where ds.id = 14
-    and r.is_deleted = false
+select c.id
+from registrations r
+         join clients c on c.id = r.client_id
+where r.id = 56

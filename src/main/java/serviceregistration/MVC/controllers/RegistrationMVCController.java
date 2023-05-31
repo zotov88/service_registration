@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import serviceregistration.dto.ClientDTO;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.dto.RegistrationDTO;
-import serviceregistration.dto.querymodel.ClientRegistration;
-import serviceregistration.dto.querymodel.SlotRegistered;
+import serviceregistration.querymodel.UniversalQueryModel;
 import serviceregistration.service.*;
 import serviceregistration.service.userdetails.CustomUserDetails;
 
@@ -43,16 +42,6 @@ public class RegistrationMVCController {
         this.dayService = dayService;
     }
 
-    @GetMapping("/listAll")
-    public String listAll(@RequestParam(value = "page", defaultValue = "1") int page,
-                          @RequestParam(value = "size", defaultValue = "5") int pageSize,
-                          Model model) {
-        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
-        Page<RegistrationDTO> registrations = registrationService.listAll(pageRequest);
-        model.addAttribute("registrations", registrations);
-        return "registrations/listAll";
-    }
-
     @GetMapping("/doctorList")
     public String doctorList() {
         return "registrations/doctorList";
@@ -65,18 +54,22 @@ public class RegistrationMVCController {
 
 
     @GetMapping("/client-slots/{clientId}")
-    public String clientSlots(@PathVariable Long clientId,
+    public String clientSlots(@RequestParam(value = "page", defaultValue = "1") int page,
+                              @RequestParam(value = "size", defaultValue = "10") int pageSize,
+                              @PathVariable Long clientId,
                               Model model) {
-        List<ClientRegistration> registrationsClients = registrationService.getAllRegistrationsByClient(clientId);
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        Page<UniversalQueryModel> registrationsClients = registrationService.getAllRegistrationsByClient(clientId, pageRequest);
         model.addAttribute("registrationsClients", registrationsClients);
+        model.addAttribute("client", clientService.getOne(clientId));
         return "registrations/clientList";
     }
 
     @GetMapping("/client-slots/cancel/{registrationId}")
     public String cancelMeet(@PathVariable Long registrationId) {
         registrationService.cancelMeet(registrationId);
-        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return "redirect:/registrations/client-slots/" + customUserDetails.getUserId();
+        Long clientId = registrationService.getClientIdByRegistrationId(registrationId);
+        return "redirect:/registrations/client-slots/" + clientId;
     }
 
     @GetMapping("/client-slots/cancel/ds/{doctorSlotId}")
@@ -90,7 +83,7 @@ public class RegistrationMVCController {
     @GetMapping("/doctor-slots-today/{doctorId}")
     public String doctorSlots(@PathVariable Long doctorId,
                               Model model) {
-        List<SlotRegistered> slotRegistereds = doctorSlotService.getScheduleByDoctorToday(doctorId);
+        List<UniversalQueryModel> slotRegistereds = doctorSlotService.getScheduleByDoctorToday(doctorId);
         model.addAttribute("slotRegistered", slotRegistereds);
         return "registrations/doctorList";
     }
@@ -124,15 +117,5 @@ public class RegistrationMVCController {
         registrationService.registrationSlot(registrationDTO);
         return "redirect:/registrations/client-slots/" + customUserDetails.getUserId();
     }
-
-
-
-
-//    @GetMapping("/restore/{doctorId}/{dayId}")
-//    public String restore(@PathVariable Long doctorId,
-//                          @PathVariable Long dayId) {
-//        doctorSlotService.restore(doctorId, dayId);
-//        return "redirect:/doctorslots";
-//    }
 
 }
