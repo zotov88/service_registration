@@ -72,7 +72,7 @@
                th:href="'/registrations/client-slots/' + ${user.id}">Записи</a>
             <a sec:authorize="isAuthenticated() && !(hasRole('ADMIN'))"
                th:if="${#authentication.getPrincipal().getUserId()} == ${user.id}" class="btn btn-primary"
-               th:href="'/users/profile/update/' + ${user.id}">Редактировать</a>
+               th:href="'/clients/profile/update/' + ${user.id}">Редактировать</a>
             <a sec:authorize="isAuthenticated() && hasRole('CLIENT')"
                th:href="'/clients/change-password/client'"
                class="btn btn-warning"

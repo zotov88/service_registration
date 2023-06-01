@@ -19,4 +19,7 @@ public class SlotService {
         return slotRepository.findAll();
     }
 
+    public Slot getOne(Long id) {
+        return slotRepository.findSlotById(id);
+    }
 }

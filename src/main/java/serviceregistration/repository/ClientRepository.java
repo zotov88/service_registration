@@ -10,7 +10,7 @@ public interface ClientRepository extends GenericRepository<Client> {
 
     Client findClientByLoginAndIsDeletedFalse(String login);
 
-    Client findClientByEmail(String email);
+    Client findClientByEmailAndIsDeletedFalse(String email);
 
     Client findClientByChangePasswordToken(String uuid);
 

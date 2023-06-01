@@ -143,3 +143,6 @@ select c.id
 from registrations r
          join clients c on c.id = r.client_id
 where r.id = 56
+
+select min(id), max(id)
+from doctors

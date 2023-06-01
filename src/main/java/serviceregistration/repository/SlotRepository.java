@@ -5,4 +5,5 @@ import serviceregistration.model.Slot;
 
 public interface SlotRepository extends JpaRepository<Slot, Long> {
 
+    Slot findSlotById(Long id);
 }

@@ -18,4 +18,8 @@ public class CabinetService {
     public List<Cabinet> listAll() {
         return cabinetRepository.findAll();
     }
+
+    public Cabinet getOne(Long id) {
+        return cabinetRepository.findCabinetById(id);
+    }
 }

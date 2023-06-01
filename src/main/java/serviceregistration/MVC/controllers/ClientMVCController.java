@@ -4,17 +4,20 @@ import jakarta.security.auth.message.AuthException;
 import jakarta.websocket.server.PathParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import serviceregistration.constants.Errors;
 import serviceregistration.dto.ClientDTO;
 import serviceregistration.dto.ClientSearchDTO;
 import serviceregistration.service.ClientService;
 import serviceregistration.service.UserService;
 import serviceregistration.service.userdetails.CustomUserDetails;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import static serviceregistration.constants.UserRolesConstants.ADMIN;
@@ -86,20 +89,36 @@ public class ClientMVCController {
             return "registration";
         }
         clientService.create(clientDTO);
-        return "redirect:login";
+        return "redirect:/login";
+    }
+
+    @GetMapping("remember-password")
+    public String rememberPassword() {
+        return "clients/rememberPassword";
+    }
+
+    @PostMapping("remember-password")
+    public String rememberPassword(@ModelAttribute("changePasswordForm") ClientDTO clientDTO) {
+        clientDTO = clientService.getClientByEmail(clientDTO.getEmail());
+        if (Objects.isNull(clientDTO)) {
+            return "Error!";
+        } else {
+            clientService.sendChangePasswordEmail(clientDTO);
+            return "redirect:/login";
+        }
     }
 
     @GetMapping("/profile/{id}")
     public String userProfile(@PathVariable Integer id,
                               Model model) throws AuthException {
         CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        if (!Objects.isNull(customUserDetails.getUserId())) {
-//            if (!ADMIN.equalsIgnoreCase(customUserDetails.getUsername())) {
-//                if (!id.equals(customUserDetails.getUserId())) {
-//                    throw new AuthException(HttpStatus.FORBIDDEN + ": " );
-//                }
-//            }
-//        }
+        if (!Objects.isNull(customUserDetails.getUserId())) {
+            if (!ADMIN.equalsIgnoreCase(customUserDetails.getUsername())) {
+                if (!id.equals(customUserDetails.getUserId())) {
+                    throw new AuthException(HttpStatus.FORBIDDEN + ": " );
+                }
+            }
+        }
         model.addAttribute("user", clientService.getOne(Long.valueOf(id)));
         return "profile/viewProfile";
     }
@@ -116,6 +135,37 @@ public class ClientMVCController {
                                  @ModelAttribute("changePasswordForm") ClientDTO clientDTO) {
         clientService.changePassword(uuid, clientDTO.getPassword());
         return "redirect:/login";
+    }
+
+    @GetMapping("/profile/update/{id}")
+    public String updateProfile(@PathVariable Integer id,
+                                Model model) throws AuthException {
+        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!id.equals(customUserDetails.getUserId())) {
+            throw new AuthException(HttpStatus.FORBIDDEN + ": " + Errors.Users.USER_FORBIDDEN_ERROR);
+        }
+        model.addAttribute("clientForm", clientService.getOne(Long.valueOf(id)));
+        return "profile/updateProfile";
+    }
+
+    @PostMapping("/profile/update")
+    public String updateProfile(@ModelAttribute("clientForm") ClientDTO clientDTOFromUpdateForm,
+                                BindingResult bindingResult) {
+        ClientDTO userEmailDuplicated = clientService.getClientByEmail(clientDTOFromUpdateForm.getEmail());
+        ClientDTO foundUser = clientService.getOne(clientDTOFromUpdateForm.getId());
+        if (userEmailDuplicated != null && !Objects.equals(userEmailDuplicated.getEmail(), foundUser.getEmail())) {
+            bindingResult.rejectValue("email", "error.email", "Такой email уже существует");
+            return "profile/updateProfile";
+        }
+        foundUser.setFirstName(clientDTOFromUpdateForm.getFirstName());
+        foundUser.setLastName(clientDTOFromUpdateForm.getLastName());
+        foundUser.setMidName(clientDTOFromUpdateForm.getMidName());
+        foundUser.setEmail(clientDTOFromUpdateForm.getEmail());
+        foundUser.setBirthDate(clientDTOFromUpdateForm.getBirthDate());
+        foundUser.setPhone(clientDTOFromUpdateForm.getPhone());
+        foundUser.setAddress(clientDTOFromUpdateForm.getAddress());
+        clientService.update(foundUser);
+        return "redirect:/clients/profile/" + clientDTOFromUpdateForm.getId();
     }
 
     @GetMapping("/change-password/client")

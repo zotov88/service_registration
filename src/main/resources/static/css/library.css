@@ -26,8 +26,9 @@
     color: #000000 !important;
     background-color: #2ac3ff !important;
     border-color: #2ac3ff !important;
-    margin-left: 10px;
-    min-width: 100px;
+    width: fit-content !important;
+    /*margin-left: 10px;*/
+    /*min-width: 100px;*/
 }
 
 .btn-success:hover {

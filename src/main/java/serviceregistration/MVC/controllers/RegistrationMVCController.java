@@ -8,8 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import serviceregistration.dto.ClientDTO;
+import serviceregistration.dto.DoctorDTO;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.dto.RegistrationDTO;
+import serviceregistration.model.Cabinet;
+import serviceregistration.model.Day;
+import serviceregistration.model.Slot;
 import serviceregistration.querymodel.UniversalQueryModel;
 import serviceregistration.service.*;
 import serviceregistration.service.userdetails.CustomUserDetails;
@@ -27,19 +31,25 @@ public class RegistrationMVCController {
     private final ClientService clientService;
     private final SpecializationService specializationService;
     private final DayService dayService;
+    private final SlotService slotService;
+    private final CabinetService cabinetService;
 
     public RegistrationMVCController(RegistrationService registrationService,
                                      DoctorSlotService doctorSlotService,
                                      DoctorService doctorService,
                                      ClientService clientService,
                                      SpecializationService specializationService,
-                                     DayService dayService) {
+                                     DayService dayService,
+                                     SlotService slotService,
+                                     CabinetService cabinetService) {
         this.registrationService = registrationService;
         this.doctorSlotService = doctorSlotService;
         this.doctorService = doctorService;
         this.clientService = clientService;
         this.specializationService = specializationService;
         this.dayService = dayService;
+        this.slotService = slotService;
+        this.cabinetService = cabinetService;
     }
 
     @GetMapping("/doctorList")
@@ -103,18 +113,24 @@ public class RegistrationMVCController {
     @GetMapping("/slots/create/{doctorSlotId}")
     public String createMeet(@PathVariable Long doctorSlotId,
                              @ModelAttribute("registrationSlot") RegistrationDTO registrationDTO) {
-        DoctorSlotDTO doctorSlot = doctorSlotService.getOne(doctorSlotId);
+        DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(doctorSlotId);
         CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ClientDTO clientDTO = clientService.getClientByLogin(customUserDetails.getUsername());
-        if (clientService.isActiveRegistrationBySpecialization(doctorSlot, clientDTO.getId())) {
+        DoctorDTO doctorDTO = doctorService.getOne(doctorSlotDTO.getDoctor().getId());
+        Day day = dayService.getOne(doctorSlotDTO.getDay().getId());
+        Slot slot = slotService.getOne(doctorSlotDTO.getSlot().getId());
+        Cabinet cabinet = cabinetService.getOne(doctorSlotDTO.getCabinet().getId());
+
+        if (clientService.isActiveRegistrationBySpecialization(doctorSlotDTO, clientDTO.getId())) {
             return "redirect:/doctorslots/makeMeet";
         }
-        if (clientService.isActiveRegistrationByDayAndTime(doctorSlot, clientDTO.getId())) {
+        if (clientService.isActiveRegistrationByDayAndTime(doctorSlotDTO, clientDTO.getId())) {
             return "redirect:/doctorslots/makeMeet";
         }
         registrationDTO.setClientId(Long.valueOf(customUserDetails.getUserId()));
-        registrationDTO.setDoctorSlotId(doctorSlot.getId());
+        registrationDTO.setDoctorSlotId(doctorSlotDTO.getId());
         registrationService.registrationSlot(registrationDTO);
+        clientService.sendMessageRegistrationSucces(clientDTO, doctorDTO, day, slot, cabinet);
         return "redirect:/registrations/client-slots/" + customUserDetails.getUserId();
     }
 

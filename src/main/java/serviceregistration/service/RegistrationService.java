@@ -49,15 +49,14 @@ public class RegistrationService extends GenericService<Registration, Registrati
         return new PageImpl<>(result, pageable, doctorRegistrationPage.getTotalElements());
     }
 
-
-    public RegistrationDTO registrationSlot(RegistrationDTO registrationDTO) {
+    public void registrationSlot(RegistrationDTO registrationDTO) {
         DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(registrationDTO.getDoctorSlotId());
         doctorSlotDTO.setIsRegistered(true);
         doctorSlotService.update(doctorSlotDTO);
         registrationDTO.setCreatedWhen(LocalDateTime.now());
         registrationDTO.setIsActive(true);
         registrationDTO.setResultMeet(ResultMeet.SUCCESSFULLY);
-        return mapper.toDTO(repository.save(mapper.toEntity(registrationDTO)));
+        update(registrationDTO);
     }
 
     public void cancelMeet(Long registrationId) {
