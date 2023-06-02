@@ -6,8 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import serviceregistration.querymodel.UniversalQueryModel;
 import serviceregistration.model.DoctorSlot;
+import serviceregistration.querymodel.UniversalQueryModel;
 
 import java.util.List;
 
@@ -247,13 +247,17 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
     @Modifying
     @Query(nativeQuery = true,
             value = """
-                    select id
-                    from doctors_slots
-                    where is_registered = true
-                        and doctor_id = :doctorId
-                        and day_id = :dayId
+                    select ds.*
+                    from registrations r
+                        join doctors_slots ds on ds.id = r.doctor_slot_id
+                        join days d on d.id = ds.day_id
+                        join doctors doc on doc.id = ds.doctor_id
+                    where r.is_active = true
+                        and ds.is_registered = true
+                        and doc.id = :doctorId
+                        and d.id = :dayId
                     """)
-    List<Long> findIdsWhereActiveSlots(Long doctorId, Long dayId);
+    List<DoctorSlot> findDSWhereRegistrationsIsActive(Long doctorId, Long dayId);
 
     @Query(nativeQuery = true,
             value = """

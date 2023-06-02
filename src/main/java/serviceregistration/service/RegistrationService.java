@@ -85,4 +85,19 @@ public class RegistrationService extends GenericService<Registration, Registrati
         return ((RegistrationRepository)repository).findClientIdByRegistrationId(registrationId);
     }
 
+    public void setCompletedMeetingToFalse() {
+        List<RegistrationDTO> registrationDTOS = mapper.toDTOs(((RegistrationRepository)repository).getListCompletedMeeting());
+        for (RegistrationDTO registrationDTO : registrationDTOS) {
+            registrationDTO.setIsActive(false);
+            update(registrationDTO);
+        }
+    }
+
+    public RegistrationDTO getOneByDoctorIdAndDayId(final Long doctorId, final Long dayId) {
+        return mapper.toDTO(((RegistrationRepository)repository).findOneByDoctorIdAndDayId(doctorId, dayId));
+    }
+
+    public List<RegistrationDTO> getRegistrationsByDoctorIdWhereIsActive(Long doctorId) {
+        return mapper.toDTOs(((RegistrationRepository)repository).findRegistrationsByDoctorId(doctorId));
+    }
 }

@@ -77,9 +77,18 @@ public class RegistrationMVCController {
 
     @GetMapping("/client-slots/cancel/{registrationId}")
     public String cancelMeet(@PathVariable Long registrationId) {
+        RegistrationDTO registrationDTO = registrationService.getOne(registrationId);
+        ClientDTO clientDTO = clientService.getOne(registrationDTO.getClientId());
+        DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(registrationDTO.getDoctorSlotId());
+        DoctorDTO doctorDTO = doctorService.getOne(doctorSlotDTO.getDoctor().getId());
+        Day day = dayService.getOne(doctorSlotDTO.getDay().getId());
+        Slot slot = slotService.getOne(doctorSlotDTO.getSlot().getId());
+        Cabinet cabinet = cabinetService.getOne(doctorSlotDTO.getCabinet().getId());
+//        Long clientId = registrationService.getClientIdByRegistrationId(registrationId);
         registrationService.cancelMeet(registrationId);
-        Long clientId = registrationService.getClientIdByRegistrationId(registrationId);
-        return "redirect:/registrations/client-slots/" + clientId;
+//        clientService.sendMessageRegistrationStatus(clientDTO, doctorDTO, day, slot, cabinet,
+//                MAIL_SUBJECT_FOR_REGISTRATION_CANCEL, MAIL_BODY_FOR_REGISTRATION_CANCEL);
+        return "redirect:/registrations/client-slots/" + clientDTO.getId();
     }
 
     @GetMapping("/client-slots/cancel/ds/{doctorSlotId}")
@@ -130,7 +139,8 @@ public class RegistrationMVCController {
         registrationDTO.setClientId(Long.valueOf(customUserDetails.getUserId()));
         registrationDTO.setDoctorSlotId(doctorSlotDTO.getId());
         registrationService.registrationSlot(registrationDTO);
-        clientService.sendMessageRegistrationSucces(clientDTO, doctorDTO, day, slot, cabinet);
+//        clientService.sendMessageRegistrationStatus(clientDTO, doctorDTO, day, slot, cabinet,
+//                MAIL_SUBJECT_FOR_REGISTRATION_SUCCESS, MAIL_BODY_FOR_REGISTRATION_SUCCESS);
         return "redirect:/registrations/client-slots/" + customUserDetails.getUserId();
     }
 

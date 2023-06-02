@@ -5,10 +5,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import serviceregistration.dto.DoctorDTO;
-import serviceregistration.dto.DoctorSearchDTO;
-import serviceregistration.dto.DoctorSlotDTO;
-import serviceregistration.dto.RoleDTO;
+import serviceregistration.dto.*;
 import serviceregistration.mapper.DoctorMapper;
 import serviceregistration.model.Doctor;
 import serviceregistration.repository.DoctorRepository;
@@ -84,20 +81,39 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
     }
 
     public void softDelete(Long doctorId) {
+        List<RegistrationDTO> registrationDTOS = registrationService.getRegistrationsByDoctorIdWhereIsActive(doctorId);
+        for (RegistrationDTO registrationDTO : registrationDTOS) {
+            DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(registrationDTO.getDoctorSlotId());
+            doctorSlotDTO.setIsRegistered(false);
+            registrationDTO.setIsActive(false);
+            doctorSlotService.update(doctorSlotDTO);
+            registrationService.update(registrationDTO);
+        }
+        List<DoctorSlotDTO> doctorSlotDTOS = doctorSlotService.getAllByDoctorId(doctorId);
+        for (DoctorSlotDTO doctorSlotDTO : doctorSlotDTOS) {
+            doctorSlotDTO.setDeleted(true);
+            doctorSlotService.update(doctorSlotDTO);
+        }
         DoctorDTO doctorDTO = getOne(doctorId);
-        List<DoctorSlotDTO> allSchedule = doctorSlotService.getAllByDoctorId(doctorDTO.getId());
-        List<Long> registrationIds = doctorSlotService.getAllRegistrationsByDoctorId(doctorDTO.getId());
-        for (Long id : registrationIds) {
-            registrationService.cancelMeet(id);
-        }
-        for (DoctorSlotDTO schedule : allSchedule) {
-            schedule.setDeleted(true);
-            schedule.setIsRegistered(false);
-            doctorSlotService.update(schedule);
-        }
         doctorDTO.setDeleted(true);
         repository.save(mapper.toEntity(doctorDTO));
     }
+
+//    public void softDelete(Long doctorId) {
+//        DoctorDTO doctorDTO = getOne(doctorId);
+//        List<DoctorSlotDTO> allSchedule = doctorSlotService.getAllByDoctorId(doctorDTO.getId());
+//        List<Long> registrationIds = doctorSlotService.getAllRegistrationsByDoctorId(doctorDTO.getId());
+//        for (Long id : registrationIds) {
+//            registrationService.cancelMeet(id);
+//        }
+//        for (DoctorSlotDTO schedule : allSchedule) {
+//            schedule.setDeleted(true);
+//            schedule.setIsRegistered(false);
+//            doctorSlotService.update(schedule);
+//        }
+//        doctorDTO.setDeleted(true);
+//        repository.save(mapper.toEntity(doctorDTO));
+//    }
 
     public void restore(Long doctorId) {
         DoctorDTO doctorDTO = getOne(doctorId);

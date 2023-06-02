@@ -12,7 +12,8 @@ public interface DayRepository extends JpaRepository<Day, Long> {
             value = """
                     select *
                     from days
-                    where day > TIMESTAMP 'today'
+                    where day >= TIMESTAMP 'today'
+                    order by day
                     """)
     List<Day> findActualDays();
 }

@@ -80,7 +80,7 @@
                     <a sec:authorize="hasRole('ADMIN')" th:if="${!d.isDeleted()}"
                        class="btn btn-sm btn-outline-danger"
                        th:href="'/doctors/softdelete/' + ${d.getId()}"
-                       onclick="return confirm('Вы хотите удалить врача? ' +
+                       onclick="return confirm('Вы хотите удалить врача?' +
                         '\nУдалится все его расписание и отменятся все вктивные записи!')">Удалить</a>
                     <a sec:authorize="hasRole('ADMIN')" th:if="${d.isDeleted()}" class="btn btn-sm btn-outline-warning"
                        th:href="'/doctors/restore/' + ${d.getId()}"

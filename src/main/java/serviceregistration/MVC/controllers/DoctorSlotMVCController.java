@@ -28,6 +28,7 @@ public class DoctorSlotMVCController {
     private final SpecializationService specializationService;
     private final DoctorSlotRegistrationService doctorSlotRegistrationService;
     private final ClientService clientService;
+    private final RegistrationService registrationService;
 
     public DoctorSlotMVCController(DoctorSlotService doctorSlotService,
                                    DoctorService doctorService,
@@ -44,6 +45,7 @@ public class DoctorSlotMVCController {
         this.specializationService = specializationService;
         this.doctorSlotRegistrationService = doctorSlotRegistrationService;
         this.clientService = clientService;
+        this.registrationService = registrationService;
     }
 
     @GetMapping("")
@@ -117,6 +119,7 @@ public class DoctorSlotMVCController {
         model.addAttribute("doctor", doctorService.getOne(doctorId));
         model.addAttribute("day", dayService.getOne(dayId));
         model.addAttribute("cabinet", doctorSlotService.getCabinetByDoctorIdAndDayId(doctorId, dayId));
+        model.addAttribute("registration", registrationService.getOneByDoctorIdAndDayId(doctorId, dayId));
         return "doctorslots/scheduleDay";
     }
 
@@ -125,13 +128,14 @@ public class DoctorSlotMVCController {
                                      Model model) {
         ClientDTO clientDTO = clientService.getClientIdByDoctorSlot(doctorSlotId);
         model.addAttribute("clientDTO", clientDTO);
+//        model.addAttribute("doctorSlot", doctorSlotService.getOne(doctorSlotId));
         return "clients/viewClient";
     }
 
     @GetMapping("/addSchedule")
     public String addSchedule(Model model) {
         List<DoctorDTO> doctors = doctorService.listAll();
-        List<Day> days = dayService.listAll();
+        List<Day> days = dayService.getActualDays();
         List<Cabinet> cabinets = cabinetService.listAll();
         model.addAttribute("scheduleForm", new DoctorSlotDTO());
         model.addAttribute("doctors", doctors);

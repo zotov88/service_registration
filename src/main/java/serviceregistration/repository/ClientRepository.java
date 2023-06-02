@@ -50,8 +50,9 @@ public interface ClientRepository extends GenericRepository<Client> {
                         join doctors_slots ds on ds.id = r.doctor_slot_id
                         join clients c on c.id = r.client_id
                     where ds.id = :doctorSlotId
-                        and r.is_active= true
+                        and ds.is_registered = true
                     """)
+//    and r.is_active= true
     Client findClientIdByDoctorSlot(Long doctorSlotId);
 
     @Query(nativeQuery = true,

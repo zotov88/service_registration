@@ -70,7 +70,7 @@
         <div class="mt-2">
             <a sec:authorize="isAuthenticated() && hasRole('ADMIN')" class="btn btn-primary"
                th:href="'/registrations/client-slots/' + ${user.id}">Записи</a>
-            <a sec:authorize="isAuthenticated() && !(hasRole('ADMIN'))"
+            <a sec:authorize="isAuthenticated() && (hasRole('CLIENT'))"
                th:if="${#authentication.getPrincipal().getUserId()} == ${user.id}" class="btn btn-primary"
                th:href="'/clients/profile/update/' + ${user.id}">Редактировать</a>
             <a sec:authorize="isAuthenticated() && hasRole('CLIENT')"

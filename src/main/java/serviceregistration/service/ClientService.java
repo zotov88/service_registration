@@ -165,32 +165,44 @@ public class ClientService extends GenericService<Client, ClientDTO> {
         javaMailSender.send(mailMessage);
     }
 
-    public void sendMessageRegistrationSucces(final ClientDTO clientDTO,
+    public void sendMessageRegistrationStatus(final ClientDTO clientDTO,
                                               final DoctorDTO doctorDTO,
                                               final Day day,
                                               final Slot slot,
-                                              final Cabinet cabinet) {
+                                              final Cabinet cabinet,
+                                              final String subject,
+                                              final String text) {
         SimpleMailMessage mailMessage = MailUtils.createMailMessage(
                 clientDTO.getEmail(),
-                MailConstants.MAIL_SUBJECT_FOR_REGISTRATION,
-                createMessage(clientDTO, doctorDTO, day, slot, cabinet)
+                subject,
+                createMessageRegistrationStatus(clientDTO, doctorDTO, day, slot, cabinet, text)
         );
         javaMailSender.send(mailMessage);
     }
 
-    private String createMessage(final ClientDTO clientDTO,
-                                 final DoctorDTO doctorDTO,
-                                 final Day day,
-                                 final Slot slot,
-                                 final Cabinet cabinet) {
+    private String createMessageRegistrationStatus(final ClientDTO clientDTO,
+                                                   final DoctorDTO doctorDTO,
+                                                   final Day day,
+                                                   final Slot slot,
+                                                   final Cabinet cabinet,
+                                                   final String message) {
         Formatter formatter = new Formatter();
-        formatter.format(
-                "%s %s, Вы записались на прием к врачу.\n" +
-                        "Доктор: %s %s %s\n" + "Специализация: %s\n" + "Дата: %s\n" + "Время: %s\n" + "Кабинет: %d\n",
-                clientDTO.getFirstName(), clientDTO.getMidName() == null ? "" : clientDTO.getMidName(),
+        formatter.format("""
+                        %s%s, %s.
+
+                        Доктор: %s %s %s
+                        Специализация: %s
+                        Дата: %s
+                        Время: %s
+                        Кабинет: %d
+                        """,
+                clientDTO.getFirstName(), clientDTO.getMidName().isEmpty() ? "" : (" " + clientDTO.getMidName()),
+                message,
                 doctorDTO.getLastName(), doctorDTO.getFirstName(), doctorDTO.getMidName(),
                 doctorDTO.getSpecialization().getTitleSpecialization(),
                 day.getDay(), slot.getTimeSlot(), cabinet.getCabinetNumber());
         return formatter.toString();
     }
+
+
 }

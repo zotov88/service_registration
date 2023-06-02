@@ -9,8 +9,14 @@ public interface MailConstants {
 
     String MAIL_SUBJECT_FOR_REMEMBER_PASSWORD = "Восстановление пароля";
 
-    String MAIL_SUBJECT_FOR_REGISTRATION = "Успешная регистрация к врачу";
+    String MAIL_SUBJECT_FOR_REGISTRATION_SUCCESS = "Успешная регистрация к врачу";
 
-    String MAIL_MESSAGE_AFTER_CREATED_MEET = "Вы успешно зарегистрированы к врачу";
+    String MAIL_SUBJECT_FOR_REGISTRATION_CANCEL =  "Регистрация к врачу отменена";
+
+    String MAIL_BODY_FOR_REGISTRATION_CANCEL =  "Ваша запись отменена";
+
+    String MAIL_BODY_FOR_REGISTRATION_SUCCESS =  "Вы успешно зарегистрировались к врачу";
+
+
 
 }

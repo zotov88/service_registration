@@ -60,6 +60,7 @@ public interface RegistrationRepository
                     select *
                     from registrations
                     where doctor_slot_id = :doctorSlotId
+                        and is_active = true
                     """)
     Registration findOnByDoctorSlotId(Long doctorSlotId);
 
@@ -92,4 +93,40 @@ public interface RegistrationRepository
                     where r.id = :registrationId
                     """)
     Long findClientIdByRegistrationId(Long registrationId);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select r.*
+                    from registrations r
+                             join doctors_slots ds on r.doctor_slot_id = ds.id
+                             join days d on ds.day_id = d.id
+                             join slots s on s.id = ds.slot_id
+                    where ((now() at time zone 'utc-3') - (d.day + s.time_slot)) > '00:01:00'
+                        and r.is_active = true
+                    """)
+    List<Registration> getListCompletedMeeting();
+
+    @Query(nativeQuery = true,
+            value = """
+                    select r.*
+                    from registrations r
+                        join doctors_slots ds on r.doctor_slot_id = ds.id
+                        join days d on ds.day_id = d.id
+                        join doctors doc on doc.id = ds.doctor_id
+                    where doc.id = :doctorId
+                        and d.id = :dayId
+                        and r.is_active = true
+                    """)
+    Registration findOneByDoctorIdAndDayId(Long doctorId, Long dayId);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select r.*
+                    from registrations r
+                        join doctors_slots ds on r.doctor_slot_id = ds.id
+                        join doctors doc on doc.id = ds.doctor_id
+                    where doc.id = :doctorId
+                        and r.is_active = true
+                    """)
+    List<Registration> findRegistrationsByDoctorId(Long doctorId);
 }
