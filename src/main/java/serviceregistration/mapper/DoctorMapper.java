@@ -28,15 +28,15 @@ public class DoctorMapper extends GenericMapper<Doctor, DoctorDTO> {
     @Override
     protected void setupMapper() {
         modelMapper.createTypeMap(Doctor.class, DoctorDTO.class)
-                .addMappings(m -> m.skip(DoctorDTO::setDoctorSlotsId)).setPostConverter(toEntityConverter());
+                .addMappings(m -> m.skip(DoctorDTO::setDoctorSlotsIds)).setPostConverter(toEntityConverter());
         modelMapper.createTypeMap(DoctorDTO.class, Doctor.class)
                 .addMappings(m -> m.skip(Doctor::setDoctorSlots)).setPostConverter(toDTOConverter());
     }
 
     @Override
     protected void mapSpecificFields(DoctorDTO src, Doctor dst) {
-        if (!Objects.isNull(src.getDoctorSlotsId())) {
-            dst.setDoctorSlots(doctorSlotRepository.findAllById(src.getDoctorSlotsId()));
+        if (!Objects.isNull(src.getDoctorSlotsIds())) {
+            dst.setDoctorSlots(doctorSlotRepository.findAllById(src.getDoctorSlotsIds()));
         } else {
             dst.setDoctorSlots(Collections.emptyList());
         }
@@ -44,7 +44,7 @@ public class DoctorMapper extends GenericMapper<Doctor, DoctorDTO> {
 
     @Override
     protected void mapSpecificFields(Doctor src, DoctorDTO dst) {
-        dst.setDoctorSlotsId(getIds(src));
+        dst.setDoctorSlotsIds(getIds(src));
     }
 
     @Override

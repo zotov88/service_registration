@@ -28,15 +28,15 @@ public class ClientMapper extends GenericMapper<Client, ClientDTO> {
     @Override
     protected void setupMapper() {
         modelMapper.createTypeMap(Client.class, ClientDTO.class)
-                .addMappings(m -> m.skip(ClientDTO::setRegistrationsId)).setPostConverter(toEntityConverter());
+                .addMappings(m -> m.skip(ClientDTO::setRegistrationIds)).setPostConverter(toEntityConverter());
         modelMapper.createTypeMap(ClientDTO.class, Client.class)
                 .addMappings(m -> m.skip(Client::setRegistrations)).setPostConverter(toDTOConverter());
     }
 
     @Override
     protected void mapSpecificFields(ClientDTO src, Client dst) {
-        if (!Objects.isNull(src.getRegistrationsId())) {
-            dst.setRegistrations(registrationRepository.findAllById(src.getRegistrationsId()));
+        if (!Objects.isNull(src.getRegistrationIds())) {
+            dst.setRegistrations(registrationRepository.findAllById(src.getRegistrationIds()));
         } else {
             dst.setRegistrations(Collections.emptyList());
         }
@@ -44,7 +44,7 @@ public class ClientMapper extends GenericMapper<Client, ClientDTO> {
 
     @Override
     protected void mapSpecificFields(Client src, ClientDTO dst) {
-        dst.setRegistrationsId(getIds(src));
+        dst.setRegistrationIds(getIds(src));
     }
 
     @Override

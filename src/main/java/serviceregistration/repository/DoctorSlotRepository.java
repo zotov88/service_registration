@@ -40,7 +40,8 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
             value = """
                     select doc.id as DoctorId, d.id as DayId,
                             doc.first_name as DoctorFirstName, doc.mid_name as DoctorMidName, doc.last_name as DoctorLastName,
-                            s.title as Specialization, d.day as Day, c.number as Cabinet, ds.is_deleted as IsDeleted
+                            s.title as Specialization, d.day as Day, c.number as Cabinet, ds.is_deleted as IsDeleted,
+                            doc.is_deleted as IsDoctorDeleted
                     from doctors_slots ds
                         join cabinets c on c.id = ds.cabinet_id
                         join days d on ds.day_id = d.id
@@ -141,9 +142,11 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         join doctors doc on ds.doctor_id = doc.id
                         join specializations s on s.id = doc.specialization_id
                         join cabinets c on c.id = ds.cabinet_id
+                        join slots s2 on s2.id = ds.slot_id
                     where day >= TIMESTAMP 'today'
                         and ds.is_registered = false
                         and ds.is_deleted = false
+                        and d.day + s2.time_slot > (now() at time zone 'utc-3')
                     group by doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, doc.id, d.id, c.number
                     order by d.day, s.title, doc.last_name, c.number
                     """)
@@ -158,6 +161,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         join doctors doc on ds.doctor_id = doc.id
                         join specializations s on s.id = doc.specialization_id
                         join cabinets c on c.id = ds.cabinet_id
+                        join slots s2 on s2.id = ds.slot_id
                     where day >= TIMESTAMP 'today'
                         and doc.last_name ilike '%' || coalesce(:lastName, '%')  || '%'
                         and doc.first_name ilike '%' || coalesce(:firstName, '%')  || '%'
@@ -166,6 +170,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         and to_char(d.day, 'yyyy-mm-dd') ilike'%' || coalesce(:day, '%')  || '%'
                         and ds.is_registered = false
                         and ds.is_deleted = false
+                        and d.day + s2.time_slot > (now() at time zone 'utc-3')
                     group by doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, doc.id, d.id, c.number
                     order by d.day, s.title, doc.last_name, c.number
                     """)
@@ -224,7 +229,20 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     where doc.id = :doctorId
                         and d.id = :dayId
                     order by ds.is_registered desc, s.time_slot""")
-    List<UniversalQueryModel> getSlotsOneDayForDoctor(Long doctorId, Long dayId);
+    List<UniversalQueryModel> findSlotsOneDayForDoctor(Long doctorId, Long dayId);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select ds.id as DoctorSlotId, s.time_slot as Slot, ds.is_registered as Registered
+                    from doctors_slots ds
+                        join slots s on s.id = ds.slot_id
+                        join doctors doc on doc.id = ds.doctor_id
+                        join days d on ds.day_id = d.id
+                    where doc.id = :doctorId
+                        and d.id = :dayId
+                        and d.day + s.time_slot > now()
+                    order by ds.is_registered desc, s.time_slot""")
+    List<UniversalQueryModel> findSlotsOneDayForClient(Long doctorId, Long dayId);
 
     @Modifying
     @Query(nativeQuery = true,
@@ -301,4 +319,18 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         and r.is_active = true
                     """)
     List<DoctorSlot> findAllActiveDoctorSlotsByClientId(Long clientId);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select ds.id
+                    from doctors_slots ds
+                             join doctors d on ds.doctor_id = d.id
+                             join slots s on s.id = ds.slot_id
+                             join days dy on ds.day_id = dy.id
+                             join registrations r on ds.id = r.doctor_slot_id
+                    where (now() at time zone 'utc-3') > dy.day + s.time_slot
+                        and d.id = :doctorId
+                        and dy.id = :dayId
+                    """)
+    List<Long> findPosiblyCancelMeet(Long doctorId, Long dayId);
 }

@@ -127,8 +127,12 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         return doctorSlotRepository.findScheduleByDoctorIdToday(doctorId);
     }
 
-    public List<UniversalQueryModel> getSlotsForDoctorDay(Long doctorId, Long dayId) {
-        return doctorSlotRepository.getSlotsOneDayForDoctor(doctorId, dayId);
+    public List<UniversalQueryModel> getSlotsOneDayForDoctor(Long doctorId, Long dayId) {
+        return doctorSlotRepository.findSlotsOneDayForDoctor(doctorId, dayId);
+    }
+
+    public List<UniversalQueryModel> getSlotsOneDayForClient(Long doctorId, Long dayId) {
+        return doctorSlotRepository.findSlotsOneDayForClient(doctorId, dayId);
     }
 
     public void restore(Long doctorId, Long dayId) {
@@ -150,5 +154,9 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
 
     public List<DoctorSlotDTO> listAllActiveDoctorSlotsByClientId(Long clientId) {
         return mapper.toDTOs(doctorSlotRepository.findAllActiveDoctorSlotsByClientId(clientId));
+    }
+
+    public List<Long> getPosiblyCancelMeet(Long doctorId, Long dayId) {
+        return doctorSlotRepository.findPosiblyCancelMeet(doctorId, dayId);
     }
 }

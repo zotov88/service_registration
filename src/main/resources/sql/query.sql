@@ -30,17 +30,80 @@ values ('кабинет', 1),
        ('кабинет', 23),
        ('кабинет', 24);
 
+-- insert into slots(time_slot)
+-- values ('09:00'),
+--        ('09:30'),
+--        ('10:00'),
+--        ('10:30'),
+--        ('11:00'),
+--        ('11:30'),
+--        ('12:00'),
+--        ('12:30'),
+--        ('13:00'),
+--        ('13:30'),
+--        ('14:00'),
+--        ('14:30'),
+--        ('15:00'),
+--        ('15:30'),
+--        ('16:00'),
+--        ('16:30'),
+--        ('17:00'),
+--        ('17:30'),
+--        ('18:00'),
+--        ('18:30'),
+--        ('19:00'),
+--        ('19:30'),
+--        ('20:00'),
+--        ('20:30'),
+--        ('21:00'),
+--        ('21:30'),
+--        ('22:00'),
+--        ('22:30'),
+--        ('23:00'),
+--        ('23:30');
+
 insert into slots(time_slot)
-values ('01:00'),
-       ('02:00');
+values ('09:00'),
+       ('09:30'),
+       ('10:00'),
+       ('10:30'),
+       ('11:00'),
+       ('11:30'),
+       ('12:00'),
+       ('12:30'),
+       ('13:00'),
+       ('13:30'),
+       ('14:00'),
+       ('14:30'),
+       ('15:00'),
+       ('15:30'),
+       ('16:00'),
+       ('16:30'),
+       ('17:00'),
+       ('17:30'),
+       ('18:00'),
+       ('18:30'),
+       ('19:00'),
+       ('21:30'),
+       ('21:30'),
+       ('21:45'),
+       ('22:00'),
+       ('22:15'),
+       ('22:30'),
+       ('22:45'),
+       ('23:00'),
+       ('23:15'),
+       ('23:30'),
+       ('23:45');
+
+
 
 
 insert into days(day)
-values ('2023-07-01'),
-       ('2023-07-02'),
-       ('2023-07-03'),
-       ('2023-06-01'),
-       ('2023-06-02');
+values ('2023-06-02'),
+       ('2023-06-03'),
+       ('2023-06-04'),
+       ('2023-06-05');
 
 
 insert into doctors
@@ -187,9 +250,24 @@ from registrations r
 where doc.id = 1
   and d.id = 1
   and r.is_active = false
-    and ds.is_registered = true;
+  and ds.is_registered = true;
 
 select r.is_active, ds.is_registered
 from registrations r
-    join doctors_slots ds on ds.id = r.doctor_slot_id
-where client_id = 1
+         join doctors_slots ds on ds.id = r.doctor_slot_id
+where client_id = 1;
+
+
+select r.*
+from registrations r
+         join doctors_slots ds on r.doctor_slot_id = ds.id
+         join days d on ds.day_id = d.id
+         join slots s on s.id = ds.slot_id
+where ((now() at time zone 'utc-3') - (d.day + s.time_slot)) > '00:01:00'
+  and r.is_active = true;
+
+select id
+from days
+where days.day = date(now())
+
+

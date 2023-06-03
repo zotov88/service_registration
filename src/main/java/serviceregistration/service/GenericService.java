@@ -52,4 +52,11 @@ public abstract class GenericService<E extends GenericModel, D extends GenericDT
         return new PageImpl<>(result, pageable, objects.getTotalElements());
     }
 
+//    public void softDelete(final Long id) {
+//        D obj = getOne(id);
+//        if (obj != null) {
+//            obj.setDeleted(true);
+//            repository.save(mapper.toEntity(obj));
+//        }
+//    }
 }

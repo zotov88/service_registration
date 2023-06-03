@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 import serviceregistration.constants.MailConstants;
 import serviceregistration.dto.*;
 import serviceregistration.mapper.ClientMapper;
-import serviceregistration.model.Cabinet;
-import serviceregistration.model.Client;
-import serviceregistration.model.Day;
-import serviceregistration.model.Slot;
+import serviceregistration.model.*;
 import serviceregistration.repository.ClientRepository;
 import serviceregistration.utils.MailUtils;
 
@@ -51,9 +48,9 @@ public class ClientService extends GenericService<Client, ClientDTO> {
     public ClientDTO create(ClientDTO clientDTO) {
         int age = Period.between(LocalDate.from(clientDTO.getBirthDate()), LocalDate.now()).getYears();
         clientDTO.setAge(age);
-        RoleDTO roleDTO = new RoleDTO();
-        roleDTO.setId(1L);
-        clientDTO.setRole(roleDTO);
+        Role role = new Role();
+        role.setId(1L);
+        clientDTO.setRole(role);
         clientDTO.setPassword(bCryptPasswordEncoder.encode(clientDTO.getPassword()));
         if (userService.findUserByLogin(clientDTO.getLogin()) == null) {
             userService.createUser(clientDTO.getLogin(), clientDTO.getRole().getId());
@@ -140,16 +137,16 @@ public class ClientService extends GenericService<Client, ClientDTO> {
     public Page<ClientDTO> findClientsWithDeletedFalse(ClientSearchDTO clientSearchDTO,
                                                        PageRequest pageRequest) {
         Page<Client> clientsPaginated = ((ClientRepository) repository).searchClientsWithDeletedFalse(
-                clientSearchDTO.getLastName(),
                 clientSearchDTO.getFirstName(),
+                clientSearchDTO.getLastName(),
                 clientSearchDTO.getMidName(),
                 pageRequest);
         List<ClientDTO> result = mapper.toDTOs(clientsPaginated.getContent());
         return new PageImpl<>(result, pageRequest, clientsPaginated.getTotalElements());
     }
 
-    public Page<ClientDTO> listAllWithDeletedFalse(Pageable pageRequest) {
-        Page<Client> doctorsSortPaginated = ((ClientRepository) repository).findListAllWithDeletedFalse(pageRequest);
+    public Page<ClientDTO> listAllClientsWithDeletedFalse(Pageable pageRequest) {
+        Page<Client> doctorsSortPaginated = ((ClientRepository) repository).findListAllClientsWithDeletedFalse(pageRequest);
         List<ClientDTO> result = mapper.toDTOs(doctorsSortPaginated.getContent());
         return new PageImpl<>(result, pageRequest, doctorsSortPaginated.getTotalElements());
     }

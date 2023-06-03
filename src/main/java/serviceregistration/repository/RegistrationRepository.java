@@ -106,18 +106,19 @@ public interface RegistrationRepository
                     """)
     List<Registration> getListCompletedMeeting();
 
-    @Query(nativeQuery = true,
-            value = """
-                    select r.*
-                    from registrations r
-                        join doctors_slots ds on r.doctor_slot_id = ds.id
-                        join days d on ds.day_id = d.id
-                        join doctors doc on doc.id = ds.doctor_id
-                    where doc.id = :doctorId
-                        and d.id = :dayId
-                        and r.is_active = true
-                    """)
-    Registration findOneByDoctorIdAndDayId(Long doctorId, Long dayId);
+//    @Query(nativeQuery = true,
+//            value = """
+//                    select r.*
+//                    from registrations r
+//                             join doctors_slots ds on r.doctor_slot_id = ds.id
+//                             join days d on ds.day_id = d.id
+//                             join slots s on s.id = ds.slot_id
+//                             join doctors doc on doc.id = ds.doctor_id
+//                    where doc.id = 1
+//                        and d.id = 1
+//                        and (now() at time zone 'utc-3') < d.day + s.time_slot
+//                    """)
+//    Registration findOneByDoctorIdAndDayId(Long doctorId, Long dayId);
 
     @Query(nativeQuery = true,
             value = """

@@ -79,8 +79,8 @@ public interface ClientRepository extends GenericRepository<Client> {
                         and is_deleted = false
                     order by c.last_name, c.first_name, c.mid_name
                     """)
-    Page<Client> searchClientsWithDeletedFalse(@Param(value = "lastName") String lastName,
-                                               @Param(value = "firstName") String firstName,
+    Page<Client> searchClientsWithDeletedFalse(@Param(value = "firstName") String firstName,
+                                               @Param(value = "lastName") String lastName,
                                                @Param(value = "midName") String midName,
                                                Pageable page);
 
@@ -91,8 +91,7 @@ public interface ClientRepository extends GenericRepository<Client> {
                     where is_deleted = false
                     order by c.last_name, c.first_name, c.mid_name
                     """)
-    Page<Client> findListAllWithDeletedFalse(Pageable pageRequest);
-
+    Page<Client> findListAllClientsWithDeletedFalse(Pageable pageRequest);
 
 
 //    @Query(nativeQuery = true,

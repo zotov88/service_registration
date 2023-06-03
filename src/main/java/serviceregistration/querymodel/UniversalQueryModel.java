@@ -16,6 +16,7 @@ public interface UniversalQueryModel {
     String getSlot();
     Integer getCabinet();
     String getSpecialization();
+    Boolean getIsDoctorDeleted();
     Boolean getIsActive();
     Boolean getIsDeleted();
     Boolean getRegistered();

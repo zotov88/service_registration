@@ -18,8 +18,6 @@ import serviceregistration.querymodel.UniversalQueryModel;
 import serviceregistration.service.*;
 import serviceregistration.service.userdetails.CustomUserDetails;
 
-import java.util.List;
-
 @Slf4j
 @Controller
 @RequestMapping("/registrations")
@@ -102,16 +100,14 @@ public class RegistrationMVCController {
     @GetMapping("/doctor-slots-today/{doctorId}")
     public String doctorSlots(@PathVariable Long doctorId,
                               Model model) {
-        List<UniversalQueryModel> slotRegistereds = doctorSlotService.getScheduleByDoctorToday(doctorId);
-        model.addAttribute("slotRegistered", slotRegistereds);
-        return "registrations/doctorList";
+        return "redirect:/doctorslots/doctor-schedule/day/" + doctorId + "/" + dayService.getTodayId();
     }
 
     @GetMapping("/slots/{doctorId}/{dayId}")
     public String createMeet(@PathVariable Long doctorId,
                              @PathVariable Long dayId,
                              Model model) {
-        model.addAttribute("timeSlots", doctorSlotService.getSlotsForDoctorDay(doctorId, dayId));
+        model.addAttribute("timeSlots", doctorSlotService.getSlotsOneDayForClient(doctorId, dayId));
         model.addAttribute("doctor", doctorService.getOne(doctorId));
         model.addAttribute("day", dayService.getOne(dayId));
         model.addAttribute("specialization", specializationService.listAll());

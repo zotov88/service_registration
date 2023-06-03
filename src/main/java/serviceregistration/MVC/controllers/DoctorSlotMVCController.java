@@ -115,11 +115,11 @@ public class DoctorSlotMVCController {
     public String getSlotsForDoctorDayByLogin(@PathVariable Long doctorId,
                                               @PathVariable Long dayId,
                                               Model model) {
-        model.addAttribute("timeSlots", doctorSlotService.getSlotsForDoctorDay(doctorId, dayId));
+        model.addAttribute("timeSlots", doctorSlotService.getSlotsOneDayForDoctor(doctorId, dayId));
         model.addAttribute("doctor", doctorService.getOne(doctorId));
         model.addAttribute("day", dayService.getOne(dayId));
         model.addAttribute("cabinet", doctorSlotService.getCabinetByDoctorIdAndDayId(doctorId, dayId));
-        model.addAttribute("registration", registrationService.getOneByDoctorIdAndDayId(doctorId, dayId));
+        model.addAttribute("canCancelIds", doctorSlotService.getPosiblyCancelMeet(doctorId, dayId));
         return "doctorslots/scheduleDay";
     }
 

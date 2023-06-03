@@ -111,7 +111,7 @@
                        class="btn btn-sm btn-outline-danger"
                        th:href="'/doctorslots/delete/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}"
                        onclick="return confirm('Вы хотите удалить расписание?\nОтменятся все активные записи')">Удалить</a>
-                    <a th:if="${d.getIsDeleted()}" class="btn btn-sm btn-outline-warning"
+                    <a th:if="${d.getIsDeleted() && !d.getIsDoctorDeleted()}" class="btn btn-sm btn-outline-warning"
                        th:href="'/doctorslots/restore/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}"
                        onclick="return confirm('Вы хотите восстановить расписание?')">Восстановить</a>
                 </td>

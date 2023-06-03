@@ -33,5 +33,5 @@ public abstract class GenericModel {
     private String deletedBy;
 
     @Column(name = "is_deleted", columnDefinition = "boolean default false")
-    private Boolean isDeleted;
+    private boolean isDeleted;
 }

@@ -45,7 +45,7 @@ public class ClientMVCController {
         if (ADMIN.equalsIgnoreCase(username)) {
             clients = clientService.listAll(pageRequest);
         } else {
-            clients = clientService.listAllWithDeletedFalse(pageRequest);
+            clients = clientService.listAllClientsWithDeletedFalse(pageRequest);
         }
         model.addAttribute("clients", clients);
         return "clients/list";

@@ -27,4 +27,8 @@ public class DayService {
     public Day getOne(Long dayId) {
         return dayRepository.findById(dayId).orElseThrow(() -> new NotFoundException("На этот день нет расписания"));
     }
+
+    public Long getTodayId() {
+        return dayRepository.findTodayId();
+    }
 }

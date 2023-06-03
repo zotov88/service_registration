@@ -1,6 +1,7 @@
 package serviceregistration.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import serviceregistration.service.RegistrationService;
 
@@ -14,7 +15,8 @@ public class Scheduler {
         this.registrationService = registrationService;
     }
 
-//    @Scheduled(cron = "0 0/1 * 1/1 * *")
+//    @Scheduled(cron = "0 0/30 7-21 * * *")
+    @Scheduled(cron = "0 0/1 * * * *")
     public void setPastRegistrationsToFalse() {
         registrationService.setCompletedMeetingToFalse();
     }
