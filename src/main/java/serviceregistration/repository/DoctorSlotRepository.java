@@ -202,7 +202,21 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     group by d2.day, c.number, d2.id
                     order by d2.day
                     """)
-    Page<UniversalQueryModel> findScheduleByDoctorId(Pageable pageable, Long doctorId);
+    Page<UniversalQueryModel> findActualScheduleByDoctorId(Pageable pageable, Long doctorId);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select d2.day as Day, c.number as Cabinet, d2.id as DayId
+                    from doctors d
+                        join doctors_slots ds on d.id = ds.doctor_id
+                        join days d2 on ds.day_id = d2.id
+                        join cabinets c on ds.cabinet_id = c.id
+                    where d.id = :doctorId
+                    group by d2.day, c.number, d2.id
+                    order by d2.day
+                    """)
+    Page<UniversalQueryModel> findArchiveScheduleByDoctor(Pageable pageable, Long doctorId);
+
 
     @Query(nativeQuery = true,
             value = """
@@ -333,4 +347,18 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         and dy.id = :dayId
                     """)
     List<Long> findPosiblyCancelMeet(Long doctorId, Long dayId);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select d.day as Day, c.number as Cabinet
+                    from doctors_slots ds
+                        join doctors doc on ds.doctor_id = doc.id
+                        join days d on ds.day_id = d.id
+                        join cabinets c on ds.cabinet_id = c.id
+                    where doctor_id = :doctorId
+                        and to_char(d.day, 'yyyy-mm-dd') ilike'%' || coalesce(:day, '%')  || '%'
+                    group by d.day, c.number
+                    order by d.day
+                    """)
+    Page<UniversalQueryModel> findSearchArchiveScheduleByDoctor(Pageable pageable, Long doctorId, String day);
 }

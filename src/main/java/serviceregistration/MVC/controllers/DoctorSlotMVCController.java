@@ -7,12 +7,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import serviceregistration.constants.Days;
-import serviceregistration.dto.*;
-import serviceregistration.model.Cabinet;
+import serviceregistration.dto.DoctorDTO;
+import serviceregistration.dto.DoctorDayCabinetDTO;
+import serviceregistration.dto.DoctorSlotDTO;
+import serviceregistration.dto.DoctorSlotSearchDTO;
+import serviceregistration.model.Day;
 import serviceregistration.querymodel.UniversalQueryModel;
 import serviceregistration.service.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/doctorslots")
@@ -103,10 +104,62 @@ public class DoctorSlotMVCController {
                               @PathVariable Long doctorId,
                               Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
-        Page<UniversalQueryModel> doctorSchedules = doctorSlotService.getScheduleByDoctor(pageRequest, doctorId);
-        model.addAttribute("doctorSchedules", doctorSchedules);
+        Page<UniversalQueryModel> doctorSlots = doctorSlotService.getActualScheduleByDoctor(pageRequest, doctorId);
+        model.addAttribute("doctorSlots", doctorSlots);
         return "doctorslots/doctorSchedule";
     }
+
+    @GetMapping("/doctor-schedule/archive/{doctorId}")
+    public String getIndividualArchiveDoctorSchedule(@RequestParam(value = "page", defaultValue = "1") int page,
+                                                     @RequestParam(value = "size", defaultValue = "8") int pageSize,
+                                                     @PathVariable Long doctorId,
+                                                     Model model) {
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        Page<UniversalQueryModel> doctorSlots = doctorSlotService.getArchiveScheduleByDoctor(pageRequest, doctorId);
+        model.addAttribute("days", dayService.getDaysFromStartToPlusDaysFromToday(Days.ONE_WEEK));
+        model.addAttribute("doctorSlots", doctorSlots);
+        return "doctorslots/individualArchiveSchedule";
+    }
+
+    @PostMapping("/doctor-schedule/archive/search/{doctorId}")
+    public String searchIndividualArchiveDoctorSchedule(@RequestParam(value = "page", defaultValue = "1") int page,
+                                                        @RequestParam(value = "size", defaultValue = "8") int pageSize,
+                                                        @ModelAttribute("dayForm") Day day,
+                                                        @PathVariable Long doctorId,
+                                                        Model model) {
+        System.out.println("+++++++++++++" + day.getDay());
+        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        Page<UniversalQueryModel> doctorSlots = doctorSlotService.searchArchiveScheduleByDoctor(pageRequest, doctorId, day);
+        model.addAttribute("days", dayService.getDaysFromStartToPlusDaysFromToday(Days.ONE_WEEK));
+        model.addAttribute("doctorSlots", doctorSlots);
+        return "doctorslots/individualArchiveSchedule";
+    }
+
+//    @GetMapping("/archive")
+//    public String getArchiveSchedule(@RequestParam(value = "page", defaultValue = "1") int page,
+//                                     @RequestParam(value = "size", defaultValue = "12") int pageSize,
+//                                     Model model) {
+//        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+//        Page<UniversalQueryModel> doctorSlots = doctorSlotService.getArchiveSchedule(pageRequest);
+//        model.addAttribute("days", dayService.getDaysFromStartToPlusDaysFromToday(Days.ONE_WEEK));
+//        model.addAttribute("cabinets", cabinetService.listAll());
+//        model.addAttribute("specializations", specializationService.listAll());
+//        model.addAttribute("doctorslots", doctorSlots);
+//        return "doctorslots/archiveSchedule";
+//    }
+//
+//    @PostMapping("/archive/search")
+//    public String searchArchiveSchedule(@RequestParam(value = "page", defaultValue = "1") int page,
+//                                        @RequestParam(value = "size", defaultValue = "12") int pageSize,
+//                                        @ModelAttribute("doctorSlotSearchForm") DoctorSlotSearchDTO doctorSlotSearchDTO,
+//                                        Model model) {
+//        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+//        model.addAttribute("doctorslots", doctorSlotService.findAmongAllSchedule(pageRequest, doctorSlotSearchDTO));
+//        model.addAttribute("days", dayService.listAll());
+//        model.addAttribute("cabinets", cabinetService.listAll());
+//        model.addAttribute("specializations", specializationService.listAll());
+//        return "doctorslots/archiveSchedule";
+//    }
 
     @GetMapping("/doctor-schedule/day/{doctorId}/{dayId}")
     public String getSlotsForDoctorDayByLogin(@PathVariable Long doctorId,
@@ -123,20 +176,16 @@ public class DoctorSlotMVCController {
     @GetMapping("/doctor-schedule/day/slot/{doctorSlotId}")
     public String getInfoAboutClient(@PathVariable Long doctorSlotId,
                                      Model model) {
-        ClientDTO clientDTO = clientService.getClientIdByDoctorSlot(doctorSlotId);
-        model.addAttribute("clientDTO", clientDTO);
-//        model.addAttribute("doctorSlot", doctorSlotService.getOne(doctorSlotId));
+        model.addAttribute("clientDTO", clientService.getClientIdByDoctorSlot(doctorSlotId));
         return "clients/viewClient";
     }
 
     @GetMapping("/addSchedule")
     public String addSchedule(Model model) {
-        List<DoctorDTO> doctors = doctorService.listAll();
-        List<Cabinet> cabinets = cabinetService.listAll();
         model.addAttribute("scheduleForm", new DoctorDayCabinetDTO());
-        model.addAttribute("doctors", doctors);
+        model.addAttribute("doctors", doctorService.listAll());
         model.addAttribute("days", dayService.getFirstActualDays(Days.ONE_WEEK));
-        model.addAttribute("cabinets", cabinets);
+        model.addAttribute("cabinets", cabinetService.listAll());
         return "doctorslots/addSchedule";
     }
 
@@ -203,8 +252,8 @@ public class DoctorSlotMVCController {
     }
 
     @GetMapping("/schedule/actual/{doctorId}")
-    public String filterDoctorSchedule(@PathVariable Long doctorId,
-                                       Model model) {
+    public String filterActualDoctorSchedule(@PathVariable Long doctorId,
+                                             Model model) {
         DoctorDTO doctorDTO = doctorService.getOne(doctorId);
         DoctorSlotSearchDTO doctorSlotSearchDTO = new DoctorSlotSearchDTO();
         doctorSlotSearchDTO.setFirstName(doctorDTO.getFirstName());
@@ -212,7 +261,6 @@ public class DoctorSlotMVCController {
         doctorSlotSearchDTO.setLastName(doctorDTO.getLastName());
         doctorSlotSearchDTO.setSpecialization(doctorDTO.getSpecialization().getTitleSpecialization());
         return searchGroupSlots(1, 12, doctorSlotSearchDTO, model);
-
     }
 
 }

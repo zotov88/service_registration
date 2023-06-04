@@ -8,10 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.dto.DoctorSlotSearchDTO;
-import serviceregistration.querymodel.UniversalQueryModel;
 import serviceregistration.mapper.DoctorSlotMapper;
 import serviceregistration.mapper.RegistrationMapper;
+import serviceregistration.model.Day;
 import serviceregistration.model.DoctorSlot;
+import serviceregistration.querymodel.UniversalQueryModel;
 import serviceregistration.repository.DoctorSlotRepository;
 import serviceregistration.repository.RegistrationRepository;
 
@@ -117,8 +118,23 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         return doctorSlotRepository.findAllTimeForDoctorDay(doctorId, dayId);
     }
 
-    public Page<UniversalQueryModel> getScheduleByDoctor(Pageable pageable, Long doctorId) {
-        Page<UniversalQueryModel> doctorSchedulePage = doctorSlotRepository.findScheduleByDoctorId(pageable, doctorId);
+    public Page<UniversalQueryModel> getActualScheduleByDoctor(Pageable pageable, Long doctorId) {
+        Page<UniversalQueryModel> doctorSchedulePage = doctorSlotRepository.findActualScheduleByDoctorId(pageable, doctorId);
+        List<UniversalQueryModel> result = doctorSchedulePage.getContent();
+        return new PageImpl<>(result, pageable, doctorSchedulePage.getTotalElements());
+    }
+
+    public Page<UniversalQueryModel> getArchiveScheduleByDoctor(Pageable pageable, Long doctorId) {
+        Page<UniversalQueryModel> doctorSchedulePage = doctorSlotRepository.findArchiveScheduleByDoctor(pageable, doctorId);
+        List<UniversalQueryModel> result = doctorSchedulePage.getContent();
+        return new PageImpl<>(result, pageable, doctorSchedulePage.getTotalElements());
+    }
+
+    public Page<UniversalQueryModel> searchArchiveScheduleByDoctor(Pageable pageable,
+                                                                   final Long doctorId,
+                                                                   final Day day) {
+        String dayVal = day.getDay() == null ? "" : day.getDay().toString();
+        Page<UniversalQueryModel> doctorSchedulePage = doctorSlotRepository.findSearchArchiveScheduleByDoctor(pageable, doctorId, dayVal);
         List<UniversalQueryModel> result = doctorSchedulePage.getContent();
         return new PageImpl<>(result, pageable, doctorSchedulePage.getTotalElements());
     }
@@ -159,4 +175,5 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
     public List<Long> getPosiblyCancelMeet(Long doctorId, Long dayId) {
         return doctorSlotRepository.findPosiblyCancelMeet(doctorId, dayId);
     }
+
 }

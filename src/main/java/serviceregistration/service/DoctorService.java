@@ -36,9 +36,6 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
     }
 
     public DoctorDTO create(DoctorDTO doctorDTO) {
-//        RoleDTO roleDTO = new RoleDTO();
-//        roleDTO.setId(2L);
-//        doctorDTO.setRole(roleDTO);
         Role role = new Role();
         role.setId(2L);
         doctorDTO.setRole(role);
