@@ -278,5 +278,10 @@ where days.day = date(now());
 
 select cast(day as text)
 from days
-where id = 2
+where id = 2;
+
+select *
+from days
+where day < (TIMESTAMP 'today' + (interval '1 days') * 3)
+order by day
 

@@ -31,9 +31,18 @@ public interface DayRepository extends JpaRepository<Day, Long> {
                     from days
                     where day >= TIMESTAMP 'today'
                     order by day
-                    limit :count
+                    limit :countOfDays
                     """)
-    List<Day> findFirstActualDays(int count);
+    List<Day> findFirstActualDays(int countOfDays);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select *
+                    from days
+                    where day < (TIMESTAMP 'today' + (interval '1 day') * :countOfDays)
+                    order by day
+                    """)
+    List<Day> findDaysFromStartToPlusDaysFromToday(Integer countOfDays);
 
     @Query(nativeQuery = true,
             value = """
@@ -42,4 +51,6 @@ public interface DayRepository extends JpaRepository<Day, Long> {
                     where cast(day as text) = :date
                     """)
     Day findDayByDate(String date);
+
+
 }

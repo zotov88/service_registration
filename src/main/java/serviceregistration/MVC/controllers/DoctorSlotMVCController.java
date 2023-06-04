@@ -53,7 +53,7 @@ public class DoctorSlotMVCController {
         Page<UniversalQueryModel> doctorSlots = doctorSlotService.getActualSchedule(pageRequest);
         model.addAttribute("doctorslots", doctorSlots);
         model.addAttribute("specializations", specializationService.listAll());
-        model.addAttribute("days", dayService.getFirstFiveActualDays(Days.ONE_WEEK));
+        model.addAttribute("days", dayService.getFirstActualDays(Days.ONE_WEEK));
         model.addAttribute("cabinets", cabinetService.listAll());
         return "doctorslots/schedule";
     }
@@ -65,7 +65,7 @@ public class DoctorSlotMVCController {
                                        Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         model.addAttribute("doctorslots", doctorSlotService.findAmongActualSchedule(pageRequest, doctorSlotSearchDTO));
-        model.addAttribute("days", dayService.getFirstFiveActualDays(Days.ONE_WEEK));
+        model.addAttribute("days", dayService.getFirstActualDays(Days.ONE_WEEK));
         model.addAttribute("cabinets", cabinetService.listAll());
         model.addAttribute("specializations", specializationService.listAll());
         return "doctorslots/schedule";
@@ -77,7 +77,7 @@ public class DoctorSlotMVCController {
                                      Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         Page<UniversalQueryModel> doctorSlots = doctorSlotService.getArchiveSchedule(pageRequest);
-        model.addAttribute("days", dayService.listAll());
+        model.addAttribute("days", dayService.getDaysFromStartToPlusDaysFromToday(Days.ONE_WEEK));
         model.addAttribute("cabinets", cabinetService.listAll());
         model.addAttribute("specializations", specializationService.listAll());
         model.addAttribute("doctorslots", doctorSlots);
@@ -135,7 +135,7 @@ public class DoctorSlotMVCController {
         List<Cabinet> cabinets = cabinetService.listAll();
         model.addAttribute("scheduleForm", new DoctorDayCabinetDTO());
         model.addAttribute("doctors", doctors);
-        model.addAttribute("days", dayService.getFirstFiveActualDays(Days.ONE_WEEK));
+        model.addAttribute("days", dayService.getFirstActualDays(Days.ONE_WEEK));
         model.addAttribute("cabinets", cabinets);
         return "doctorslots/addSchedule";
     }

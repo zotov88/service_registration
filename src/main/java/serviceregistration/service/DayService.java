@@ -32,11 +32,17 @@ public class DayService {
         return dayRepository.findTodayId();
     }
 
-    public List<Day> getFirstFiveActualDays(int count) {
-        return dayRepository.findFirstActualDays(count);
+    public List<Day> getFirstActualDays(int countOfDays) {
+        return dayRepository.findFirstActualDays(countOfDays);
+    }
+
+    public List<Day> getDaysFromStartToPlusDaysFromToday(Integer countOfDays) {
+        return dayRepository.findDaysFromStartToPlusDaysFromToday(countOfDays);
     }
 
     public Day getDayByDate(String date) {
         return dayRepository.findDayByDate(date);
     }
+
+
 }
