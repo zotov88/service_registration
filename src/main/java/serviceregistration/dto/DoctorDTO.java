@@ -24,6 +24,7 @@ public class DoctorDTO extends GenericDTO {
     private Specialization specialization;
 //    private RoleDTO role;
     private Role role;
+    private String changePasswordToken;
     private List<Long> doctorSlotsIds;
 
     public DoctorDTO(Doctor doctor) {

@@ -43,6 +43,9 @@ public class Doctor
     @JoinColumn(name = "role_id", nullable = false, foreignKey = @ForeignKey(name = "FK_DOCTORS_ROLES"))
     private Role role;
 
+    @Column(name = "change_password_token")
+    private String changePasswordToken;
+
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.REMOVE)
     private List<DoctorSlot> doctorSlots;
 

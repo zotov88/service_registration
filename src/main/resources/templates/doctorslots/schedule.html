@@ -43,15 +43,13 @@
                         <label for="specialization">Специализация</label>
                     </div>
                 </div>
+
                 <div class="col-md">
                     <div class="form-floating">
-                        <select class="form-select" name="day" id="day">
-                            <option selected th:value="null">Выберете день</option>
-                            <option th:each="d : ${days}"
-                                    th:value="${d.getDay()}"
-                                    th:text="${d.getDay()}"></option>
-                        </select>
-                        <label for="day">День</label>
+                        <input name="day" type="date" class="form-control" id="day"
+                               th:min="${days.get(0).getDay()}" th:max="${days.get(days.size() - 1).getDay()}"
+                               placeholder="Дата">
+                        <label for="day">Дата</label>
                     </div>
                 </div>
                 <div class="col-md">
@@ -66,7 +64,7 @@
                     </div>
                 </div>
                 <div class="row g-2">
-                    <button type="submit" class="btn btn-secondary">Фильтровать расписание</button>
+                    <button type="submit" class="btn btn-secondary">Найти</button>
                 </div>
             </div>
         </form>

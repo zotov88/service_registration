@@ -67,4 +67,5 @@ public interface DoctorRepository extends GenericRepository<Doctor> {
     Page<Doctor> findAllDoctorsSortWithDeletedFalse(Pageable pageable);
 
 
+    Doctor findDoctorByChangePasswordToken(String uuid);
 }

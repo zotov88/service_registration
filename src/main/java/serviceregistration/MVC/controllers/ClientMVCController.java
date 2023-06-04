@@ -5,6 +5,7 @@ import jakarta.websocket.server.PathParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -114,13 +115,14 @@ public class ClientMVCController {
         CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!Objects.isNull(customUserDetails.getUserId())) {
             if (!ADMIN.equalsIgnoreCase(customUserDetails.getUsername())) {
-                if (!id.equals(customUserDetails.getUserId())) {
-                    throw new AuthException(HttpStatus.FORBIDDEN + ": " );
+                if (!id.equals(customUserDetails.getUserId()) &&
+                        !customUserDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_DOCTOR"))) {
+                    throw new AuthException(HttpStatus.FORBIDDEN + ": ");
                 }
             }
         }
         model.addAttribute("user", clientService.getOne(Long.valueOf(id)));
-        return "profile/viewProfile";
+        return "profile/viewClientProfile";
     }
 
     @GetMapping("/change-password")
@@ -141,11 +143,12 @@ public class ClientMVCController {
     public String updateProfile(@PathVariable Integer id,
                                 Model model) throws AuthException {
         CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!id.equals(customUserDetails.getUserId())) {
+        if (!id.equals(customUserDetails.getUserId()) &&
+                !customUserDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_CLIENT"))) {
             throw new AuthException(HttpStatus.FORBIDDEN + ": " + Errors.Users.USER_FORBIDDEN_ERROR);
         }
         model.addAttribute("clientForm", clientService.getOne(Long.valueOf(id)));
-        return "profile/updateProfile";
+        return "profile/updateProfileClient";
     }
 
     @PostMapping("/profile/update")
@@ -155,7 +158,7 @@ public class ClientMVCController {
         ClientDTO foundUser = clientService.getOne(clientDTOFromUpdateForm.getId());
         if (userEmailDuplicated != null && !Objects.equals(userEmailDuplicated.getEmail(), foundUser.getEmail())) {
             bindingResult.rejectValue("email", "error.email", "Такой email уже существует");
-            return "profile/updateProfile";
+            return "updateProfileClient";
         }
         foundUser.setFirstName(clientDTOFromUpdateForm.getFirstName());
         foundUser.setLastName(clientDTOFromUpdateForm.getLastName());

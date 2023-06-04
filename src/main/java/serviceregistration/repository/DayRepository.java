@@ -24,4 +24,22 @@ public interface DayRepository extends JpaRepository<Day, Long> {
                     where days.day = date(now())
                     """)
     Long findTodayId();
+
+    @Query(nativeQuery = true,
+            value = """
+                    select *
+                    from days
+                    where day >= TIMESTAMP 'today'
+                    order by day
+                    limit :count
+                    """)
+    List<Day> findFirstActualDays(int count);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select *
+                    from days
+                    where cast(day as text) = :date
+                    """)
+    Day findDayByDate(String date);
 }

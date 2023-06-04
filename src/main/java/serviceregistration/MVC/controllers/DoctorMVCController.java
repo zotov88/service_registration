@@ -1,12 +1,18 @@
 package serviceregistration.MVC.controllers;
 
+import jakarta.security.auth.message.AuthException;
+import jakarta.websocket.server.PathParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import serviceregistration.constants.Errors;
+import serviceregistration.dto.ClientDTO;
 import serviceregistration.dto.DoctorDTO;
 import serviceregistration.dto.DoctorSearchDTO;
 import serviceregistration.model.Specialization;
@@ -14,8 +20,11 @@ import serviceregistration.service.DoctorService;
 import serviceregistration.service.DoctorSlotService;
 import serviceregistration.service.RegistrationService;
 import serviceregistration.service.SpecializationService;
+import serviceregistration.service.userdetails.CustomUserDetails;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 import static serviceregistration.constants.UserRolesConstants.ADMIN;
 
@@ -78,6 +87,69 @@ public class DoctorMVCController {
                              Model model) {
         model.addAttribute("doctor", doctorService.getOne(id));
         return "doctors/viewDoctor";
+    }
+
+    @GetMapping("/profile/{id}")
+    public String userProfile(@PathVariable Integer id,
+                              Model model) throws AuthException {
+        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!Objects.isNull(customUserDetails.getUserId())) {
+            if (!ADMIN.equalsIgnoreCase(customUserDetails.getUsername())) {
+                if (!id.equals(customUserDetails.getUserId()) &&
+                        !customUserDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_CLIENT"))) {
+                    throw new AuthException(HttpStatus.FORBIDDEN + ": ");
+                }
+            }
+        }
+        model.addAttribute("doctor", doctorService.getOne(Long.valueOf(id)));
+        return "profile/viewDoctorProfile";
+    }
+
+    @GetMapping("/change-password")
+    public String changePassword(@PathParam(value = "uuid") String uuid,
+                                 Model model) {
+        model.addAttribute("uuid", uuid);
+        return "doctors/changePassword";
+    }
+
+    @PostMapping("/change-password")
+    public String changePassword(@PathParam(value = "uuid") String uuid,
+                                 @ModelAttribute("changePasswordForm") ClientDTO clientDTO) {
+        doctorService.changePassword(uuid, clientDTO.getPassword());
+        return "redirect:/login";
+    }
+
+    @GetMapping("/change-password/doctor")
+    public String changePassword(Model model) {
+        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        DoctorDTO doctorDTO = doctorService.getOne(Long.valueOf(customUserDetails.getUserId()));
+        UUID uuid = UUID.randomUUID();
+        doctorDTO.setChangePasswordToken(uuid.toString());
+        doctorService.update(doctorDTO);
+        model.addAttribute("uuid", uuid);
+        return "doctors/changePassword";
+    }
+
+    @GetMapping("/profile/update/{id}")
+    public String updateProfile(@PathVariable Integer id,
+                                Model model) throws AuthException {
+        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!id.equals(customUserDetails.getUserId()) &&
+                !customUserDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_DOCTOR"))) {
+            throw new AuthException(HttpStatus.FORBIDDEN + ": " + Errors.Users.USER_FORBIDDEN_ERROR);
+        }
+        model.addAttribute("doctorForm", doctorService.getOne(Long.valueOf(id)));
+        return "profile/updateProfileDoctor";
+    }
+
+    @PostMapping("/profile/update")
+    public String updateProfile(@ModelAttribute("clientForm") DoctorDTO doctorDTOFromUpdateForm) {
+        DoctorDTO foundDoctor = doctorService.getOne(doctorDTOFromUpdateForm.getId());
+        foundDoctor.setFirstName(doctorDTOFromUpdateForm.getFirstName());
+        foundDoctor.setLastName(doctorDTOFromUpdateForm.getLastName());
+        foundDoctor.setMidName(doctorDTOFromUpdateForm.getMidName() == null ? "" : doctorDTOFromUpdateForm.getMidName());
+        doctorService.update(foundDoctor);
+        return "redirect:/doctors/profile/" + doctorDTOFromUpdateForm.getId();
     }
 
     @GetMapping("/addDoctor")

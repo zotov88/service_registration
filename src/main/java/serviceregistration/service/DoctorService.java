@@ -5,10 +5,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import serviceregistration.dto.DoctorDTO;
-import serviceregistration.dto.DoctorSearchDTO;
-import serviceregistration.dto.DoctorSlotDTO;
-import serviceregistration.dto.RegistrationDTO;
+import serviceregistration.dto.*;
 import serviceregistration.mapper.DoctorMapper;
 import serviceregistration.model.Doctor;
 import serviceregistration.model.Role;
@@ -53,6 +50,10 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
         return mapper.toDTO(repository.save(mapper.toEntity(doctorDTO)));
     }
 
+    public DoctorDTO update(DoctorDTO updObj) {
+        return mapper.toDTO(repository.save(mapper.toEntity(updObj)));
+    }
+
     @Override
     public void delete(Long id) {
         userService.deleteByLogin(getOne(id).getLogin());
@@ -75,7 +76,7 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
         return new PageImpl<>(result, pageRequest, doctorsPaginated.getTotalElements());
     }
 
-    public Page<DoctorDTO> searchDoctorsSortWithDeletedFalse(DoctorSearchDTO doctorSearchDTO, 
+    public Page<DoctorDTO> searchDoctorsSortWithDeletedFalse(DoctorSearchDTO doctorSearchDTO,
                                                              Pageable pageRequest) {
         Page<Doctor> doctorsPaginated = ((DoctorRepository) repository).findSearchDoctorsSortWithDeletedFalse(
                 doctorSearchDTO.getLastName(),
@@ -131,5 +132,12 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
         return new PageImpl<>(result, pageable, doctorsSortPaginated.getTotalElements());
     }
 
-    
+
+    public void changePassword(final String uuid, final String password) {
+        DoctorDTO doctorDTO = mapper.toDTO(((DoctorRepository) repository).findDoctorByChangePasswordToken(uuid));
+        doctorDTO.setChangePasswordToken(null);
+        doctorDTO.setPassword(bCryptPasswordEncoder.encode(password));
+        update(doctorDTO);
+    }
+
 }

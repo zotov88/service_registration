@@ -103,7 +103,13 @@ insert into days(day)
 values ('2023-06-02'),
        ('2023-06-03'),
        ('2023-06-04'),
-       ('2023-06-05');
+       ('2023-06-05'),
+       ('2023-06-06'),
+       ('2023-06-07'),
+       ('2023-06-08'),
+       ('2023-06-09'),
+       ('2023-06-10'),
+       ('2023-06-11');
 
 
 insert into doctors
@@ -268,6 +274,9 @@ where ((now() at time zone 'utc-3') - (d.day + s.time_slot)) > '00:01:00'
 
 select id
 from days
-where days.day = date(now())
+where days.day = date(now());
 
+select cast(day as text)
+from days
+where id = 2
 

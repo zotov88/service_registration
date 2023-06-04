@@ -19,6 +19,7 @@ public interface DoctorTestData {
             "lastName2",
             new Specialization(1L, "Терапевт", "Терапевт"),
             new Role(2L, "DOCTOR", "doctor"),
+            null,
             new ArrayList<>()
     );
     
@@ -30,6 +31,7 @@ public interface DoctorTestData {
             "lastName1",
             new Specialization(1L, "Терапевт", "Терапевт"),
             new Role(2L, "DOCTOR", "doctor"),
+            null,
             new ArrayList<>()
     );
     
@@ -41,6 +43,7 @@ public interface DoctorTestData {
             "lastName3",
             new Specialization(1L, "Терапевт", "Терапевт"),
             new Role(2L, "DOCTOR", "doctor"),
+            null,
             new ArrayList<>()
     );
     
@@ -54,6 +57,7 @@ public interface DoctorTestData {
             "lastName1",
             new Specialization(1L, "Терапевт", "Терапевт"),
             new Role(2L, "DOCTOR", "doctor"),
+            null,
             null
     );
     
@@ -65,6 +69,7 @@ public interface DoctorTestData {
             "lastName2",
             new Specialization(1L, "Терапевт", "Терапевт"),
             new Role(2L, "DOCTOR", "doctor"),
+            null,
             null
     );
     
@@ -76,6 +81,7 @@ public interface DoctorTestData {
             "lastName3",
             new Specialization(1L, "Терапевт", "Терапевт"),
             new Role(2L, "DOCTOR", "doctor"),
+            null,
             new ArrayList<>()
     );
     

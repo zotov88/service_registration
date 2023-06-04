@@ -31,4 +31,12 @@ public class DayService {
     public Long getTodayId() {
         return dayRepository.findTodayId();
     }
+
+    public List<Day> getFirstFiveActualDays(int count) {
+        return dayRepository.findFirstActualDays(count);
+    }
+
+    public Day getDayByDate(String date) {
+        return dayRepository.findDayByDate(date);
+    }
 }

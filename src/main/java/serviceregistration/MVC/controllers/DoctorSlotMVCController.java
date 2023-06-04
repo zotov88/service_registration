@@ -6,12 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import serviceregistration.dto.ClientDTO;
-import serviceregistration.dto.DoctorDTO;
-import serviceregistration.dto.DoctorSlotDTO;
-import serviceregistration.dto.DoctorSlotSearchDTO;
+import serviceregistration.constants.Days;
+import serviceregistration.dto.*;
 import serviceregistration.model.Cabinet;
-import serviceregistration.model.Day;
 import serviceregistration.querymodel.UniversalQueryModel;
 import serviceregistration.service.*;
 
@@ -56,7 +53,7 @@ public class DoctorSlotMVCController {
         Page<UniversalQueryModel> doctorSlots = doctorSlotService.getActualSchedule(pageRequest);
         model.addAttribute("doctorslots", doctorSlots);
         model.addAttribute("specializations", specializationService.listAll());
-        model.addAttribute("days", dayService.getActualDays());
+        model.addAttribute("days", dayService.getFirstFiveActualDays(Days.ONE_WEEK));
         model.addAttribute("cabinets", cabinetService.listAll());
         return "doctorslots/schedule";
     }
@@ -68,7 +65,7 @@ public class DoctorSlotMVCController {
                                        Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         model.addAttribute("doctorslots", doctorSlotService.findAmongActualSchedule(pageRequest, doctorSlotSearchDTO));
-        model.addAttribute("days", dayService.getActualDays());
+        model.addAttribute("days", dayService.getFirstFiveActualDays(Days.ONE_WEEK));
         model.addAttribute("cabinets", cabinetService.listAll());
         model.addAttribute("specializations", specializationService.listAll());
         return "doctorslots/schedule";
@@ -135,20 +132,23 @@ public class DoctorSlotMVCController {
     @GetMapping("/addSchedule")
     public String addSchedule(Model model) {
         List<DoctorDTO> doctors = doctorService.listAll();
-        List<Day> days = dayService.getActualDays();
         List<Cabinet> cabinets = cabinetService.listAll();
-        model.addAttribute("scheduleForm", new DoctorSlotDTO());
+        model.addAttribute("scheduleForm", new DoctorDayCabinetDTO());
         model.addAttribute("doctors", doctors);
-        model.addAttribute("days", days);
+        model.addAttribute("days", dayService.getFirstFiveActualDays(Days.ONE_WEEK));
         model.addAttribute("cabinets", cabinets);
         return "doctorslots/addSchedule";
     }
 
     @PostMapping("/addSchedule")
-    public String addSchedule(@ModelAttribute("scheduleForm") DoctorSlotDTO doctorSlotDTO,
+    public String addSchedule(@ModelAttribute("scheduleForm") DoctorDayCabinetDTO doctorDayCabinetDTO,
                               BindingResult bindingResult,
                               Model model) {
         addSchedule(model);
+        DoctorSlotDTO doctorSlotDTO = new DoctorSlotDTO();
+        doctorSlotDTO.setDoctor(doctorDayCabinetDTO.getDoctor());
+        doctorSlotDTO.setCabinet(doctorDayCabinetDTO.getCabinet());
+        doctorSlotDTO.setDay(dayService.getDayByDate(doctorDayCabinetDTO.getDay().toString()));
         if (doctorSlotService.getDoctorSlotByDoctorAndDay(doctorSlotDTO.getDoctor().getId(), doctorSlotDTO.getDay().getId()) != null) {
             bindingResult.rejectValue("day", "error.day", "Врач уже работает " + doctorSlotDTO.getDay().getDay());
             return "doctorslots/addSchedule";

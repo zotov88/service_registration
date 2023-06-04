@@ -14,7 +14,7 @@
         <h3 th:text="'Расписание на ' + ${day.getDay()}"></h3>
         <h3 sec:authorize="hasRole('ADMIN')"
             th:text="'Врач: ' + ${doctor.getLastName()} + ' ' + ${doctor.getFirstName()} + ' ' + ${doctor.getMidName()}"></h3>
-        <h3 th:text="'Кабинет ' + ${cabinet}"></h3>
+        <h3 th:if="${cabinet} != null" th:text="'Кабинет ' + ${cabinet}"></h3>
         <hr class="hr"/>
         <div><br></div>
         <table class="table table-bordered mt-3">

@@ -13,5 +13,4 @@ public class DoctorSearchDTO {
     private String lastName;
     private String midName;
     private String specialization;
-
 }

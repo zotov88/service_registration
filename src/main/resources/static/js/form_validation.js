@@ -62,12 +62,6 @@ function validateFormSchedule() {
                     event.stopPropagation()
                     return false;
                 }
-                if (day.value === 'default') {
-                    alert("Пожалуйста, укажите день");
-                    event.preventDefault()
-                    event.stopPropagation()
-                    return false;
-                }
                 if (cabinet.value === 'default') {
                     alert("Пожалуйста, укажите кабинет");
                     event.preventDefault()
