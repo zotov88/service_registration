@@ -38,8 +38,8 @@ public class DoctorServiceTest extends GenericTest<Doctor, DoctorDTO> {
                 Mockito.mock(UserService.class),
                 Mockito.mock(BCryptPasswordEncoder.class),
                 Mockito.mock(DoctorSlotService.class),
-                Mockito.mock(RegistrationService.class)
-        );
+                Mockito.mock(RegistrationService.class),
+                Mockito.mock(MailSenderService.class));
     }
 
     @Test

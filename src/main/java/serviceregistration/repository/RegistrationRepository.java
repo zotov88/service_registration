@@ -130,4 +130,14 @@ public interface RegistrationRepository
                         and r.is_active = true
                     """)
     List<Registration> findRegistrationsByDoctorId(Long doctorId);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select r.*
+                    from doctors_slots ds
+                        join registrations r on ds.id = r.doctor_slot_id
+                    where ds.id = :doctorSlotId
+                        and r.is_active = true
+                    """)
+    Registration findRegistrationDTOByDoctorSlotId(Long doctorSlotId);
 }

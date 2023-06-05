@@ -6,10 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.dto.RegistrationDTO;
-import serviceregistration.querymodel.UniversalQueryModel;
 import serviceregistration.mapper.RegistrationMapper;
 import serviceregistration.model.Registration;
 import serviceregistration.model.ResultMeet;
+import serviceregistration.querymodel.UniversalQueryModel;
 import serviceregistration.repository.RegistrationRepository;
 
 import java.time.LocalDateTime;
@@ -69,8 +69,8 @@ public class RegistrationService extends GenericService<Registration, Registrati
         update(registrationDTO);
     }
 
-    public Registration getOnByDoctorSlotId(Long id) {
-        return ((RegistrationRepository)repository).findOnByDoctorSlotId(id);
+    public RegistrationDTO getOnByDoctorSlotId(Long id) {
+        return mapper.toDTO(((RegistrationRepository)repository).findOnByDoctorSlotId(id));
     }
 
     public Long getIdByDoctorSlotId(Long doctorSlotId) {
@@ -89,7 +89,6 @@ public class RegistrationService extends GenericService<Registration, Registrati
         List<RegistrationDTO> registrationDTOS = mapper.toDTOs(((RegistrationRepository)repository).getListCompletedMeeting());
         for (RegistrationDTO registrationDTO : registrationDTOS) {
             registrationDTO.setIsActive(false);
-            System.out.println("+++++++++++++++++++++++++++++++++++");
             update(registrationDTO);
         }
     }
@@ -100,5 +99,9 @@ public class RegistrationService extends GenericService<Registration, Registrati
 
     public List<RegistrationDTO> getRegistrationsByDoctorIdWhereIsActive(Long doctorId) {
         return mapper.toDTOs(((RegistrationRepository)repository).findRegistrationsByDoctorId(doctorId));
+    }
+
+    public RegistrationDTO getRegistrationDTOByDoctorSlotId(Long doctorSlotId) {
+        return mapper.toDTO(((RegistrationRepository) repository).findRegistrationDTOByDoctorSlotId(doctorSlotId));
     }
 }

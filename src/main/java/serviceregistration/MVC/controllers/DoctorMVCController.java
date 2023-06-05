@@ -188,16 +188,16 @@ public class DoctorMVCController {
         return "redirect:/doctors";
     }
 
-    @GetMapping("/deleteDoctor")
-    public String deleteDoctor(Model model) {
-        List<DoctorDTO> doctors = doctorService.listAll();
-        model.addAttribute("doctors", doctors);
-        return "doctors/deleteDoctor";
-    }
-
-    @PostMapping("/deleteDoctor")
-    public String deleteDoctor(@RequestParam("doctorDel") Long doctorId) {
-        doctorService.delete(doctorId);
-        return "redirect:/doctors";
-    }
+//    @GetMapping("/deleteDoctor")
+//    public String deleteDoctor(Model model) {
+//        List<DoctorDTO> doctors = doctorService.listAll();
+//        model.addAttribute("doctors", doctors);
+//        return "doctors/deleteDoctor";
+//    }
+//
+//    @PostMapping("/deleteDoctor")
+//    public String deleteDoctor(@RequestParam("doctorDel") Long doctorId) {
+//        doctorService.delete(doctorId);
+//        return "redirect:/doctors";
+//    }
 }

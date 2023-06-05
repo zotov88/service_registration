@@ -1,11 +1,15 @@
 package serviceregistration.service;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import serviceregistration.dto.*;
+import serviceregistration.dto.DoctorDTO;
+import serviceregistration.dto.DoctorSearchDTO;
+import serviceregistration.dto.DoctorSlotDTO;
+import serviceregistration.dto.RegistrationDTO;
 import serviceregistration.mapper.DoctorMapper;
 import serviceregistration.model.Doctor;
 import serviceregistration.model.Role;
@@ -14,6 +18,9 @@ import serviceregistration.repository.DoctorRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static serviceregistration.constants.MailConstants.MAIL_BODY_FOR_REGISTRATION_CANCEL;
+import static serviceregistration.constants.MailConstants.MAIL_SUBJECT_FOR_REGISTRATION_CANCEL;
+
 @Service
 public class DoctorService extends GenericService<Doctor, DoctorDTO> {
 
@@ -21,18 +28,21 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final DoctorSlotService doctorSlotService;
     private final RegistrationService registrationService;
+    private final MailSenderService mailSenderService;
 
     public DoctorService(DoctorRepository repository,
                          DoctorMapper mapper,
                          UserService userService,
                          BCryptPasswordEncoder bCryptPasswordEncoder,
                          DoctorSlotService doctorSlotService,
-                         RegistrationService registrationService) {
+                         RegistrationService registrationService,
+                         @Lazy MailSenderService mailSenderService) {
         super(repository, mapper);
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.doctorSlotService = doctorSlotService;
         this.registrationService = registrationService;
+        this.mailSenderService = mailSenderService;
     }
 
     public DoctorDTO create(DoctorDTO doctorDTO) {
@@ -91,6 +101,8 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
             DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(registrationDTO.getDoctorSlotId());
             doctorSlotDTO.setIsRegistered(false);
             registrationDTO.setIsActive(false);
+            mailSenderService.dataPreparationForMessage(
+                    registrationDTO.getId(), MAIL_SUBJECT_FOR_REGISTRATION_CANCEL, MAIL_BODY_FOR_REGISTRATION_CANCEL);
             doctorSlotService.update(doctorSlotDTO);
             registrationService.update(registrationDTO);
         }

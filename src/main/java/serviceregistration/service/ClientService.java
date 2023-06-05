@@ -9,15 +9,18 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import serviceregistration.constants.MailConstants;
-import serviceregistration.dto.*;
+import serviceregistration.dto.ClientDTO;
+import serviceregistration.dto.ClientSearchDTO;
+import serviceregistration.dto.DoctorSlotDTO;
+import serviceregistration.dto.RegistrationDTO;
 import serviceregistration.mapper.ClientMapper;
-import serviceregistration.model.*;
+import serviceregistration.model.Client;
+import serviceregistration.model.Role;
 import serviceregistration.repository.ClientRepository;
 import serviceregistration.utils.MailUtils;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Formatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -160,45 +163,6 @@ public class ClientService extends GenericService<Client, ClientDTO> {
                 MailConstants.MAIL_SUBJECT_FOR_REMEMBER_PASSWORD,
                 MailConstants.MAIL_MESSAGE_FOR_REMEMBER_PASSWORD + uuid);
         javaMailSender.send(mailMessage);
-    }
-
-    public void sendMessageRegistrationStatus(final ClientDTO clientDTO,
-                                              final DoctorDTO doctorDTO,
-                                              final Day day,
-                                              final Slot slot,
-                                              final Cabinet cabinet,
-                                              final String subject,
-                                              final String text) {
-        SimpleMailMessage mailMessage = MailUtils.createMailMessage(
-                clientDTO.getEmail(),
-                subject,
-                createMessageRegistrationStatus(clientDTO, doctorDTO, day, slot, cabinet, text)
-        );
-        javaMailSender.send(mailMessage);
-    }
-
-    private String createMessageRegistrationStatus(final ClientDTO clientDTO,
-                                                   final DoctorDTO doctorDTO,
-                                                   final Day day,
-                                                   final Slot slot,
-                                                   final Cabinet cabinet,
-                                                   final String message) {
-        Formatter formatter = new Formatter();
-        formatter.format("""
-                        %s%s, %s.
-
-                        Доктор: %s %s %s
-                        Специализация: %s
-                        Дата: %s
-                        Время: %s
-                        Кабинет: %d
-                        """,
-                clientDTO.getFirstName(), clientDTO.getMidName().isEmpty() ? "" : (" " + clientDTO.getMidName()),
-                message,
-                doctorDTO.getLastName(), doctorDTO.getFirstName(), doctorDTO.getMidName(),
-                doctorDTO.getSpecialization().getTitleSpecialization(),
-                day.getDay(), slot.getTimeSlot(), cabinet.getCabinetNumber());
-        return formatter.toString();
     }
 
 

@@ -361,4 +361,6 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     order by d.day
                     """)
     Page<UniversalQueryModel> findSearchArchiveScheduleByDoctor(Pageable pageable, Long doctorId, String day);
+
+
 }

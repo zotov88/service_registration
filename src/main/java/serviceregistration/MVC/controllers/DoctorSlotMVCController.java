@@ -24,31 +24,28 @@ public class DoctorSlotMVCController {
     private final DayService dayService;
     private final CabinetService cabinetService;
     private final SpecializationService specializationService;
-    private final DoctorSlotRegistrationService doctorSlotRegistrationService;
+//    private final DoctorSlotRegistrationService doctorSlotRegistrationService;
     private final ClientService clientService;
-    private final RegistrationService registrationService;
 
     public DoctorSlotMVCController(DoctorSlotService doctorSlotService,
                                    DoctorService doctorService,
                                    DayService dayService,
                                    CabinetService cabinetService,
                                    SpecializationService specializationService,
-                                   DoctorSlotRegistrationService doctorSlotRegistrationService,
-                                   ClientService clientService,
-                                   RegistrationService registrationService) {
+//                                   DoctorSlotRegistrationService doctorSlotRegistrationService,
+                                   ClientService clientService) {
         this.doctorSlotService = doctorSlotService;
         this.doctorService = doctorService;
         this.dayService = dayService;
         this.cabinetService = cabinetService;
         this.specializationService = specializationService;
-        this.doctorSlotRegistrationService = doctorSlotRegistrationService;
+//        this.doctorSlotRegistrationService = doctorSlotRegistrationService;
         this.clientService = clientService;
-        this.registrationService = registrationService;
     }
 
     @GetMapping("")
     public String getActualSchedule(@RequestParam(value = "page", defaultValue = "1") int page,
-                                    @RequestParam(value = "size", defaultValue = "12") int pageSize,
+                                    @RequestParam(value = "size", defaultValue = "8") int pageSize,
                                     Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         Page<UniversalQueryModel> doctorSlots = doctorSlotService.getActualSchedule(pageRequest);
@@ -61,7 +58,7 @@ public class DoctorSlotMVCController {
 
     @PostMapping("/search")
     public String searchActualSchedule(@RequestParam(value = "page", defaultValue = "1") int page,
-                                       @RequestParam(value = "size", defaultValue = "12") int pageSize,
+                                       @RequestParam(value = "size", defaultValue = "8") int pageSize,
                                        @ModelAttribute("doctorSlotSearchForm") DoctorSlotSearchDTO doctorSlotSearchDTO,
                                        Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
@@ -74,7 +71,7 @@ public class DoctorSlotMVCController {
 
     @GetMapping("/archive")
     public String getArchiveSchedule(@RequestParam(value = "page", defaultValue = "1") int page,
-                                     @RequestParam(value = "size", defaultValue = "12") int pageSize,
+                                     @RequestParam(value = "size", defaultValue = "8") int pageSize,
                                      Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         Page<UniversalQueryModel> doctorSlots = doctorSlotService.getArchiveSchedule(pageRequest);
@@ -87,7 +84,7 @@ public class DoctorSlotMVCController {
 
     @PostMapping("/archive/search")
     public String searchArchiveSchedule(@RequestParam(value = "page", defaultValue = "1") int page,
-                                        @RequestParam(value = "size", defaultValue = "12") int pageSize,
+                                        @RequestParam(value = "size", defaultValue = "8") int pageSize,
                                         @ModelAttribute("doctorSlotSearchForm") DoctorSlotSearchDTO doctorSlotSearchDTO,
                                         Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
@@ -127,39 +124,12 @@ public class DoctorSlotMVCController {
                                                         @ModelAttribute("dayForm") Day day,
                                                         @PathVariable Long doctorId,
                                                         Model model) {
-        System.out.println("+++++++++++++" + day.getDay());
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         Page<UniversalQueryModel> doctorSlots = doctorSlotService.searchArchiveScheduleByDoctor(pageRequest, doctorId, day);
         model.addAttribute("days", dayService.getDaysFromStartToPlusDaysFromToday(Days.ONE_WEEK));
         model.addAttribute("doctorSlots", doctorSlots);
         return "doctorslots/individualArchiveSchedule";
     }
-
-//    @GetMapping("/archive")
-//    public String getArchiveSchedule(@RequestParam(value = "page", defaultValue = "1") int page,
-//                                     @RequestParam(value = "size", defaultValue = "12") int pageSize,
-//                                     Model model) {
-//        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
-//        Page<UniversalQueryModel> doctorSlots = doctorSlotService.getArchiveSchedule(pageRequest);
-//        model.addAttribute("days", dayService.getDaysFromStartToPlusDaysFromToday(Days.ONE_WEEK));
-//        model.addAttribute("cabinets", cabinetService.listAll());
-//        model.addAttribute("specializations", specializationService.listAll());
-//        model.addAttribute("doctorslots", doctorSlots);
-//        return "doctorslots/archiveSchedule";
-//    }
-//
-//    @PostMapping("/archive/search")
-//    public String searchArchiveSchedule(@RequestParam(value = "page", defaultValue = "1") int page,
-//                                        @RequestParam(value = "size", defaultValue = "12") int pageSize,
-//                                        @ModelAttribute("doctorSlotSearchForm") DoctorSlotSearchDTO doctorSlotSearchDTO,
-//                                        Model model) {
-//        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
-//        model.addAttribute("doctorslots", doctorSlotService.findAmongAllSchedule(pageRequest, doctorSlotSearchDTO));
-//        model.addAttribute("days", dayService.listAll());
-//        model.addAttribute("cabinets", cabinetService.listAll());
-//        model.addAttribute("specializations", specializationService.listAll());
-//        return "doctorslots/archiveSchedule";
-//    }
 
     @GetMapping("/doctor-schedule/day/{doctorId}/{dayId}")
     public String getSlotsForDoctorDayByLogin(@PathVariable Long doctorId,
@@ -215,7 +185,7 @@ public class DoctorSlotMVCController {
     @GetMapping("/delete/{doctorId}/{dayId}")
     public String deleteSoft(@PathVariable Long doctorId,
                              @PathVariable Long dayId) {
-        doctorSlotRegistrationService.deleteSoft(doctorId, dayId);
+        doctorSlotService.deleteSoft(doctorId, dayId);
         return "redirect:/doctorslots";
     }
 
@@ -231,10 +201,9 @@ public class DoctorSlotMVCController {
                              @RequestParam(value = "size", defaultValue = "8") int pageSize,
                              Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
-        Page<UniversalQueryModel> doctorDays = doctorSlotService.groupByDoctorSlot(pageRequest);
-        model.addAttribute("doctorDays", doctorDays);
+        model.addAttribute("doctorDays", doctorSlotService.groupByDoctorSlot(pageRequest));
         model.addAttribute("specializations", specializationService.listAll());
-        model.addAttribute("days", dayService.getActualDays());
+        model.addAttribute("days", dayService.getFirstActualDays(Days.ONE_WEEK));
         return "/doctorslots/makeMeet";
     }
 
@@ -244,8 +213,7 @@ public class DoctorSlotMVCController {
                                    @ModelAttribute("doctorSlotSearchForm") DoctorSlotSearchDTO doctorSlotSearchDTO,
                                    Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
-        Page<UniversalQueryModel> doctorDays = doctorSlotService.findAmongGroupByDoctorSlot(pageRequest, doctorSlotSearchDTO);
-        model.addAttribute("doctorDays", doctorDays);
+        model.addAttribute("doctorDays", doctorSlotService.findAmongGroupByDoctorSlot(pageRequest, doctorSlotSearchDTO));
         model.addAttribute("specializations", specializationService.listAll());
         model.addAttribute("days", dayService.getActualDays());
         return "doctorslots/makeMeet";

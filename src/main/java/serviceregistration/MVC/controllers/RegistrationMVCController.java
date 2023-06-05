@@ -8,15 +8,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import serviceregistration.dto.ClientDTO;
-import serviceregistration.dto.DoctorDTO;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.dto.RegistrationDTO;
-import serviceregistration.model.Cabinet;
-import serviceregistration.model.Day;
-import serviceregistration.model.Slot;
 import serviceregistration.querymodel.UniversalQueryModel;
 import serviceregistration.service.*;
 import serviceregistration.service.userdetails.CustomUserDetails;
+
+import static serviceregistration.constants.MailConstants.*;
 
 @Slf4j
 @Controller
@@ -29,6 +27,7 @@ public class RegistrationMVCController {
     private final ClientService clientService;
     private final SpecializationService specializationService;
     private final DayService dayService;
+    private final MailSenderService mailSenderService;
     private final SlotService slotService;
     private final CabinetService cabinetService;
 
@@ -38,6 +37,7 @@ public class RegistrationMVCController {
                                      ClientService clientService,
                                      SpecializationService specializationService,
                                      DayService dayService,
+                                     MailSenderService mailSenderService,
                                      SlotService slotService,
                                      CabinetService cabinetService) {
         this.registrationService = registrationService;
@@ -46,6 +46,7 @@ public class RegistrationMVCController {
         this.clientService = clientService;
         this.specializationService = specializationService;
         this.dayService = dayService;
+        this.mailSenderService = mailSenderService;
         this.slotService = slotService;
         this.cabinetService = cabinetService;
     }
@@ -75,24 +76,19 @@ public class RegistrationMVCController {
 
     @GetMapping("/client-slots/cancel/{registrationId}")
     public String cancelMeet(@PathVariable Long registrationId) {
-        RegistrationDTO registrationDTO = registrationService.getOne(registrationId);
-        ClientDTO clientDTO = clientService.getOne(registrationDTO.getClientId());
-        DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(registrationDTO.getDoctorSlotId());
-        DoctorDTO doctorDTO = doctorService.getOne(doctorSlotDTO.getDoctor().getId());
-        Day day = dayService.getOne(doctorSlotDTO.getDay().getId());
-        Slot slot = slotService.getOne(doctorSlotDTO.getSlot().getId());
-        Cabinet cabinet = cabinetService.getOne(doctorSlotDTO.getCabinet().getId());
-//        Long clientId = registrationService.getClientIdByRegistrationId(registrationId);
+        ClientDTO clientDTO = clientService.getOne(registrationService.getOne(registrationId).getClientId());
         registrationService.cancelMeet(registrationId);
-//        clientService.sendMessageRegistrationStatus(clientDTO, doctorDTO, day, slot, cabinet,
-//                MAIL_SUBJECT_FOR_REGISTRATION_CANCEL, MAIL_BODY_FOR_REGISTRATION_CANCEL);
+        mailSenderService.dataPreparationForMessage(
+                registrationId, MAIL_SUBJECT_FOR_REGISTRATION_CANCEL, MAIL_BODY_FOR_REGISTRATION_CANCEL);
         return "redirect:/registrations/client-slots/" + clientDTO.getId();
     }
 
     @GetMapping("/client-slots/cancel/ds/{doctorSlotId}")
     public String cancelMeetByDs(@PathVariable Long doctorSlotId) {
-        Long registrationId = registrationService.getIdByDoctorSlotId(doctorSlotId);
-        registrationService.cancelMeet(registrationId);
+        RegistrationDTO registrationDTO = registrationService.getRegistrationDTOByDoctorSlotId(doctorSlotId);
+        registrationService.cancelMeet(registrationDTO.getId());
+        mailSenderService.dataPreparationForMessage(
+                registrationDTO.getId(), MAIL_SUBJECT_FOR_REGISTRATION_CANCEL, MAIL_BODY_FOR_REGISTRATION_CANCEL);
         DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(doctorSlotId);
         return "redirect:/doctorslots/doctor-schedule/day/" + doctorSlotDTO.getDoctor().getId() + "/" + doctorSlotDTO.getDay().getId();
     }
@@ -121,11 +117,6 @@ public class RegistrationMVCController {
         DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(doctorSlotId);
         CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ClientDTO clientDTO = clientService.getClientByLogin(customUserDetails.getUsername());
-        DoctorDTO doctorDTO = doctorService.getOne(doctorSlotDTO.getDoctor().getId());
-        Day day = dayService.getOne(doctorSlotDTO.getDay().getId());
-        Slot slot = slotService.getOne(doctorSlotDTO.getSlot().getId());
-        Cabinet cabinet = cabinetService.getOne(doctorSlotDTO.getCabinet().getId());
-
         if (clientService.isActiveRegistrationBySpecialization(doctorSlotDTO, clientDTO.getId())) {
             return "redirect:/doctorslots/makeMeet";
         }
@@ -135,8 +126,10 @@ public class RegistrationMVCController {
         registrationDTO.setClientId(Long.valueOf(customUserDetails.getUserId()));
         registrationDTO.setDoctorSlotId(doctorSlotDTO.getId());
         registrationService.registrationSlot(registrationDTO);
-//        clientService.sendMessageRegistrationStatus(clientDTO, doctorDTO, day, slot, cabinet,
-//                MAIL_SUBJECT_FOR_REGISTRATION_SUCCESS, MAIL_BODY_FOR_REGISTRATION_SUCCESS);
+        mailSenderService.dataPreparationForMessage(
+                registrationService.getRegistrationDTOByDoctorSlotId(doctorSlotDTO.getId()).getId(),
+                MAIL_SUBJECT_FOR_REGISTRATION_SUCCESS, MAIL_BODY_FOR_REGISTRATION_SUCCESS);
+
         return "redirect:/registrations/client-slots/" + customUserDetails.getUserId();
     }
 
