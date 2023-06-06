@@ -39,10 +39,6 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         ((DoctorSlotRepository) repository).addSchedule(doctorId, dayId, cabinetId);
     }
 
-//    public void deleteSchedule(final Long doctorId, final Long dayId) {
-//        ((DoctorSlotRepository)repository).deleteAllByDoctorIdAndDayId(doctorId, dayId);
-//    }
-
     public DoctorSlotDTO getDoctorSlotByCabinetAndDay(final Long cabinetId, final Long dayId) {
         return mapper.toDTO(((DoctorSlotRepository) repository).findFirstByCabinetIdAndDayId(cabinetId, dayId));
     }
@@ -52,7 +48,7 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
     }
 
     public Page<UniversalQueryModel> groupByDoctorSlot(Pageable pageable) {
-        Page<UniversalQueryModel> doctorDayPaginated = ((DoctorSlotRepository) repository).groupByDoctorSlot(pageable);
+        Page<UniversalQueryModel> doctorDayPaginated = ((DoctorSlotRepository) repository).findGroupByDoctorSlot(pageable);
         List<UniversalQueryModel> result = doctorDayPaginated.getContent();
         return new PageImpl<>(result, pageable, doctorDayPaginated.getTotalElements());
     }
@@ -107,16 +103,6 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         return new PageImpl<>(result, pageable, doctorSlotPage.getTotalElements());
     }
 
-//    public Page<DoctorSlotDTO> getActualDoctorSlot(Pageable pageable) {
-//        Page<DoctorSlot> doctorSlotsPaginated = ((DoctorSlotRepository)repository).findActualSchedule(pageable);
-//        List<DoctorSlotDTO> result = mapper.toDTOs(doctorSlotsPaginated.getContent());
-//        return new PageImpl<>(result, pageable, doctorSlotsPaginated.getTotalElements());
-//    }
-//
-//    public List<Long> getTimeForDay(Long doctorId, Long dayId) {
-//        return ((DoctorSlotRepository)repository).findAllTimeForDoctorDay(doctorId, dayId);
-//    }
-
     public Page<UniversalQueryModel> getActualScheduleByDoctor(Pageable pageable, Long doctorId) {
         Page<UniversalQueryModel> doctorSchedulePage = ((DoctorSlotRepository) repository).findActualScheduleByDoctorId(pageable, doctorId);
         List<UniversalQueryModel> result = doctorSchedulePage.getContent();
@@ -138,10 +124,6 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         return new PageImpl<>(result, pageable, doctorSchedulePage.getTotalElements());
     }
 
-//    public List<UniversalQueryModel> getScheduleByDoctorToday(Long doctorId) {
-//        return ((DoctorSlotRepository)repository).findScheduleByDoctorIdToday(doctorId);
-//    }
-
     public List<UniversalQueryModel> getSlotsOneDayForDoctor(Long doctorId, Long dayId) {
         return ((DoctorSlotRepository) repository).findSlotsOneDayForDoctor(doctorId, dayId);
     }
@@ -158,10 +140,6 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
     public List<DoctorSlotDTO> getAllByDoctorId(Long doctorId) {
         return mapper.toDTOs(((DoctorSlotRepository) repository).findAllByDoctorId(doctorId));
     }
-
-//    public List<Long> getAllRegistrationsByDoctorId(Long doctorId) {
-//        return ((DoctorSlotRepository)repository).findAllRegistrationsByDoctorId(doctorId);
-//    }
 
     public Integer getCabinetByDoctorIdAndDayId(Long doctorId, Long dayId) {
         return ((DoctorSlotRepository) repository).findCabinetByDoctorIdAndDayId(doctorId, dayId);
@@ -183,7 +161,8 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
             doctorSlotDTO.setIsRegistered(false);
             mailSenderService.dataPreparationForMessage(
                     registrationDTO.getId(),
-                    MailConstants.MAIL_SUBJECT_FOR_REGISTRATION_CANCEL, MailConstants.MAIL_BODY_FOR_REGISTRATION_CANCEL
+                    MailConstants.MAIL_SUBJECT_FOR_REGISTRATION_CANCEL,
+                    MailConstants.MAIL_BODY_FOR_REGISTRATION_CANCEL
             );
             update(doctorSlotDTO);
             registrationService.update(registrationDTO);

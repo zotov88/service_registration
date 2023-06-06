@@ -24,7 +24,6 @@ public class DoctorSlotMVCController {
     private final DayService dayService;
     private final CabinetService cabinetService;
     private final SpecializationService specializationService;
-//    private final DoctorSlotRegistrationService doctorSlotRegistrationService;
     private final ClientService clientService;
 
     public DoctorSlotMVCController(DoctorSlotService doctorSlotService,
@@ -32,14 +31,12 @@ public class DoctorSlotMVCController {
                                    DayService dayService,
                                    CabinetService cabinetService,
                                    SpecializationService specializationService,
-//                                   DoctorSlotRegistrationService doctorSlotRegistrationService,
                                    ClientService clientService) {
         this.doctorSlotService = doctorSlotService;
         this.doctorService = doctorService;
         this.dayService = dayService;
         this.cabinetService = cabinetService;
         this.specializationService = specializationService;
-//        this.doctorSlotRegistrationService = doctorSlotRegistrationService;
         this.clientService = clientService;
     }
 
@@ -153,9 +150,7 @@ public class DoctorSlotMVCController {
     @GetMapping("/addSchedule")
     public String addSchedule(Model model) {
         model.addAttribute("scheduleForm", new DoctorDayCabinetDTO());
-        model.addAttribute("doctors", doctorService.listAll());
-        model.addAttribute("days", dayService.getFirstActualDays(Days.ONE_WEEK));
-        model.addAttribute("cabinets", cabinetService.listAll());
+        createModelForAddingSchedule(model);
         return "doctorslots/addSchedule";
     }
 
@@ -163,23 +158,31 @@ public class DoctorSlotMVCController {
     public String addSchedule(@ModelAttribute("scheduleForm") DoctorDayCabinetDTO doctorDayCabinetDTO,
                               BindingResult bindingResult,
                               Model model) {
-        addSchedule(model);
         DoctorSlotDTO doctorSlotDTO = new DoctorSlotDTO();
         doctorSlotDTO.setDoctor(doctorDayCabinetDTO.getDoctor());
         doctorSlotDTO.setCabinet(doctorDayCabinetDTO.getCabinet());
         doctorSlotDTO.setDay(dayService.getDayByDate(doctorDayCabinetDTO.getDay().toString()));
         if (doctorSlotService.getDoctorSlotByDoctorAndDay(doctorSlotDTO.getDoctor().getId(), doctorSlotDTO.getDay().getId()) != null) {
             bindingResult.rejectValue("day", "error.day", "Врач уже работает " + doctorSlotDTO.getDay().getDay());
+            createModelForAddingSchedule(model);
             return "doctorslots/addSchedule";
         }
         if (doctorSlotService.getDoctorSlotByCabinetAndDay(doctorSlotDTO.getCabinet().getId(), doctorSlotDTO.getDay().getId()) != null) {
-            bindingResult.rejectValue("cabinet", "error.cabinet", "В этот день кабинет занят");
+            bindingResult.rejectValue("cabinet", "error.cabinet",
+                    doctorSlotDTO.getDay().getDay() + " кабинет " + doctorSlotDTO.getCabinet().getCabinetNumber() + " занят");
+            createModelForAddingSchedule(model);
             return "doctorslots/addSchedule";
         }
         doctorSlotService.addSchedule(doctorSlotDTO.getDoctor().getId(),
                 doctorSlotDTO.getDay().getId(),
                 doctorSlotDTO.getCabinet().getId());
         return "redirect:/doctorslots";
+    }
+
+    public void createModelForAddingSchedule(Model model) {
+        model.addAttribute("doctors", doctorService.listAll());
+        model.addAttribute("days", dayService.getFirstActualDays(Days.ONE_WEEK));
+        model.addAttribute("cabinets", cabinetService.listAll());
     }
 
     @GetMapping("/delete/{doctorId}/{dayId}")

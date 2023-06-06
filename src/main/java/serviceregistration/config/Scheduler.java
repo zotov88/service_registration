@@ -16,7 +16,6 @@ public class Scheduler {
     }
 
     @Scheduled(cron = "0 0/30 7-21 * * *")
-//    @Scheduled(cron = "0 0/1 * * * *")
     public void setPastRegistrationsToFalse() {
         registrationService.setCompletedMeetingToFalse();
     }

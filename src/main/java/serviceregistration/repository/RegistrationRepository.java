@@ -11,16 +11,6 @@ import java.util.List;
 public interface RegistrationRepository
         extends GenericRepository<Registration> {
 
-    Page<Registration> getAllByClientId(Pageable pageable, Long clientId);
-
-    @Query(nativeQuery = true,
-            value = """
-                    select id
-                    from registrations
-                    where client_id = :clientId
-                    """)
-    List<Long> getAllByClientId(Long clientId);
-
     @Query(nativeQuery = true,
             value = """
                     select r.id as RegistrationId,
@@ -41,38 +31,12 @@ public interface RegistrationRepository
 
     @Query(nativeQuery = true,
             value = """
-                    select cl.first_name as ClientFirstName, cl.mid_name as ClientMidName, cl.last_name as ClientLastName,
-                            d2.day as Day, s.time_slot as Slot, c.number as Cabinet, r.is_active as IsActive
-                    from doctors d
-                        join doctors_slots ds on d.id = ds.doctor_id
-                        join days d2 on ds.day_id = d2.id
-                        join cabinets c on c.id = ds.cabinet_id
-                        join slots s on ds.slot_id = s.id
-                        join registrations r on ds.id = r.doctor_slot_id
-                        join clients cl on cl.id = r.client_id
-                    where d.id = :doctorId
-                    order by d2.day desc
-                    """)
-    Page<UniversalQueryModel> getAllRegistrationsByDoctor(Pageable pageable, Long doctorId);
-
-    @Query(nativeQuery = true,
-            value = """
                     select *
                     from registrations
                     where doctor_slot_id = :doctorSlotId
                         and is_active = true
                     """)
     Registration findOnByDoctorSlotId(Long doctorSlotId);
-
-    @Query(nativeQuery = true,
-            value = """
-                    select r.id
-                    from doctors_slots ds
-                        join registrations r on ds.id = r.doctor_slot_id
-                    where ds.id = :doctorSlotId
-                        and r.is_deleted = false
-                    """)
-    Long findIdByDoctorSlotId(Long doctorSlotId);
 
     @Query(nativeQuery = true,
             value = """
@@ -87,38 +51,15 @@ public interface RegistrationRepository
 
     @Query(nativeQuery = true,
             value = """
-                    select c.id
-                    from registrations r
-                        join clients c on c.id = r.client_id
-                    where r.id = :registrationId
-                    """)
-    Long findClientIdByRegistrationId(Long registrationId);
-
-    @Query(nativeQuery = true,
-            value = """
                     select r.*
                     from registrations r
                              join doctors_slots ds on r.doctor_slot_id = ds.id
                              join days d on ds.day_id = d.id
                              join slots s on s.id = ds.slot_id
-                    where ((now() at time zone 'utc-3') - (d.day + s.time_slot)) > '00:01:00'
+                    where ((now() at time zone 'utc-3') - (d.day + s.time_slot)) > '00:29:00'
                         and r.is_active = true
                     """)
     List<Registration> getListCompletedMeeting();
-
-//    @Query(nativeQuery = true,
-//            value = """
-//                    select r.*
-//                    from registrations r
-//                             join doctors_slots ds on r.doctor_slot_id = ds.id
-//                             join days d on ds.day_id = d.id
-//                             join slots s on s.id = ds.slot_id
-//                             join doctors doc on doc.id = ds.doctor_id
-//                    where doc.id = 1
-//                        and d.id = 1
-//                        and (now() at time zone 'utc-3') < d.day + s.time_slot
-//                    """)
-//    Registration findOneByDoctorIdAndDayId(Long doctorId, Long dayId);
 
     @Query(nativeQuery = true,
             value = """

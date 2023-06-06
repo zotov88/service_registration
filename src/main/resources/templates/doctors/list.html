@@ -56,12 +56,11 @@
         <div class="col">
             <a sec:authorize="isAuthenticated() && hasRole('ADMIN')"
                href="/doctors/addDoctor"
-               class="btn btn-sm btn-success"
+               class="btn btn-success"
                role="button"
                style="float: right"
                aria-disabled="true">Регистрация врача</a>
         </div>
-        <div><br></div>
         <table class="table table-bordered table-sm mt-3">
             <thead>
             <tr>
@@ -75,14 +74,14 @@
                 <td th:text="${d.getLastName() + ' ' + d.getFirstName() + ' ' + d.getMidName()}"></td>
                 <td th:text="${d.getSpecialization().getTitleSpecialization()}"></td>
                 <td>
-                    <a class="btn btn-sm btn-outline-success"
+                    <a class="btn btn-sm btn-info"
                        th:href="'/doctors/' + ${d.getId()}">О враче</a>
                     <a sec:authorize="hasRole('ADMIN')" th:if="${!d.isDeleted()}"
-                       class="btn btn-sm btn-outline-danger"
+                       class="btn btn-sm btn-danger"
                        th:href="'/doctors/softdelete/' + ${d.getId()}"
                        onclick="return confirm('Вы хотите удалить врача?' +
                         '\nУдалится все его расписание и отменятся все вктивные записи!')">Удалить</a>
-                    <a sec:authorize="hasRole('ADMIN')" th:if="${d.isDeleted()}" class="btn btn-sm btn-outline-warning"
+                    <a sec:authorize="hasRole('ADMIN')" th:if="${d.isDeleted()}" class="btn btn-sm btn-warning"
                        th:href="'/doctors/restore/' + ${d.getId()}"
                        onclick="return confirm('Вы хотите восстановить врача?' + '\nБудет восстановлено его расписание')">Восстановить</a>
                 </td>

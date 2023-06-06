@@ -1,5 +1,5 @@
 //Взято с https://bootstrap-4.ru/docs/5.0/forms/validation/
-function validateFormDoctorAdd() {
+function validateFormAddDoctor() {
     'use strict'
     const forms = document.querySelectorAll('.needs-validation');
     const specialization = document.getElementById("specialization");

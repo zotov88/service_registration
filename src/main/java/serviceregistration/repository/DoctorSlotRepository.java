@@ -30,8 +30,6 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         cabinets.id = :cabinetId""")
     void addSchedule(Long doctorId, Long dayId, Long cabinetId);
 
-    void deleteAllByDoctorIdAndDayId(Long doctorId, Long dayId);
-
     DoctorSlot findFirstByCabinetIdAndDayId(Long cabinetId, Long dayId);
 
     DoctorSlot findFirstByDoctorIdAndDayId(Long doctorId, Long dayId);
@@ -125,16 +123,6 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
 
     @Query(nativeQuery = true,
             value = """
-                    select ds.*
-                    from doctors_slots ds
-                        join days d on ds.day_id = d.id
-                    where day >= TIMESTAMP 'today'
-                    order by day, doctor_id, slot_id
-                    """)
-    Page<DoctorSlot> findActualSchedule(Pageable pageable);
-
-    @Query(nativeQuery = true,
-            value = """
                     select doc.first_name as DoctorFirstName, doc.mid_name as DoctorMidName, doc.last_name as DoctorLastName,
                         s.title as Specialization, d.day as Day, doc.id as DoctorId, d.id as DayId, c.number as Cabinet
                     from doctors_slots ds
@@ -150,7 +138,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     group by doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, doc.id, d.id, c.number
                     order by d.day, s.title, doc.last_name, c.number
                     """)
-    Page<UniversalQueryModel> groupByDoctorSlot(Pageable pageable);
+    Page<UniversalQueryModel> findGroupByDoctorSlot(Pageable pageable);
 
     @Query(nativeQuery = true,
             value = """
@@ -183,15 +171,6 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
 
     @Query(nativeQuery = true,
             value = """
-                    select id
-                    from doctors_slots
-                    where doctor_id = :doctorId
-                        and day_id = :dayId
-                        and is_registered = false""")
-    List<Long> findAllTimeForDoctorDay(Long doctorId, Long dayId);
-
-    @Query(nativeQuery = true,
-            value = """
                     select d2.day as Day, c.number as Cabinet, d2.id as DayId
                     from doctors d
                         join doctors_slots ds on d.id = ds.doctor_id
@@ -216,22 +195,6 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     order by d2.day
                     """)
     Page<UniversalQueryModel> findArchiveScheduleByDoctor(Pageable pageable, Long doctorId);
-
-
-    @Query(nativeQuery = true,
-            value = """
-                    select ds.id as DoctorSlotId, s.time_slot as Slot, c.number as Cabinet,
-                            ds.is_registered as Registered
-                    from doctors d
-                        join doctors_slots ds on d.id = ds.doctor_id
-                        join days d2 on ds.day_id = d2.id
-                        join cabinets c on ds.cabinet_id = c.id
-                        join slots s on ds.slot_id = s.id
-                    where d2.day = TIMESTAMP 'today'
-                        and d.id = :doctorId
-                    order by s.time_slot
-                    """)
-    List<UniversalQueryModel> findScheduleByDoctorIdToday(Long doctorId);
 
     @Query(nativeQuery = true,
             value = """
@@ -298,17 +261,6 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                     where doctor_id = :doctorId
                     """)
     List<DoctorSlot> findAllByDoctorId(Long doctorId);
-
-    @Query(nativeQuery = true,
-            value = """
-                    select r.id
-                    from doctors_slots
-                        join doctors d on doctors_slots.doctor_id = d.id
-                        join registrations r on doctors_slots.id = r.doctor_slot_id
-                    where doctor_id = :doctorId
-                        and r.is_active = true
-                    """)
-    List<Long> findAllRegistrationsByDoctorId(Long doctorId);
 
     @Query(nativeQuery = true,
             value = """

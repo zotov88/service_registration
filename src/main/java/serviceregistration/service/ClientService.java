@@ -78,6 +78,14 @@ public class ClientService extends GenericService<Client, ClientDTO> {
         return mapper.toDTO(((ClientRepository) repository).findClientByEmailAndIsDeletedFalse(email));
     }
 
+    public ClientDTO getClientByPolicy(Long policy) {
+        return mapper.toDTO(((ClientRepository) repository).findClientByPolicyAndIsDeletedFalse(policy));
+    }
+
+    public ClientDTO getClientByPhone(Long phone) {
+        return mapper.toDTO(((ClientRepository) repository).findClientByPhoneAndIsDeletedFalse(phone));
+    }
+
     public void changePassword(final String uuid,
                                final String password) {
         ClientDTO clientDTO = mapper.toDTO(((ClientRepository) repository).findClientByChangePasswordToken(uuid));
@@ -164,6 +172,5 @@ public class ClientService extends GenericService<Client, ClientDTO> {
                 MailConstants.MAIL_MESSAGE_FOR_REMEMBER_PASSWORD + uuid);
         javaMailSender.send(mailMessage);
     }
-
 
 }

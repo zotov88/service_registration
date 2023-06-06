@@ -19,10 +19,6 @@ public class UserService {
         return userRepository.findUserByLogin(login);
     }
 
-    public Long findRoleByLogin(final String login) {
-        return userRepository.findRoleByLogin(login);
-    }
-
     public void create(User user) {
         userRepository.save(user);
     }

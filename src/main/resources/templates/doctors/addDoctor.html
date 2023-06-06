@@ -44,7 +44,7 @@
         </div>
         <div class="mt-3 row g-2">
             <div class="col-md">
-                <input name="login" type="text" class="form-control" id="login" placeholder="Придумайте логин" required>
+                <input name="login" type="text" class="form-control" id="login" placeholder="Введите логин" required>
                 <div class="invalid-feedback">Обязательное поле для заполнения</div>
                 <div class="alert alert-danger" th:if="${#fields.hasErrors('login')}">
                     <p th:errors="*{login}"></p>
@@ -57,7 +57,7 @@
             </div>
         </div>
         <div class="mt-3 row g-2">
-            <button type="submit"  class="btn btn-success" onclick="validateFormDoctorAdd()">Добавить</button>
+            <button type="submit"  class="btn btn-success" onclick="validateFormAddDoctor()">Добавить</button>
             <br>
             <button type="button"  class="btn btn-success" onclick="window.history.back()">Назад</button>
         </div>

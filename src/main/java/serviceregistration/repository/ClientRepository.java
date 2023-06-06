@@ -12,7 +12,11 @@ public interface ClientRepository extends GenericRepository<Client> {
 
     Client findClientByEmailAndIsDeletedFalse(String email);
 
+    Client findClientByPolicyAndIsDeletedFalse(Long policy);
+
     Client findClientByChangePasswordToken(String uuid);
+
+    Client findClientByPhoneAndIsDeletedFalse(Long phone);
 
     @Query(nativeQuery = true,
             value = """

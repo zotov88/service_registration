@@ -89,6 +89,14 @@ public class ClientMVCController {
             bindingResult.rejectValue("email", "email.error", "Этот email уже существует");
             return "registration";
         }
+        if (clientService.getClientByPolicy(clientDTO.getPolicy()) != null) {
+            bindingResult.rejectValue("policy", "policy.error", "Этот полис уже существует");
+            return "registration";
+        }
+        if (clientService.getClientByPhone(clientDTO.getPhone()) != null) {
+            bindingResult.rejectValue("phone", "phone.error", "Этот телефон уже зарегистрирован");
+            return "registration";
+        }
         clientService.create(clientDTO);
         return "redirect:/login";
     }
@@ -136,7 +144,7 @@ public class ClientMVCController {
     public String changePassword(@PathParam(value = "uuid") String uuid,
                                  @ModelAttribute("changePasswordForm") ClientDTO clientDTO) {
         clientService.changePassword(uuid, clientDTO.getPassword());
-        return "redirect:/login";
+        return "redirect:/logout";
     }
 
     @GetMapping("/profile/update/{id}")

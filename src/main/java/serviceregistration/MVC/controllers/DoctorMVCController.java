@@ -15,14 +15,10 @@ import serviceregistration.constants.Errors;
 import serviceregistration.dto.ClientDTO;
 import serviceregistration.dto.DoctorDTO;
 import serviceregistration.dto.DoctorSearchDTO;
-import serviceregistration.model.Specialization;
 import serviceregistration.service.DoctorService;
-import serviceregistration.service.DoctorSlotService;
-import serviceregistration.service.RegistrationService;
 import serviceregistration.service.SpecializationService;
 import serviceregistration.service.userdetails.CustomUserDetails;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -33,18 +29,12 @@ import static serviceregistration.constants.UserRolesConstants.ADMIN;
 public class DoctorMVCController {
 
     private final DoctorService doctorService;
-    private final DoctorSlotService doctorSlotService;
     private final SpecializationService specializationService;
-    private final RegistrationService registrationService;
 
     public DoctorMVCController(DoctorService doctorService,
-                               DoctorSlotService doctorSlotService,
-                               SpecializationService specializationService,
-                               RegistrationService registrationService) {
+                               SpecializationService specializationService) {
         this.doctorService = doctorService;
-        this.doctorSlotService = doctorSlotService;
         this.specializationService = specializationService;
-        this.registrationService = registrationService;
     }
 
     @GetMapping("")
@@ -116,7 +106,7 @@ public class DoctorMVCController {
     public String changePassword(@PathParam(value = "uuid") String uuid,
                                  @ModelAttribute("changePasswordForm") ClientDTO clientDTO) {
         doctorService.changePassword(uuid, clientDTO.getPassword());
-        return "redirect:/login";
+        return "redirect:/logout";
     }
 
     @GetMapping("/change-password/doctor")
@@ -154,22 +144,23 @@ public class DoctorMVCController {
 
     @GetMapping("/addDoctor")
     public String addDoctor(Model model) {
-        List<Specialization> specializations = specializationService.listAll();
-        model.addAttribute("specializations", specializations);
+        model.addAttribute("specializations", specializationService.listAll());
         model.addAttribute("doctorForm", new DoctorDTO());
         return "doctors/addDoctor";
     }
+
+
 
     @PostMapping("/addDoctor")
     public String addDoctor(@ModelAttribute("doctorForm") DoctorDTO doctorDTO,
                             BindingResult bindingResult,
                             Model model) {
-        addDoctor(model);
         String login = doctorDTO.getLogin().toLowerCase();
         doctorDTO.setLogin(login);
         if (doctorDTO.getLogin().equalsIgnoreCase(ADMIN) ||
                 doctorService.getDoctorByLogin(login) != null && doctorService.getDoctorByLogin(login).getLogin().equals(login)) {
             bindingResult.rejectValue("login", "error.login", "Этот логин уже существует");
+            model.addAttribute("specializations", specializationService.listAll());
             return "doctors/addDoctor";
         }
         doctorService.create(doctorDTO);
@@ -187,17 +178,4 @@ public class DoctorMVCController {
         doctorService.restore(doctorId);
         return "redirect:/doctors";
     }
-
-//    @GetMapping("/deleteDoctor")
-//    public String deleteDoctor(Model model) {
-//        List<DoctorDTO> doctors = doctorService.listAll();
-//        model.addAttribute("doctors", doctors);
-//        return "doctors/deleteDoctor";
-//    }
-//
-//    @PostMapping("/deleteDoctor")
-//    public String deleteDoctor(@RequestParam("doctorDel") Long doctorId) {
-//        doctorService.delete(doctorId);
-//        return "redirect:/doctors";
-//    }
 }

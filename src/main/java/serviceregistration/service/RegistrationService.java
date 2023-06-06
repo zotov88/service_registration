@@ -27,26 +27,10 @@ public class RegistrationService extends GenericService<Registration, Registrati
         this.doctorSlotService = doctorSlotService;
     }
 
-    public Page<RegistrationDTO> getAllByClientId(Pageable pageable, Long clientId) {
-        Page<Registration> registrationsPaginated = ((RegistrationRepository)repository).getAllByClientId(pageable, clientId);
-        List<RegistrationDTO> result = mapper.toDTOs(registrationsPaginated.getContent());
-        return new PageImpl<>(result, pageable, registrationsPaginated.getTotalElements());
-    }
-
-    public List<Long> getAllByClientId(Long clientId) {
-        return ((RegistrationRepository)repository).getAllByClientId(clientId);
-    }
-
     public Page<UniversalQueryModel> getAllRegistrationsByClient(Long clientId, Pageable pageable) {
         Page<UniversalQueryModel> registrations = ((RegistrationRepository)repository).getAllRegistrationsByClient(clientId, pageable);
         List<UniversalQueryModel> result = registrations.getContent();
         return new PageImpl<>(result, pageable, registrations.getTotalElements());
-    }
-
-    public Page<UniversalQueryModel> getAllRegistrationsByDoctor(Pageable pageable, Long doctorId) {
-        Page<UniversalQueryModel> doctorRegistrationPage = ((RegistrationRepository)repository).getAllRegistrationsByDoctor(pageable, doctorId);
-        List<UniversalQueryModel> result = doctorRegistrationPage.getContent();
-        return new PageImpl<>(result, pageable, doctorRegistrationPage.getTotalElements());
     }
 
     public void registrationSlot(RegistrationDTO registrationDTO) {
@@ -59,30 +43,33 @@ public class RegistrationService extends GenericService<Registration, Registrati
         update(registrationDTO);
     }
 
-    public void cancelMeet(Long registrationId) {
-        RegistrationDTO registrationDTO = mapper.toDTO(mapper.toEntity(getOne(registrationId)));
+//    public void cancelMeet(Long registrationId) {
+////        RegistrationDTO registrationDTO = mapper.toDTO(mapper.toEntity(getOne(registrationId)));
+//        RegistrationDTO registrationDTO = getOne(registrationId);
+//        DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(registrationDTO.getDoctorSlotId());
+//        doctorSlotDTO.setIsRegistered(false);
+//        registrationDTO.setIsActive(false);
+//        registrationDTO.setDeleted(true);
+//        doctorSlotService.update(doctorSlotDTO);
+//        update(registrationDTO);
+//    }
+
+    public RegistrationDTO cancelMeet(Long registrationId) {
+        RegistrationDTO registrationDTO = getOne(registrationId);
         DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(registrationDTO.getDoctorSlotId());
         doctorSlotDTO.setIsRegistered(false);
         registrationDTO.setIsActive(false);
         registrationDTO.setDeleted(true);
         doctorSlotService.update(doctorSlotDTO);
-        update(registrationDTO);
+        return update(registrationDTO);
     }
 
     public RegistrationDTO getOnByDoctorSlotId(Long id) {
         return mapper.toDTO(((RegistrationRepository)repository).findOnByDoctorSlotId(id));
     }
 
-    public Long getIdByDoctorSlotId(Long doctorSlotId) {
-        return ((RegistrationRepository)repository).findIdByDoctorSlotId(doctorSlotId);
-    }
-
     public List<RegistrationDTO> listAllActiveRegistrationByClientId(Long clientId) {
         return mapper.toDTOs(((RegistrationRepository)repository).findAllActiveRegistrationByClientId(clientId));
-    }
-
-    public Long getClientIdByRegistrationId(Long registrationId) {
-        return ((RegistrationRepository)repository).findClientIdByRegistrationId(registrationId);
     }
 
     public void setCompletedMeetingToFalse() {
@@ -92,10 +79,6 @@ public class RegistrationService extends GenericService<Registration, Registrati
             update(registrationDTO);
         }
     }
-
-//    public RegistrationDTO getOneByDoctorIdAndDayId(final Long doctorId, final Long dayId) {
-//        return mapper.toDTO(((RegistrationRepository)repository).findOneByDoctorIdAndDayId(doctorId, dayId));
-//    }
 
     public List<RegistrationDTO> getRegistrationsByDoctorIdWhereIsActive(Long doctorId) {
         return mapper.toDTOs(((RegistrationRepository)repository).findRegistrationsByDoctorId(doctorId));

@@ -70,72 +70,81 @@
         <hr class="hr"/>
     </div>
     <div><br></div>
-    <h3 align="center">Архивное расписание</h3>
+    <h3 align="center">Расписание</h3>
+
     <div class="row">
         <div class="col">
-            <a href="/doctorslots"
-               class="btn btn-sm btn-success"
+
+            <button
+               class="btn btn-success"
                role="button"
-               style="float: left"
-               aria-disabled="true">Актуальное расписание</a>
+               disabled
+               style="float: right"
+               aria-disabled="true">Создать расписание</button>
+
+            <div class="form-check form-switch">
+                <input class="form-check-input" onclick="location.href='/doctorslots'" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+                <label class="form-check-label" for="flexSwitchCheckChecked">Показать архив</label>
+            </div>
         </div>
-        <div><br></div>
-        <table class="table table-bordered table-sm mt-3">
-            <thead>
-            <tr>
-                <th scope="col">ФИО</th>
-                <th scope="col">Специализация</th>
-                <th scope="col">День</th>
-                <th scope="col">Кабинет</th>
-                <th scope="col"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="d : ${doctorslots}">
-                <td th:text="${d.getDoctorLastName() + ' ' + d.getDoctorFirstName() + ' ' + d.getDoctorMidName()}"></td>
-                <td th:text="${d.getSpecialization()}"></td>
-                <td th:text="${d.getDay()}"></td>
-                <td th:text="${d.getCabinet()}"></td>
-                <td>
-                    <a sec:authorize="hasRole('ADMIN')" class="btn btn-sm btn-outline-success"
-                       th:href="'/doctorslots/doctor-schedule/day/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}">Подробнее</a>
-                    <a th:if="${!d.getIsDeleted()}" sec:authorize="hasRole('ADMIN')"
-                       class="btn btn-sm btn-outline-danger"
-                       th:href="'/doctorslots/delete/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}"
-                       onclick="return confirm('Вы хотите удалить расписание?')">Удалить</a>
-                    <a th:if="${d.getIsDeleted()}" class="btn btn-sm btn-outline-warning"
-                       th:href="'/doctorslots/restore/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}"
-                       onclick="return confirm('Вы хотите восстановить расписание?')">Восстановить</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+
+            <div><br></div>
+            <table class="table table-bordered table-sm mt-3">
+                <thead>
+                <tr>
+                    <th scope="col">ФИО</th>
+                    <th scope="col">Специализация</th>
+                    <th scope="col">День</th>
+                    <th scope="col">Кабинет</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="d : ${doctorslots}">
+                    <td th:text="${d.getDoctorLastName() + ' ' + d.getDoctorFirstName() + ' ' + d.getDoctorMidName()}"></td>
+                    <td th:text="${d.getSpecialization()}"></td>
+                    <td th:text="${d.getDay()}"></td>
+                    <td th:text="${d.getCabinet()}"></td>
+                    <td>
+                        <a sec:authorize="hasRole('ADMIN')" class="btn btn-sm btn-success"
+                           th:href="'/doctorslots/doctor-schedule/day/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}">Подробнее</a>
+                        <a th:if="${!d.getIsDeleted()}" sec:authorize="hasRole('ADMIN')"
+                           class="btn btn-sm btn-danger"
+                           th:href="'/doctorslots/delete/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}"
+                           onclick="return confirm('Вы хотите удалить расписание?')">Удалить</a>
+                        <a th:if="${d.getIsDeleted()}" class="btn btn-sm btn-warning"
+                           th:href="'/doctorslots/restore/' + ${d.getDoctorId()} + '/' + ${d.getDayId()}"
+                           onclick="return confirm('Вы хотите восстановить расписание?')">Восстановить</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <nav aria-label="Pagination" th:if="${doctorslots.totalPages gt 0}">
+            <ul class="pagination justify-content-center font-weight-bold">
+                <li class="page-item" th:classappend="${doctorslots.number eq 0} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/doctorslots/archive?page={id}(id=${doctorslots.number lt 2 ? 1 : doctorslots.number})}"
+                       aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item"
+                    th:each="i : ${#numbers.sequence(1, doctorslots.totalPages, 1)}"
+                    th:classappend="${i eq doctorslots.number + 1} ? 'active'">
+                    <a class="page-link" th:href="@{/doctorslots/archive?page={id}(id=${i})}" th:text="${i}"
+                       th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+                </li>
+                <li class="page-item" th:classappend="${doctorslots.number eq doctorslots.totalPages - 1} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/doctorslots/archive?page={id}(id=${doctorslots.number + 2})}"
+                       aria-label="Next" title="Next Page" data-toggle="tooltip">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
-    <nav aria-label="Pagination" th:if="${doctorslots.totalPages gt 0}">
-        <ul class="pagination justify-content-center font-weight-bold">
-            <li class="page-item" th:classappend="${doctorslots.number eq 0} ? 'disabled'">
-                <a class="page-link"
-                   th:href="@{/doctorslots/archive?page={id}(id=${doctorslots.number lt 2 ? 1 : doctorslots.number})}"
-                   aria-label="Previous" title="Previous Page" data-toggle="tooltip">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item"
-                th:each="i : ${#numbers.sequence(1, doctorslots.totalPages, 1)}"
-                th:classappend="${i eq doctorslots.number + 1} ? 'active'">
-                <a class="page-link" th:href="@{/doctorslots/archive?page={id}(id=${i})}" th:text="${i}"
-                   th:title="${'Page '+ i}" data-toggle="tooltip"></a>
-            </li>
-            <li class="page-item" th:classappend="${doctorslots.number eq doctorslots.totalPages - 1} ? 'disabled'">
-                <a class="page-link"
-                   th:href="@{/doctorslots/archive?page={id}(id=${doctorslots.number + 2})}"
-                   aria-label="Next" title="Next Page" data-toggle="tooltip">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</div>
 </body>
 </html>
 
