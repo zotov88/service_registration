@@ -1,7 +1,6 @@
 package serviceregistration.MVC.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import serviceregistration.dto.ClientDTO;
 import serviceregistration.dto.DoctorSlotDTO;
 import serviceregistration.dto.RegistrationDTO;
-import serviceregistration.querymodel.UniversalQueryModel;
 import serviceregistration.service.*;
 import serviceregistration.service.userdetails.CustomUserDetails;
 
@@ -28,8 +26,6 @@ public class RegistrationMVCController {
     private final SpecializationService specializationService;
     private final DayService dayService;
     private final MailSenderService mailSenderService;
-    private final SlotService slotService;
-    private final CabinetService cabinetService;
 
     public RegistrationMVCController(RegistrationService registrationService,
                                      DoctorSlotService doctorSlotService,
@@ -37,9 +33,7 @@ public class RegistrationMVCController {
                                      ClientService clientService,
                                      SpecializationService specializationService,
                                      DayService dayService,
-                                     MailSenderService mailSenderService,
-                                     SlotService slotService,
-                                     CabinetService cabinetService) {
+                                     MailSenderService mailSenderService) {
         this.registrationService = registrationService;
         this.doctorSlotService = doctorSlotService;
         this.doctorService = doctorService;
@@ -47,8 +41,6 @@ public class RegistrationMVCController {
         this.specializationService = specializationService;
         this.dayService = dayService;
         this.mailSenderService = mailSenderService;
-        this.slotService = slotService;
-        this.cabinetService = cabinetService;
     }
 
     @GetMapping("/doctorList")
@@ -61,42 +53,15 @@ public class RegistrationMVCController {
         return "registrations/clientList";
     }
 
-
     @GetMapping("/client-slots/{clientId}")
     public String clientSlots(@RequestParam(value = "page", defaultValue = "1") int page,
                               @RequestParam(value = "size", defaultValue = "10") int pageSize,
                               @PathVariable Long clientId,
                               Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
-        Page<UniversalQueryModel> registrationsClients = registrationService.getAllRegistrationsByClient(clientId, pageRequest);
-        model.addAttribute("registrationsClients", registrationsClients);
+        model.addAttribute("registrationsClients", registrationService.getAllRegistrationsByClient(clientId, pageRequest));
         model.addAttribute("client", clientService.getOne(clientId));
         return "registrations/clientList";
-    }
-
-    @GetMapping("/client-slots/cancel/{registrationId}")
-    public String cancelMeet(@PathVariable Long registrationId) {
-        ClientDTO clientDTO = clientService.getOne(registrationService.getOne(registrationId).getClientId());
-        registrationService.cancelMeet(registrationId);
-        mailSenderService.dataPreparationForMessage(
-                registrationId, MAIL_SUBJECT_FOR_REGISTRATION_CANCEL, MAIL_BODY_FOR_REGISTRATION_CANCEL);
-        return "redirect:/registrations/client-slots/" + clientDTO.getId();
-    }
-
-    @GetMapping("/client-slots/cancel/ds/{doctorSlotId}")
-    public String cancelMeetByDs(@PathVariable Long doctorSlotId) {
-        RegistrationDTO registrationDTO = registrationService.getRegistrationDTOByDoctorSlotId(doctorSlotId);
-        registrationService.cancelMeet(registrationDTO.getId());
-        mailSenderService.dataPreparationForMessage(
-                registrationDTO.getId(), MAIL_SUBJECT_FOR_REGISTRATION_CANCEL, MAIL_BODY_FOR_REGISTRATION_CANCEL);
-        DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(doctorSlotId);
-        return "redirect:/doctorslots/doctor-schedule/day/" + doctorSlotDTO.getDoctor().getId() + "/" + doctorSlotDTO.getDay().getId();
-    }
-
-    @GetMapping("/doctor-slots-today/{doctorId}")
-    public String doctorSlots(@PathVariable Long doctorId,
-                              Model model) {
-        return "redirect:/doctorslots/doctor-schedule/day/" + doctorId + "/" + dayService.getTodayId();
     }
 
     @GetMapping("/slots/{doctorId}/{dayId}")
@@ -126,11 +91,35 @@ public class RegistrationMVCController {
         registrationDTO.setClientId(Long.valueOf(customUserDetails.getUserId()));
         registrationDTO.setDoctorSlotId(doctorSlotDTO.getId());
         registrationService.registrationSlot(registrationDTO);
-        mailSenderService.dataPreparationForMessage(
+        mailSenderService.sendMessage(
                 registrationService.getRegistrationDTOByDoctorSlotId(doctorSlotDTO.getId()).getId(),
                 MAIL_SUBJECT_FOR_REGISTRATION_SUCCESS, MAIL_BODY_FOR_REGISTRATION_SUCCESS);
-
         return "redirect:/registrations/client-slots/" + customUserDetails.getUserId();
+    }
+
+    @GetMapping("/client-slots/cancel/{registrationId}")
+    public String cancelMeet(@PathVariable Long registrationId) {
+        ClientDTO clientDTO = clientService.getOne(registrationService.getOne(registrationId).getClientId());
+        registrationService.cancelMeet(registrationId);
+        mailSenderService.sendMessage(
+                registrationId, MAIL_SUBJECT_FOR_REGISTRATION_CANCEL, MAIL_BODY_FOR_REGISTRATION_CANCEL);
+        return "redirect:/registrations/client-slots/" + clientDTO.getId();
+    }
+
+    @GetMapping("/client-slots/cancel/ds/{doctorSlotId}")
+    public String cancelMeetByDs(@PathVariable Long doctorSlotId) {
+        RegistrationDTO registrationDTO = registrationService.getRegistrationDTOByDoctorSlotId(doctorSlotId);
+        registrationService.cancelMeet(registrationDTO.getId());
+        mailSenderService.sendMessage(
+                registrationDTO.getId(), MAIL_SUBJECT_FOR_REGISTRATION_CANCEL, MAIL_BODY_FOR_REGISTRATION_CANCEL);
+        DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(doctorSlotId);
+        return "redirect:/doctorslots/doctor-schedule/day/" + doctorSlotDTO.getDoctor().getId() + "/" + doctorSlotDTO.getDay().getId();
+    }
+
+    @GetMapping("/doctor-slots-today/{doctorId}")
+    public String doctorSlots(@PathVariable Long doctorId,
+                              Model model) {
+        return "redirect:/doctorslots/doctor-schedule/day/" + doctorId + "/" + dayService.getTodayId();
     }
 
 }

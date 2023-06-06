@@ -39,12 +39,15 @@
                     </li>
                 </ul>
 
+                <div sec:authorize="isAuthenticated() && hasRole('CLIENT')">
+                    <a class="nav-link active" style="float: right"
+                       th:href="'/clients/profile/' + ${#authentication.getPrincipal().getUserId()}">Профиль</a>
+                </div>
                 <div sec:authorize="isAuthenticated() && hasRole('DOCTOR')">
                     <a class="nav-link active" style="float: right"
-                       th:href="'/doctors/profile/' + ${#authentication.getPrincipal().getUserId()}"
-                       th:text="${#authentication.getPrincipal().getUsername()}"></a>
+                       th:href="'/doctors/profile/' + ${#authentication.getPrincipal().getUserId()}">Профиль</a>
                 </div>
-                <div>
+
                     <form class="d-flex" sec:authorize="!isAuthenticated()">
                         <a href="/login" class="btn btn-dark" role="button" aria-disabled="true">Войти</a>
                     </form>

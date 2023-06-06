@@ -44,9 +44,9 @@ public class MailSenderService {
         this.cabinetService = cabinetService;
     }
 
-    public void dataPreparationForMessage(final Long registrationId,
-                                          final String subject,
-                                          final String text) {
+    public void sendMessage(final Long registrationId,
+                            final String subject,
+                            final String text) {
         RegistrationDTO registrationDTO = registrationService.getOne(registrationId);
         ClientDTO clientDTO = clientService.getOne(registrationDTO.getClientId());
         DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(registrationDTO.getDoctorSlotId());
@@ -78,8 +78,8 @@ public class MailSenderService {
                                                    final Slot slot,
                                                    final Cabinet cabinet,
                                                    final String message) {
-        Formatter formatter = new Formatter();
-        formatter.format("""
+        Formatter formatter = new Formatter().format(
+                        """
                         %s%s, %s.
 
                         Доктор: %s %s %s

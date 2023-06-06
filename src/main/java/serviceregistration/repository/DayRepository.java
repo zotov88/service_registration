@@ -10,15 +10,6 @@ public interface DayRepository extends JpaRepository<Day, Long> {
 
     @Query(nativeQuery = true,
             value = """
-                    select *
-                    from days
-                    where day >= TIMESTAMP 'today'
-                    order by day
-                    """)
-    List<Day> findActualDays();
-
-    @Query(nativeQuery = true,
-            value = """
                     select id
                     from days
                     where days.day = date(now())

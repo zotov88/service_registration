@@ -13,7 +13,7 @@
         <h3 th:text="'Профиль пользователя: ' + ${user.getFirstName() + ' ' + user.getLastName()}"></h3>
         <hr class="hr"/>
         <form class="row g-1">
-            <div class="mb-2 row">
+            <div sec:authorize="isAuthenticated() && !hasRole('DOCTOR')"  class="mb-2 row">
                 <label for="userLogin" class="col-sm-2 col-form-label no-border">Логин:</label>
                 <div class="col-sm-10">
                     <p th:text="${user.getLogin()}" type="text" readonly class="form-control-plaintext" id="userLogin">
@@ -51,6 +51,13 @@
                 <div class="col-sm-10">
                     <p th:text="${user.getBirthDate()}" type="text" readonly class="form-control-plaintext"
                        id="birthDate">
+                </div>
+            </div>
+            <div class="mb-2 row">
+                <label for="age" class="col-sm-2 col-form-label no-border">Возраст:</label>
+                <div class="col-sm-10">
+                    <p th:text="${user.getAge()}" type="text" readonly class="form-control-plaintext"
+                       id="age">
                 </div>
             </div>
             <div class="mb-2 row">

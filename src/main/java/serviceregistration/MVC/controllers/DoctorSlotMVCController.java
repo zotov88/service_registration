@@ -218,7 +218,7 @@ public class DoctorSlotMVCController {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         model.addAttribute("doctorDays", doctorSlotService.findAmongGroupByDoctorSlot(pageRequest, doctorSlotSearchDTO));
         model.addAttribute("specializations", specializationService.listAll());
-        model.addAttribute("days", dayService.getActualDays());
+        model.addAttribute("days", dayService.getFirstActualDays(Days.ONE_WEEK));
         return "doctorslots/makeMeet";
     }
 

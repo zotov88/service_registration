@@ -159,7 +159,7 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
             RegistrationDTO registrationDTO = registrationService.getOnByDoctorSlotId(doctorSlotDTO.getId());
             registrationDTO.setIsActive(false);
             doctorSlotDTO.setIsRegistered(false);
-            mailSenderService.dataPreparationForMessage(
+            mailSenderService.sendMessage(
                     registrationDTO.getId(),
                     MailConstants.MAIL_SUBJECT_FOR_REGISTRATION_CANCEL,
                     MailConstants.MAIL_BODY_FOR_REGISTRATION_CANCEL
@@ -167,7 +167,7 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
             update(doctorSlotDTO);
             registrationService.update(registrationDTO);
         }
-        ((DoctorSlotRepository)repository).markAsDeletedSlots(doctorId, dayId);
+        ((DoctorSlotRepository) repository).markAsDeletedSlots(doctorId, dayId);
     }
 
 }

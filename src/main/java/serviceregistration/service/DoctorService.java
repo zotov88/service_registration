@@ -101,7 +101,7 @@ public class DoctorService extends GenericService<Doctor, DoctorDTO> {
             DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(registrationDTO.getDoctorSlotId());
             doctorSlotDTO.setIsRegistered(false);
             registrationDTO.setIsActive(false);
-            mailSenderService.dataPreparationForMessage(
+            mailSenderService.sendMessage(
                     registrationDTO.getId(), MAIL_SUBJECT_FOR_REGISTRATION_CANCEL, MAIL_BODY_FOR_REGISTRATION_CANCEL);
             doctorSlotService.update(doctorSlotDTO);
             registrationService.update(registrationDTO);

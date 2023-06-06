@@ -10,16 +10,16 @@
 <body>
 <div layout:fragment="content">
     <div class="mt-5">
-        <h3 align="center">Архивное расписание</h3>
+        <h3 align="center">Расписание</h3>
         <div class="row">
             <div class="col">
-                <a th:href="'/doctorslots/doctor-schedule/' + ${#authentication.getPrincipal().getUserId()}"
-                   class="btn btn-sm btn-success"
-                   role="button"
-                   style="float: left"
-                   aria-disabled="true">Актуальное расписание</a>
+                <div class="form-check form-switch">
+                    <input class="form-check-input"
+                           th:onclick="'window.location.href=\'/doctorslots/doctor-schedule/' + ${#authentication.getPrincipal().getUserId()} + '\''"
+                           type="checkbox" role="switch" id="flexSwitchCheckDefault" checked>
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Показать архив</label>
+                </div>
             </div>
-            <div><br></div>
 
             <form method="POST" th:action="'/doctorslots/doctor-schedule/archive/search/' + ${#authentication.getPrincipal().getUserId()}"
                   th:object="${dayForm}">

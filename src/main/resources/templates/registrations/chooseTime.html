@@ -29,7 +29,7 @@
             <tr th:if="${!t.getRegistered()}" th:each="t : ${timeSlots}">
                 <td th:text="${t.getSlot()}"></td>
                 <td>
-                    <a th:if="${!t.getRegistered()}" class="btn btn-sm btn-outline-success"
+                    <a th:if="${!t.getRegistered()}" class="btn btn-sm btn-info"
                        th:href="'/registrations/slots/create/' + ${t.getDoctorSlotId()}"
                        onclick="return confirm('Вы хотите записаться?')">Записаться</a>
                 </td>

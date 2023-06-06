@@ -21,7 +21,7 @@ public interface DoctorRepository extends GenericRepository<Doctor> {
                         and first_name ilike '%' || coalesce(:firstName, '%')  || '%'
                         and mid_name ilike '%' || coalesce(:midName, '%')  || '%'
                         and s.title like '%' || coalesce(:specialization, '%')  || '%'
-                    order by d.last_name, d.first_name, d.mid_name, s.title
+                    order by d.is_deleted, d.last_name, d.first_name, d.mid_name, s.title
                     """)
     Page<Doctor> findSearchDoctorsSort(@Param(value = "lastName") String lastName,
                                        @Param(value = "firstName") String firstName,
@@ -39,7 +39,7 @@ public interface DoctorRepository extends GenericRepository<Doctor> {
                         and mid_name ilike '%' || coalesce(:midName, '%')  || '%'
                         and s.title like '%' || coalesce(:specialization, '%')  || '%'
                         and d.is_deleted = false
-                    order by d.last_name, d.first_name, d.mid_name, s.title
+                    order by d.is_deleted, d.last_name, d.first_name, d.mid_name, s.title
                     """)
     Page<Doctor> findSearchDoctorsSortWithDeletedFalse(@Param(value = "lastName") String lastName,
                                                        @Param(value = "firstName") String firstName,
@@ -52,7 +52,7 @@ public interface DoctorRepository extends GenericRepository<Doctor> {
                     select d.*
                     from doctors d
                         join specializations s on s.id = d.specialization_id
-                    order by d.last_name, d.first_name, d.mid_name, s.title
+                    order by d.is_deleted, d.last_name, d.first_name, d.mid_name, s.title
                     """)
     Page<Doctor> findDoctorsSort(Pageable pageable);
 
@@ -62,7 +62,7 @@ public interface DoctorRepository extends GenericRepository<Doctor> {
                     from doctors d
                         join specializations s on s.id = d.specialization_id
                     where is_deleted = false
-                    order by d.last_name, d.first_name, d.mid_name, s.title
+                    order by d.is_deleted, d.last_name, d.first_name, d.mid_name, s.title
                     """)
     Page<Doctor> findAllDoctorsSortWithDeletedFalse(Pageable pageable);
 

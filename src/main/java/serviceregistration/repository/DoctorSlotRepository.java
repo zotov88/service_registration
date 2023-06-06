@@ -47,7 +47,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         join specializations s on s.id = doc.specialization_id
                     where day >= TIMESTAMP 'today'
                     group by doc.id, d.id, doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, c.number, ds.is_deleted
-                    order by d.day, doc.last_name, s.title
+                    order by ds.is_deleted, d.day, doc.last_name, s.title
                     """)
     Page<UniversalQueryModel> findActualScheduleGroup(Pageable pageable);
 
@@ -69,7 +69,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         and cast(c.number as varchar) ilike coalesce(cast(:cabinetNumber as varchar), '%')
                         and d.day >= TIMESTAMP 'today'
                     group by doc.id, d.id, doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, c.number, ds.is_deleted
-                    order by d.day, doc.last_name, s.title
+                    order by ds.is_deleted, d.day, doc.last_name, s.title
                         """)
     Page<UniversalQueryModel> searchActualScheduleGroup(@Param(value = "lastName") String lastName,
                                                           @Param(value = "firstName") String firstName,
@@ -90,7 +90,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         join doctors doc on ds.doctor_id = doc.id
                         join specializations s on s.id = doc.specialization_id
                     group by doc.id, d.id, doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, c.number, ds.is_deleted
-                    order by d.day, doc.last_name, s.title
+                    order by ds.is_deleted, d.day, doc.last_name, s.title
                     """)
     Page<UniversalQueryModel> findArchiveScheduleGroup(PageRequest pageable);
 
@@ -111,7 +111,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         and to_char(d.day, 'yyyy-mm-dd') ilike'%' || coalesce(:day, '%')  || '%'
                         and cast(c.number as varchar) ilike coalesce(cast(:cabinetNumber as varchar), '%')
                     group by doc.id, d.id, doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, c.number, ds.is_deleted
-                    order by d.day, doc.last_name, s.title
+                    order by ds.is_deleted, d.day, doc.last_name, s.title
                         """)
     Page<UniversalQueryModel> searchArchiveScheduleGroup(@Param(value = "lastName") String lastName,
                                                            @Param(value = "firstName") String firstName,
@@ -136,7 +136,7 @@ public interface DoctorSlotRepository extends GenericRepository<DoctorSlot> {
                         and ds.is_deleted = false
                         and d.day + s2.time_slot > (now() at time zone 'utc-3')
                     group by doc.first_name, doc.mid_name, doc.last_name, s.title, d.day, doc.id, d.id, c.number
-                    order by d.day, s.title, doc.last_name, c.number
+                    order by d.day, doc.last_name, s.title, c.number
                     """)
     Page<UniversalQueryModel> findGroupByDoctorSlot(Pageable pageable);
 

@@ -13,13 +13,13 @@
 .btn-dark {
     color: black !important;
     background-color: inherit !important;
-    border-color: #00CED1 !important;
+    border: 0 !important;
 }
 
 .btn-dark:hover {
     color: black !important;
     background-color: inherit !important;
-    border-color: #00CED1 !important;
+    border: 0 !important;
 }
 
 .btn-primary {

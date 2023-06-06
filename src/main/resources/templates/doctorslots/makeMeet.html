@@ -51,17 +51,6 @@
                         <label for="day">Дата</label>
                     </div>
                 </div>
-<!--                <div class="col-md">-->
-<!--                    <div class="form-floating">-->
-<!--                        <select class="form-select" name="day" id="day">-->
-<!--                            <option selected th:value="null">Выберете день</option>-->
-<!--                            <option th:each="d : ${days}"-->
-<!--                                    th:value="${d.getDay()}"-->
-<!--                                    th:text="${d.getDay()}"></option>-->
-<!--                        </select>-->
-<!--                        <label for="day">День</label>-->
-<!--                    </div>-->
-<!--                </div>-->
                 <div class="row g-2">
                     <button type="submit" class="btn btn-secondary">Фильтровать расписание</button>
                 </div>
@@ -91,7 +80,7 @@
                 <td th:text="${ds.getDay()}"></td>
                 <td th:text="${ds.getCabinet()}"></td>
                 <td>
-                    <a sec:authorize="hasRole('CLIENT')" class="btn btn-sm btn-outline-success"
+                    <a sec:authorize="hasRole('CLIENT')" class="btn btn-sm btn-info"
                        th:href="'/registrations/slots/' + ${ds.getDoctorId()} + '/' + ${ds.getDayId()}">Выбрать время</a>
                 </td>
             </tr>

@@ -31,9 +31,9 @@
                 <td th:classappend="${t.getRegistered() == false} ? 'active-reg' : 'not-active-reg'"
                     th:text="${t.getRegistered()} == false ? 'Свободно' : 'Занято'"></td>
                 <td>
-                    <a th:if="${t.getRegistered()}" class="btn btn-sm btn-outline-success"
+                    <a th:if="${t.getRegistered()}" class="btn btn-sm btn-info"
                        th:href="'/doctorslots/doctor-schedule/day/slot/' + ${t.getDoctorSlotId()}">Посетитель</a>
-                    <a th:if="${t.getRegistered() && !canCancelIds.contains(t.getDoctorSlotId())}" class="btn btn-sm btn-outline-danger"
+                    <a th:if="${t.getRegistered() && !canCancelIds.contains(t.getDoctorSlotId())}" class="btn btn-sm btn-danger"
                        th:href="'/registrations/client-slots/cancel/ds/' + ${t.getDoctorSlotId()}"
                        onclick="return confirm('Вы хотите отменить запись?')">Отменить</a>
                 </td>

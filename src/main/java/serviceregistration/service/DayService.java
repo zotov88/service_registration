@@ -20,10 +20,6 @@ public class DayService {
         return dayRepository.findAll();
     }
 
-    public List<Day> getActualDays() {
-        return dayRepository.findActualDays();
-    }
-
     public Day getOne(Long dayId) {
         return dayRepository.findById(dayId).orElseThrow(() -> new NotFoundException("На этот день нет расписания"));
     }

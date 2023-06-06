@@ -36,7 +36,7 @@
                 <td th:classappend="${rs.getIsActive() == false} ? 'not-active-reg' : 'active-reg'"
                     th:text="${rs.getIsActive()} == false ? 'Архив' : 'Активная'"></td>
                 <td>
-                    <a th:if="${rs.getIsActive()}" class="btn btn-sm btn-outline-danger"
+                    <a th:if="${rs.getIsActive()}" class="btn btn-sm btn-danger"
                        th:href="'/registrations/client-slots/cancel/' + ${rs.getRegistrationId()}"
                        onclick="return confirm('Вы хотите отменить запись?')">Отменить</a>
                 </td>

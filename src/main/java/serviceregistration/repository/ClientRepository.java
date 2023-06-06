@@ -56,7 +56,7 @@ public interface ClientRepository extends GenericRepository<Client> {
                     where ds.id = :doctorSlotId
                         and ds.is_registered = true
                     """)
-//    and r.is_active= true
+
     Client findClientIdByDoctorSlot(Long doctorSlotId);
 
     @Query(nativeQuery = true,
@@ -66,7 +66,7 @@ public interface ClientRepository extends GenericRepository<Client> {
                     where last_name ilike '%' || coalesce(:lastName, '%')  || '%'
                         and first_name ilike '%' || coalesce(:firstName, '%')  || '%'
                         and mid_name ilike '%' || coalesce(:midName, '%')  || '%'
-                    order by c.last_name, c.first_name, c.mid_name
+                    order by c.is_deleted, c.last_name, c.first_name, c.mid_name
                     """)
     Page<Client> searchClients(@Param(value = "lastName") String lastName,
                                @Param(value = "firstName") String firstName,
@@ -81,7 +81,7 @@ public interface ClientRepository extends GenericRepository<Client> {
                         and first_name ilike '%' || coalesce(:firstName, '%')  || '%'
                         and mid_name ilike '%' || coalesce(:midName, '%')  || '%'
                         and is_deleted = false
-                    order by c.last_name, c.first_name, c.mid_name
+                    order by c.is_deleted, c.last_name, c.first_name, c.mid_name
                     """)
     Page<Client> searchClientsWithDeletedFalse(@Param(value = "firstName") String firstName,
                                                @Param(value = "lastName") String lastName,
@@ -93,18 +93,15 @@ public interface ClientRepository extends GenericRepository<Client> {
                     select c.*
                     from clients c
                     where is_deleted = false
-                    order by c.last_name, c.first_name, c.mid_name
+                    order by c.is_deleted, c.last_name, c.first_name, c.mid_name
                     """)
     Page<Client> findListAllClientsWithDeletedFalse(Pageable pageRequest);
 
-
-//    @Query(nativeQuery = true,
-//            value = """
-//                    select c.*
-//                    from clients c
-//                    where c.first_name ilike '%' || coalesce(:firstName, '%') || '%'
-//                    and c.last_name ilike '%' || coalesce(:lastName, '%') || '%'
-//                    and c.login ilike '%' || coalesce(:login, '%') || '%'
-//                     """)
-//    Page<Client> searchUsers(String firstName, String lastName, String login, Pageable pageable);
+    @Query(nativeQuery = true,
+            value = """
+                    select c.*
+                    from clients c
+                    order by c.is_deleted, c.last_name, c.first_name, c.mid_name
+                    """)
+    Page<Client> findListAll(Pageable pageRequest);
 }

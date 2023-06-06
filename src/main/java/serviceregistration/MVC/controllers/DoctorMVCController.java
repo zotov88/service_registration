@@ -150,7 +150,6 @@ public class DoctorMVCController {
     }
 
 
-
     @PostMapping("/addDoctor")
     public String addDoctor(@ModelAttribute("doctorForm") DoctorDTO doctorDTO,
                             BindingResult bindingResult,

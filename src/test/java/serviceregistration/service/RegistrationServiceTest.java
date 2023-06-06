@@ -126,47 +126,47 @@ public class RegistrationServiceTest extends GenericTest<Registration, Registrat
         PageRequest pageRequest = PageRequest.of(1, 10);
         Mockito.when(((RegistrationRepository) repository).getAllRegistrationsByClient(1L, pageRequest))
                 .thenReturn(new PageImpl<>(UQMImpl.LIST_UQM));
-        Page<UniversalQueryModel> doctorSlots = ((RegistrationService)service).getAllRegistrationsByClient(1L, pageRequest);
+        Page<UniversalQueryModel> doctorSlots = ((RegistrationService) service).getAllRegistrationsByClient(1L, pageRequest);
         assertEquals(doctorSlots.getContent(), UQMImpl.LIST_UQM);
     }
 
     @Test
     @Order(7)
     public void getOnByDoctorSlotId() {
-        Mockito.when(((RegistrationRepository)repository).findOnByDoctorSlotId(1L))
+        Mockito.when(((RegistrationRepository) repository).findOnByDoctorSlotId(1L))
                 .thenReturn(RegistrationTestData.REGISTRATION_1);
         Mockito.when(mapper.toDTO(RegistrationTestData.REGISTRATION_1)).thenReturn(RegistrationTestData.REGISTRATION_DTO_1);
-        RegistrationDTO registrationDTO = ((RegistrationService)service).getOnByDoctorSlotId(1L);
+        RegistrationDTO registrationDTO = ((RegistrationService) service).getOnByDoctorSlotId(1L);
         assertEquals(registrationDTO, RegistrationTestData.REGISTRATION_DTO_1);
     }
 
     @Test
     @Order(8)
     public void listAllActiveRegistrationByClientId() {
-        Mockito.when(((RegistrationRepository)repository).findAllActiveRegistrationByClientId(1L))
+        Mockito.when(((RegistrationRepository) repository).findAllActiveRegistrationByClientId(1L))
                 .thenReturn(RegistrationTestData.REGISTRATION_LIST);
         Mockito.when(mapper.toDTOs(RegistrationTestData.REGISTRATION_LIST)).thenReturn(RegistrationTestData.REGISTRATION_DTO_LIST);
-        List<RegistrationDTO> registrationDTOS = ((RegistrationService)service).listAllActiveRegistrationByClientId(1L);
+        List<RegistrationDTO> registrationDTOS = ((RegistrationService) service).listAllActiveRegistrationByClientId(1L);
         assertEquals(registrationDTOS, RegistrationTestData.REGISTRATION_DTO_LIST);
     }
 
     @Test
     @Order(9)
     public void getRegistrationsByDoctorIdWhereIsActive() {
-        Mockito.when(((RegistrationRepository)repository).findRegistrationsByDoctorId(1L))
+        Mockito.when(((RegistrationRepository) repository).findRegistrationsByDoctorId(1L))
                 .thenReturn(RegistrationTestData.REGISTRATION_LIST);
         Mockito.when(mapper.toDTOs(RegistrationTestData.REGISTRATION_LIST)).thenReturn(RegistrationTestData.REGISTRATION_DTO_LIST);
-        List<RegistrationDTO> registrationDTOS = ((RegistrationService)service).getRegistrationsByDoctorIdWhereIsActive(1L);
+        List<RegistrationDTO> registrationDTOS = ((RegistrationService) service).getRegistrationsByDoctorIdWhereIsActive(1L);
         assertEquals(registrationDTOS, RegistrationTestData.REGISTRATION_DTO_LIST);
     }
 
     @Test
     @Order(10)
     public void getRegistrationDTOByDoctorSlotId() {
-        Mockito.when(((RegistrationRepository)repository).findRegistrationDTOByDoctorSlotId(1L))
+        Mockito.when(((RegistrationRepository) repository).findRegistrationDTOByDoctorSlotId(1L))
                 .thenReturn(RegistrationTestData.REGISTRATION_1);
         Mockito.when(mapper.toDTO(RegistrationTestData.REGISTRATION_1)).thenReturn(RegistrationTestData.REGISTRATION_DTO_1);
-        RegistrationDTO registrationDTO = ((RegistrationService)service).getRegistrationDTOByDoctorSlotId(1L);
+        RegistrationDTO registrationDTO = ((RegistrationService) service).getRegistrationDTOByDoctorSlotId(1L);
         assertEquals(registrationDTO, RegistrationTestData.REGISTRATION_DTO_1);
     }
 }

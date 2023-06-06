@@ -43,17 +43,6 @@ public class RegistrationService extends GenericService<Registration, Registrati
         update(registrationDTO);
     }
 
-//    public void cancelMeet(Long registrationId) {
-////        RegistrationDTO registrationDTO = mapper.toDTO(mapper.toEntity(getOne(registrationId)));
-//        RegistrationDTO registrationDTO = getOne(registrationId);
-//        DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(registrationDTO.getDoctorSlotId());
-//        doctorSlotDTO.setIsRegistered(false);
-//        registrationDTO.setIsActive(false);
-//        registrationDTO.setDeleted(true);
-//        doctorSlotService.update(doctorSlotDTO);
-//        update(registrationDTO);
-//    }
-
     public RegistrationDTO cancelMeet(Long registrationId) {
         RegistrationDTO registrationDTO = getOne(registrationId);
         DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(registrationDTO.getDoctorSlotId());

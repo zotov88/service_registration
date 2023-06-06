@@ -156,6 +156,12 @@ public class ClientService extends GenericService<Client, ClientDTO> {
         return new PageImpl<>(result, pageRequest, clientsPaginated.getTotalElements());
     }
 
+    public Page<ClientDTO> listAll(Pageable pageRequest) {
+        Page<Client> doctorsSortPaginated = ((ClientRepository) repository).findListAll(pageRequest);
+        List<ClientDTO> result = mapper.toDTOs(doctorsSortPaginated.getContent());
+        return new PageImpl<>(result, pageRequest, doctorsSortPaginated.getTotalElements());
+    }
+
     public Page<ClientDTO> listAllClientsWithDeletedFalse(Pageable pageRequest) {
         Page<Client> doctorsSortPaginated = ((ClientRepository) repository).findListAllClientsWithDeletedFalse(pageRequest);
         List<ClientDTO> result = mapper.toDTOs(doctorsSortPaginated.getContent());
