@@ -35,18 +35,18 @@ public class Doctor
     @Column(name = "mid_name")
     private String midName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "specialization_id", nullable = false, foreignKey = @ForeignKey(name = "FK_DOCTORS_SPECIALIZATIONS"))
     private Specialization specialization;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false, foreignKey = @ForeignKey(name = "FK_DOCTORS_ROLES"))
     private Role role;
 
     @Column(name = "change_password_token")
     private String changePasswordToken;
 
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "doctor", cascade = CascadeType.REMOVE)
     private List<DoctorSlot> doctorSlots;
 
 }

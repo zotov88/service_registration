@@ -45,11 +45,9 @@ public class RegistrationService extends GenericService<Registration, Registrati
 
     public RegistrationDTO cancelMeet(Long registrationId) {
         RegistrationDTO registrationDTO = getOne(registrationId);
-        DoctorSlotDTO doctorSlotDTO = doctorSlotService.getOne(registrationDTO.getDoctorSlotId());
-        doctorSlotDTO.setIsRegistered(false);
+        doctorSlotService.setRegisteredDoctorSlotFalse(registrationDTO.getDoctorSlotId());
         registrationDTO.setIsActive(false);
         registrationDTO.setDeleted(true);
-        doctorSlotService.update(doctorSlotDTO);
         return update(registrationDTO);
     }
 
@@ -75,5 +73,9 @@ public class RegistrationService extends GenericService<Registration, Registrati
 
     public RegistrationDTO getRegistrationDTOByDoctorSlotId(Long doctorSlotId) {
         return mapper.toDTO(((RegistrationRepository) repository).findRegistrationDTOByDoctorSlotId(doctorSlotId));
+    }
+
+    public List<RegistrationDTO> getMeetingsBeforeDay() {
+        return mapper.toDTOs(((RegistrationRepository)repository).findMeetingsBeforeDay());
     }
 }

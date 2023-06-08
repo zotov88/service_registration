@@ -53,7 +53,7 @@
                     <td th:text="${ds.getDay()}"></td>
                     <td th:text="${ds.getCabinet()}"></td>
                     <td>
-                        <a class="btn btn-sm btn-outline-success"
+                        <a class="btn btn-sm btn-info"
                            th:href="'/doctorslots/doctor-schedule/day/' + ${#authentication.getPrincipal().getUserId()} + '/' + ${ds.getDayId()}"
                         >Подробнее</a>
                     </td>

@@ -1,5 +1,6 @@
 package serviceregistration.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import serviceregistration.utils.MailUtils;
 
 import java.util.Formatter;
 
+@Slf4j
 @Service
 public class MailSenderService {
 
@@ -69,7 +71,10 @@ public class MailSenderService {
                 subject,
                 createMessageRegistrationStatus(clientDTO, doctorDTO, day, slot, cabinet, text)
         );
-        javaMailSender.send(mailMessage);
+        // Защита от отправки писем на все почты кроме этой
+        if (clientDTO.getEmail().equalsIgnoreCase("zotov_l88@mail.ru")) {
+            javaMailSender.send(mailMessage);
+        }
     }
 
     private String createMessageRegistrationStatus(final ClientDTO clientDTO,

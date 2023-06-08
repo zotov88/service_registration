@@ -170,4 +170,9 @@ public class DoctorSlotService extends GenericService<DoctorSlot, DoctorSlotDTO>
         ((DoctorSlotRepository) repository).markAsDeletedSlots(doctorId, dayId);
     }
 
+    public void setRegisteredDoctorSlotFalse(Long doctorSlotId) {
+        DoctorSlotDTO doctorSlotDTO = getOne(doctorSlotId);
+        doctorSlotDTO.setIsRegistered(false);
+        update(doctorSlotDTO);
+    }
 }

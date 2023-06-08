@@ -20,17 +20,17 @@
                 </div>
             </div>
             <div class="mb-2 row">
-                <label for="doctorName" class="col-sm-2 col-form-label no-border">Имя:</label>
-                <div class="col-sm-10">
-                    <p th:text="${doctor.getFirstName()}" type="text" readonly class="form-control-plaintext"
-                       id="doctorName">
-                </div>
-            </div>
-            <div class="mb-2 row">
                 <label for="lastName" class="col-sm-2 col-form-label no-border">Фамилия:</label>
                 <div class="col-sm-10">
                     <p th:text="${doctor.getLastName()}" type="text" readonly class="form-control-plaintext"
                        id="lastName">
+                </div>
+            </div>
+            <div class="mb-2 row">
+                <label for="doctorName" class="col-sm-2 col-form-label no-border">Имя:</label>
+                <div class="col-sm-10">
+                    <p th:text="${doctor.getFirstName()}" type="text" readonly class="form-control-plaintext"
+                       id="doctorName">
                 </div>
             </div>
             <div class="mb-2 row">
@@ -40,31 +40,6 @@
                        id="middleName">
                 </div>
             </div>
-<!--            <div class="mb-2 row">-->
-<!--                <label for="email" class="col-sm-2 col-form-label no-border">Почта:</label>-->
-<!--                <div class="col-sm-10">-->
-<!--                    <p th:text="${doctor.getEmail()}" type="text" readonly class="form-control-plaintext" id="email">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="mb-2 row">-->
-<!--                <label for="birthDate" class="col-sm-2 col-form-label no-border">Дата рождения:</label>-->
-<!--                <div class="col-sm-10">-->
-<!--                    <p th:text="${doctor.getBirthDate()}" type="text" readonly class="form-control-plaintext"-->
-<!--                       id="birthDate">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="mb-2 row">-->
-<!--                <label for="phone" class="col-sm-2 col-form-label no-border">Телефон:</label>-->
-<!--                <div class="col-sm-10">-->
-<!--                    <p th:text="${doctor.getPhone()}" type="text" readonly class="form-control-plaintext" id="phone">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="mb-2 row">-->
-<!--                <label for="address" class="col-sm-2 col-form-label no-border">Адрес:</label>-->
-<!--                <div class="col-sm-10">-->
-<!--                    <p th:text="${doctor.getAddress()}" type="text" readonly class="form-control-plaintext" id="address">-->
-<!--                </div>-->
-<!--            </div>-->
         </form>
         <hr class="hr"/>
         <div class="mt-2">

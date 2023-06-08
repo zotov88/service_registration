@@ -34,7 +34,7 @@
                     <td th:text="${ds.getDay()}"></td>
                     <td th:text="${ds.getCabinet()}"></td>
                     <td>
-                        <a class="btn btn-sm btn-outline-success"
+                        <a class="btn btn-sm btn-info"
                            th:href="'/doctorslots/doctor-schedule/day/' +
                        ${#authentication.getPrincipal().getUserId()} + '/' + ${ds.getDayId()}">Подробнее</a>
                     </td>
@@ -54,7 +54,8 @@
                 <li class="page-item"
                     th:each="i : ${#numbers.sequence(1, doctorSlots.totalPages, 1)}"
                     th:classappend="${i eq doctorSlots.number + 1} ? 'active'">
-                    <a class="page-link" th:href="'/doctorslots/doctor-schedule/' + (${#authentication.getPrincipal().getUsername().equalsIgnoreCase('ADMIN')}
+                    <a class="page-link"
+                       th:href="'/doctorslots/doctor-schedule/' + (${#authentication.getPrincipal().getUsername().equalsIgnoreCase('ADMIN')}
                    ? ${doctorId} : ${#authentication.getPrincipal().getUserId()}) + '?page=' + ${i}"
                        th:text="${i}"
                        th:title="${'Page '+ i}" data-toggle="tooltip"></a>

@@ -22,9 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SequenceGenerator(name = "default_generator", sequenceName = "clients_seq", allocationSize = 1)
-public class Client
-        extends GenericModel
-        implements Userable {
+public class Client  extends GenericModel implements Userable {
 
     @Column(name = "login", nullable = false)
     private String login;
@@ -62,13 +60,13 @@ public class Client
     @Column(name = "address", nullable = false)
     private String address;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false, foreignKey = @ForeignKey(name = "FK_CLIENTS_ROLES"))
     private Role role;
 
     @Column(name = "change_password_token")
     private String changePasswordToken;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "client")
     private List<Registration> registrations;
 }

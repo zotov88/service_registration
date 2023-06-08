@@ -1,4 +1,4 @@
-package serviceregistration.MVC.controllers;
+package serviceregistration.MVC.controller;
 
 import jakarta.security.auth.message.AuthException;
 import jakarta.websocket.server.PathParam;
@@ -133,11 +133,11 @@ public class DoctorMVCController {
     }
 
     @PostMapping("/profile/update")
-    public String updateProfile(@ModelAttribute("clientForm") DoctorDTO doctorDTOFromUpdateForm) {
+    public String updateProfile(@ModelAttribute("doctorForm") DoctorDTO doctorDTOFromUpdateForm) {
         DoctorDTO foundDoctor = doctorService.getOne(doctorDTOFromUpdateForm.getId());
         foundDoctor.setFirstName(doctorDTOFromUpdateForm.getFirstName());
         foundDoctor.setLastName(doctorDTOFromUpdateForm.getLastName());
-        foundDoctor.setMidName(doctorDTOFromUpdateForm.getMidName() == null ? "" : doctorDTOFromUpdateForm.getMidName());
+        foundDoctor.setMidName(doctorDTOFromUpdateForm.getMidName());
         doctorService.update(foundDoctor);
         return "redirect:/doctors/profile/" + doctorDTOFromUpdateForm.getId();
     }

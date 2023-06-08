@@ -24,7 +24,7 @@ import serviceregistration.service.dataconstants.UQMImpl;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -103,7 +103,6 @@ public class DoctorSlotServiceTest extends GenericTest<DoctorSlot, DoctorSlotDTO
         assertEquals(doctorSlotDTO, DoctorSlotTestData.DOCTOR_SLOT_DTO_1);
         assertEquals(doctorSlotDTOS, DoctorSlotTestData.DOCTOR_SLOT_DTO_LIST);
     }
-
 
     @Test
     @Order(6)
@@ -315,5 +314,20 @@ public class DoctorSlotServiceTest extends GenericTest<DoctorSlot, DoctorSlotDTO
         Mockito.when(((DoctorSlotRepository) repository).findPosiblyCancelMeet(1L, 1L)).thenReturn(longList);
         Mockito.when(mapper.toDTOs(DoctorSlotTestData.DOCTOR_SLOT_LIST)).thenReturn(DoctorSlotTestData.DOCTOR_SLOT_DTO_LIST);
         assertEquals(((DoctorSlotService)service).getPosiblyCancelMeet(1L, 1L), longList);
+    }
+
+    @Test
+    @Order(23)
+    public void setRegisteredDoctorFalse() {
+        DoctorSlotTestData.DOCTOR_SLOT_DTO_1.setIsRegistered(true);
+        Mockito.when(repository.findById(1L)).thenReturn(Optional.of(DoctorSlotTestData.DOCTOR_SLOT_1));
+        Mockito.when(mapper.toDTO(DoctorSlotTestData.DOCTOR_SLOT_1)).thenReturn(DoctorSlotTestData.DOCTOR_SLOT_DTO_1);
+        Mockito.when(service.getOne(1L)).thenReturn(DoctorSlotTestData.DOCTOR_SLOT_DTO_1);
+        Mockito.when(mapper.toEntity(DoctorSlotTestData.DOCTOR_SLOT_DTO_1)).thenReturn(DoctorSlotTestData.DOCTOR_SLOT_1);
+        Mockito.when(repository.save(DoctorSlotTestData.DOCTOR_SLOT_1)).thenReturn(DoctorSlotTestData.DOCTOR_SLOT_1);
+        Mockito.when(mapper.toDTO(DoctorSlotTestData.DOCTOR_SLOT_1)).thenReturn(DoctorSlotTestData.DOCTOR_SLOT_DTO_1);
+        assertTrue(DoctorSlotTestData.DOCTOR_SLOT_DTO_1.getIsRegistered());
+        ((DoctorSlotService)service).setRegisteredDoctorSlotFalse(1L);
+        assertFalse(DoctorSlotTestData.DOCTOR_SLOT_DTO_1.getIsRegistered());
     }
 }

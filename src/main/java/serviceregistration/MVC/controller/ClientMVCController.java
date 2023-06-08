@@ -1,7 +1,8 @@
-package serviceregistration.MVC.controllers;
+package serviceregistration.MVC.controller;
 
 import jakarta.security.auth.message.AuthException;
 import jakarta.websocket.server.PathParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,8 @@ import serviceregistration.constants.Errors;
 import serviceregistration.dto.ClientDTO;
 import serviceregistration.dto.ClientSearchDTO;
 import serviceregistration.service.ClientService;
+import serviceregistration.service.MailSenderService;
+import serviceregistration.service.RegistrationService;
 import serviceregistration.service.UserService;
 import serviceregistration.service.userdetails.CustomUserDetails;
 
@@ -23,17 +26,24 @@ import java.util.UUID;
 
 import static serviceregistration.constants.UserRolesConstants.ADMIN;
 
+@Slf4j
 @Controller
 @RequestMapping("/clients")
 public class ClientMVCController {
 
     private final ClientService clientService;
     private final UserService userService;
+    private final RegistrationService registrationService;
+    private final MailSenderService mailSenderService;
 
     public ClientMVCController(ClientService clientService,
-                               UserService userService) {
+                               UserService userService,
+                               RegistrationService registrationService,
+                               MailSenderService mailSenderService) {
         this.clientService = clientService;
         this.userService = userService;
+        this.registrationService = registrationService;
+        this.mailSenderService = mailSenderService;
     }
 
     @GetMapping("")
@@ -166,7 +176,7 @@ public class ClientMVCController {
         ClientDTO foundUser = clientService.getOne(clientDTOFromUpdateForm.getId());
         if (userEmailDuplicated != null && !Objects.equals(userEmailDuplicated.getEmail(), foundUser.getEmail())) {
             bindingResult.rejectValue("email", "error.email", "Такой email уже существует");
-            return "updateProfileClient";
+            return "profile/updateProfileClient";
         }
         foundUser.setFirstName(clientDTOFromUpdateForm.getFirstName());
         foundUser.setLastName(clientDTOFromUpdateForm.getLastName());

@@ -25,7 +25,7 @@ public interface RegistrationRepository
                         join cabinets c2 on c2.id = ds.cabinet_id
                         join slots s on s.id = ds.slot_id
                     where r.client_id = :clientId
-                    order by r.is_active desc, d2.day, s.time_slot, sp.title, d.last_name
+                    order by r.is_active desc, d2.day desc, s.time_slot desc, sp.title, d.last_name
                     """)
     Page<UniversalQueryModel> getAllRegistrationsByClient(Long clientId, Pageable pageable);
 
@@ -81,4 +81,19 @@ public interface RegistrationRepository
                         and r.is_active = true
                     """)
     Registration findRegistrationDTOByDoctorSlotId(Long doctorSlotId);
+
+    @Query(nativeQuery = true,
+            value = """
+                    select r.*
+                    from registrations r
+                             join doctors_slots ds on r.doctor_slot_id = ds.id
+                             join days d on ds.day_id = d.id
+                             join slots s on s.id = ds.slot_id
+                    where ((d.day + s.time_slot) - (now() at time zone 'utc-3')) < '23:59:00'      
+                        and ((d.day + s.time_slot) - (now() at time zone 'utc-3')) > '23:58:00'          
+                        and r.is_active = true
+                    """)
+    List<Registration> findMeetingsBeforeDay();
+
+//    and ((d.day + s.time_slot) - (now() at time zone 'utc-3')) > '23:58:00'
 }

@@ -1,4 +1,4 @@
-package serviceregistration.MVC.controllers;
+package serviceregistration.MVC.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,7 +48,7 @@ public class DoctorSlotMVCController {
         Page<UniversalQueryModel> doctorSlots = doctorSlotService.getActualSchedule(pageRequest);
         model.addAttribute("doctorslots", doctorSlots);
         model.addAttribute("specializations", specializationService.listAll());
-        model.addAttribute("days", dayService.getFirstActualDays(Days.ONE_WEEK));
+        model.addAttribute("days", dayService.getFirstActualDays(Days.TWO_WEEK));
         model.addAttribute("cabinets", cabinetService.listAll());
         return "doctorslots/schedule";
     }
@@ -60,7 +60,7 @@ public class DoctorSlotMVCController {
                                        Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         model.addAttribute("doctorslots", doctorSlotService.findAmongActualSchedule(pageRequest, doctorSlotSearchDTO));
-        model.addAttribute("days", dayService.getFirstActualDays(Days.ONE_WEEK));
+        model.addAttribute("days", dayService.getFirstActualDays(Days.TWO_WEEK));
         model.addAttribute("cabinets", cabinetService.listAll());
         model.addAttribute("specializations", specializationService.listAll());
         return "doctorslots/schedule";
@@ -72,7 +72,7 @@ public class DoctorSlotMVCController {
                                      Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         Page<UniversalQueryModel> doctorSlots = doctorSlotService.getArchiveSchedule(pageRequest);
-        model.addAttribute("days", dayService.getDaysFromStartToPlusDaysFromToday(Days.ONE_WEEK));
+        model.addAttribute("days", dayService.getDaysFromStartToPlusDaysFromToday(Days.TWO_WEEK));
         model.addAttribute("cabinets", cabinetService.listAll());
         model.addAttribute("specializations", specializationService.listAll());
         model.addAttribute("doctorslots", doctorSlots);
@@ -110,7 +110,7 @@ public class DoctorSlotMVCController {
                                                      Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         Page<UniversalQueryModel> doctorSlots = doctorSlotService.getArchiveScheduleByDoctor(pageRequest, doctorId);
-        model.addAttribute("days", dayService.getDaysFromStartToPlusDaysFromToday(Days.ONE_WEEK));
+        model.addAttribute("days", dayService.getDaysFromStartToPlusDaysFromToday(Days.TWO_WEEK));
         model.addAttribute("doctorSlots", doctorSlots);
         return "doctorslots/individualArchiveSchedule";
     }
@@ -123,7 +123,7 @@ public class DoctorSlotMVCController {
                                                         Model model) {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         Page<UniversalQueryModel> doctorSlots = doctorSlotService.searchArchiveScheduleByDoctor(pageRequest, doctorId, day);
-        model.addAttribute("days", dayService.getDaysFromStartToPlusDaysFromToday(Days.ONE_WEEK));
+        model.addAttribute("days", dayService.getDaysFromStartToPlusDaysFromToday(Days.TWO_WEEK));
         model.addAttribute("doctorSlots", doctorSlots);
         return "doctorslots/individualArchiveSchedule";
     }
@@ -181,7 +181,7 @@ public class DoctorSlotMVCController {
 
     public void createModelForAddingSchedule(Model model) {
         model.addAttribute("doctors", doctorService.listAll());
-        model.addAttribute("days", dayService.getFirstActualDays(Days.ONE_WEEK));
+        model.addAttribute("days", dayService.getFirstActualDays(Days.TWO_WEEK));
         model.addAttribute("cabinets", cabinetService.listAll());
     }
 
@@ -206,7 +206,7 @@ public class DoctorSlotMVCController {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         model.addAttribute("doctorDays", doctorSlotService.groupByDoctorSlot(pageRequest));
         model.addAttribute("specializations", specializationService.listAll());
-        model.addAttribute("days", dayService.getFirstActualDays(Days.ONE_WEEK));
+        model.addAttribute("days", dayService.getFirstActualDays(Days.TWO_WEEK));
         return "/doctorslots/makeMeet";
     }
 
@@ -218,7 +218,7 @@ public class DoctorSlotMVCController {
         PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
         model.addAttribute("doctorDays", doctorSlotService.findAmongGroupByDoctorSlot(pageRequest, doctorSlotSearchDTO));
         model.addAttribute("specializations", specializationService.listAll());
-        model.addAttribute("days", dayService.getFirstActualDays(Days.ONE_WEEK));
+        model.addAttribute("days", dayService.getFirstActualDays(Days.TWO_WEEK));
         return "doctorslots/makeMeet";
     }
 

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
-public abstract class GenericMapper<E extends GenericModel, D extends GenericDTO> implements Mapper<E, D> {
+public abstract class GenericMapper<E extends GenericModel, D extends GenericDTO> implements Mapper<E,D> {
 
     private final Class<E> entityClass;
     private final Class<D> dtoClass;
