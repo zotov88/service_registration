@@ -91,10 +91,10 @@ public class RegistrationMVCController {
         registrationDTO.setClientId(Long.valueOf(customUserDetails.getUserId()));
         registrationDTO.setDoctorSlotId(doctorSlotDTO.getId());
         registrationService.registrationSlot(registrationDTO);
-//        mailSenderService.sendMessage(
-//                registrationService.getRegistrationDTOByDoctorSlotId(doctorSlotDTO.getId()).getId(),
-//                MAIL_SUBJECT_FOR_REGISTRATION_SUCCESS,
-//                MAIL_BODY_FOR_REGISTRATION_SUCCESS);
+        mailSenderService.sendMessage(
+                registrationService.getRegistrationDTOByDoctorSlotId(doctorSlotDTO.getId()).getId(),
+                MAIL_SUBJECT_FOR_REGISTRATION_SUCCESS,
+                MAIL_BODY_FOR_REGISTRATION_SUCCESS);
         return "redirect:/registrations/client-slots/" + customUserDetails.getUserId();
     }
 
@@ -102,10 +102,10 @@ public class RegistrationMVCController {
     public String cancelMeet(@PathVariable Long registrationId) {
         ClientDTO clientDTO = clientService.getOne(registrationService.getOne(registrationId).getClientId());
         registrationService.cancelMeet(registrationId);
-//        mailSenderService.sendMessage(
-//                registrationId,
-//                MAIL_SUBJECT_FOR_REGISTRATION_CANCEL,
-//                MAIL_BODY_FOR_REGISTRATION_CANCEL);
+        mailSenderService.sendMessage(
+                registrationId,
+                MAIL_SUBJECT_FOR_REGISTRATION_CANCEL,
+                MAIL_BODY_FOR_REGISTRATION_CANCEL);
         return "redirect:/registrations/client-slots/" + clientDTO.getId();
     }
 

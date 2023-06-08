@@ -89,11 +89,10 @@ public interface RegistrationRepository
                              join doctors_slots ds on r.doctor_slot_id = ds.id
                              join days d on ds.day_id = d.id
                              join slots s on s.id = ds.slot_id
-                    where ((d.day + s.time_slot) - (now() at time zone 'utc-3')) < '23:59:00'      
-                        and ((d.day + s.time_slot) - (now() at time zone 'utc-3')) > '23:58:00'          
+                    where ((d.day + s.time_slot) - (now() at time zone 'utc-3')) < '23:59:00'
+                    and ((d.day + s.time_slot) - (now() at time zone 'utc-3')) > '23:58:00'
                         and r.is_active = true
                     """)
     List<Registration> findMeetingsBeforeDay();
 
-//    and ((d.day + s.time_slot) - (now() at time zone 'utc-3')) > '23:58:00'
 }
