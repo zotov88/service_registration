@@ -7,4 +7,5 @@ public interface Userable {
     String getPassword();
 
     Role getRole();
+
 }

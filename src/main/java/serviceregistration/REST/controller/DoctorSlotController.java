@@ -24,7 +24,7 @@ public class DoctorSlotController extends GenericController<DoctorSlot, DoctorSl
     }
 
     @Operation(description = "Добавить расписание для врача")
-    @RequestMapping(value = "/addSchedule", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/addSchedule?dayId=1&", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public void schedule(@RequestParam(value = "dayId") Long dayId,
                          @RequestParam(value = "doctorId") Long doctorId,
                          @RequestParam(value = "cabinetId") Long cabinetId) {

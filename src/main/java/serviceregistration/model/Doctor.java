@@ -20,7 +20,7 @@ public class Doctor
         extends GenericModel
         implements Userable {
 
-    @Column(name = "login", nullable = false)
+    @Column(name = "login", unique = true, nullable = false)
     private String login;
 
     @Column(name = "password", nullable = false)
