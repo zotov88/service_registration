@@ -52,6 +52,7 @@ public interface WebSecurityConstants {
                     "/login",
                     "/clients/registration",
                     "/clients/remember-password",
+
                     "/clients/profile/{id}"
             );
 
