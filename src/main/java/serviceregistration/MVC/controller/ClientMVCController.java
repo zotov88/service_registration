@@ -16,8 +16,6 @@ import serviceregistration.constants.Errors;
 import serviceregistration.dto.ClientDTO;
 import serviceregistration.dto.ClientSearchDTO;
 import serviceregistration.service.ClientService;
-import serviceregistration.service.MailSenderService;
-import serviceregistration.service.RegistrationService;
 import serviceregistration.service.UserService;
 import serviceregistration.service.userdetails.CustomUserDetails;
 
@@ -33,17 +31,11 @@ public class ClientMVCController {
 
     private final ClientService clientService;
     private final UserService userService;
-    private final RegistrationService registrationService;
-    private final MailSenderService mailSenderService;
 
     public ClientMVCController(ClientService clientService,
-                               UserService userService,
-                               RegistrationService registrationService,
-                               MailSenderService mailSenderService) {
+                               UserService userService) {
         this.clientService = clientService;
         this.userService = userService;
-        this.registrationService = registrationService;
-        this.mailSenderService = mailSenderService;
     }
 
     @GetMapping("")
@@ -127,22 +119,6 @@ public class ClientMVCController {
         }
     }
 
-    @GetMapping("/profile/{id}")
-    public String userProfile(@PathVariable Integer id,
-                              Model model) throws AuthException {
-        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!Objects.isNull(customUserDetails.getUserId())) {
-            if (!ADMIN.equalsIgnoreCase(customUserDetails.getUsername())) {
-                if (!id.equals(customUserDetails.getUserId()) &&
-                        !customUserDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_DOCTOR"))) {
-                    throw new AuthException(HttpStatus.FORBIDDEN + ": ");
-                }
-            }
-        }
-        model.addAttribute("user", clientService.getOne(Long.valueOf(id)));
-        return "profile/viewClientProfile";
-    }
-
     @GetMapping("/change-password")
     public String changePassword(@PathParam(value = "uuid") String uuid,
                                  Model model) {
@@ -155,6 +131,23 @@ public class ClientMVCController {
                                  @ModelAttribute("changePasswordForm") ClientDTO clientDTO) {
         clientService.changePassword(uuid, clientDTO.getPassword());
         return "redirect:/logout";
+    }
+
+    @GetMapping("/profile/{id}")
+    public String userProfile(@PathVariable Integer id,
+                              Model model) throws AuthException {
+        CustomUserDetails customUserDetails =
+                (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!Objects.isNull(customUserDetails.getUserId())) {
+            if (!ADMIN.equalsIgnoreCase(customUserDetails.getUsername())) {
+                if (!id.equals(customUserDetails.getUserId()) &&
+                        !customUserDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_DOCTOR"))) {
+                    throw new AuthException(HttpStatus.FORBIDDEN + ": ");
+                }
+            }
+        }
+        model.addAttribute("user", clientService.getOne(Long.valueOf(id)));
+        return "profile/viewClientProfile";
     }
 
     @GetMapping("/profile/update/{id}")

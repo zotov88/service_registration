@@ -48,15 +48,15 @@
                        th:href="'/doctors/profile/' + ${#authentication.getPrincipal().getUserId()}">Профиль</a>
                 </div>
 
-                    <form class="d-flex" sec:authorize="!isAuthenticated()">
-                        <a href="/login" class="btn btn-dark" role="button" aria-disabled="true">Войти</a>
-                    </form>
-                    <form class="d-flex" sec:authorize="isAuthenticated()">
-                        <a href="/logout" class="btn btn-dark" role="button" aria-disabled="true">Выйти</a>
-                    </form>
-                </div>
+                <form class="d-flex" sec:authorize="!isAuthenticated()">
+                    <a href="/login" class="btn btn-dark" role="button" aria-disabled="true">Войти</a>
+                </form>
+                <form class="d-flex" sec:authorize="isAuthenticated()">
+                    <a href="/logout" class="btn btn-dark" role="button" aria-disabled="true">Выйти</a>
+                </form>
             </div>
         </div>
-    </nav>
+</div>
+</nav>
 </div>
 

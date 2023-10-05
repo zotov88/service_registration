@@ -39,12 +39,12 @@ public interface WebSecurityConstants {
 
     List<String> DOCTORSLOTS_PERMISSION_LIST_FOR_CLIENT = List.of
             (
-                    "doctorslots/makeMeet"
+                    "/doctorslots/makeMeet"
             );
 
     List<String> DOCTORSLOTS_PERMISSION_LIST = List.of
             (
-                    "doctorslots/doctor-schedule/**"
+                    "/doctorslots/doctor-schedule/**"
             );
 
     List<String> CLIENTS_WHITE_LIST = List.of
@@ -52,7 +52,7 @@ public interface WebSecurityConstants {
                     "/login",
                     "/clients/registration",
                     "/clients/remember-password",
-                    "clients/profile/{id}"
+                    "/clients/profile/{id}"
             );
 
     List<String> CLIENTS_PERMISSION_LIST = List.of
@@ -68,7 +68,7 @@ public interface WebSecurityConstants {
 
     List<String> REGISTRATIONS_PERMISSION_LIST_FOR_ADMIN = List.of
             (
-                    "registrations/listAll"
+                    "/registrations/listAll"
             );
 
 }

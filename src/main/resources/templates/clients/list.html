@@ -68,10 +68,12 @@
                 <td>
                     <a class="btn btn-sm btn-info"
                        th:href="'/clients/profile/' + ${c.getId()}">О клиенте</a>
-                    <a sec:authorize="isAuthenticated() && hasRole('ADMIN')" th:if="${!c.isDeleted()}" class="btn btn-sm btn-danger"
+                    <a sec:authorize="isAuthenticated() && hasRole('ADMIN')" th:if="${!c.isDeleted()}"
+                       class="btn btn-sm btn-danger"
                        th:href="'/clients/softdelete/' + ${c.getId()}"
                        onclick="return confirm('Вы хотите удалить клиента?')">Удалить</a>
-                    <a sec:authorize="isAuthenticated() && hasRole('ADMIN')" th:if="${c.isDeleted()}" class="btn btn-sm btn-warning"
+                    <a sec:authorize="isAuthenticated() && hasRole('ADMIN')" th:if="${c.isDeleted()}"
+                       class="btn btn-sm btn-warning"
                        th:href="'/clients/restore/' + ${c.getId()}"
                        onclick="return confirm('Вы хотите восстановить клиента?')">Восстановить</a>
                 </td>
