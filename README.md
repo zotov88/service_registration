@@ -22,13 +22,13 @@
 
 * Java 17
 * Maven
-* Spring Framework
-* Spring DATA, JPA
-* ORM, Hibernate
+* Spring Boot
+* Spring MVC
+* Spring Data JPA
+* Spring Security
+* Hibernate
 * PostgreSQL
 * Docker
-* Spring Security
-* Spring MVC
 * Lombok
 * Junit
 * Mock
@@ -80,13 +80,13 @@
 Также система оповестит письмом за сутки до начала встречи.
 
 В приложении реализован планировщик, который отслеживает статусы активных регистраций и переводит их в состояние
-прошдших событий, если им уже больше 29 минут, так как на
+прошедших событий, если им уже больше 29 минут, так как на
 посещение врача отводится 30 минут.
 
 ## Ссылка на пример работы сервиса
 
-https://cloud.mail.ru/public/iKRn/sQq13kcmS
+<a href="https://cloud.mail.ru/public/iKRn/sQq13kcmS" target="_blank">Пример</a>
 
 ## Ссылка на защиту проекта
 
-https://cloud.mail.ru/public/u5vs/gkgaLj9ie
+<a href="https://cloud.mail.ru/public/u5vs/gkgaLj9ie" target="_blank">Защита</a>
