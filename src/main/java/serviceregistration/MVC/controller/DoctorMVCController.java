@@ -30,18 +30,20 @@ public class DoctorMVCController {
 
     private final DoctorService doctorService;
     private final SpecializationService specializationService;
+    private final PageConfig pageConfig;
 
     public DoctorMVCController(DoctorService doctorService,
-                               SpecializationService specializationService) {
+                               SpecializationService specializationService,
+                               PageConfig pageConfig) {
         this.doctorService = doctorService;
         this.specializationService = specializationService;
+        this.pageConfig = pageConfig;
     }
 
     @GetMapping("")
-    public String getAll(@RequestParam(value = "page", defaultValue = "1") int page,
-                         @RequestParam(value = "size", defaultValue = "10") int pageSize,
+    public String getAll(@RequestParam(value = "page", defaultValue = "${page.config.size.page-default}") int page,
                          Model model) {
-        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        PageRequest pageRequest = PageRequest.of(page - 1, pageConfig.getPageSize());
         Page<DoctorDTO> doctors;
         final String username = SecurityContextHolder.getContext().getAuthentication().getName();
         if (ADMIN.equalsIgnoreCase(username)) {
@@ -55,11 +57,10 @@ public class DoctorMVCController {
     }
 
     @PostMapping("/search")
-    public String searchDoctor(@RequestParam(value = "page", defaultValue = "1") int page,
-                               @RequestParam(value = "size", defaultValue = "10") int pageSize,
+    public String searchDoctor(@RequestParam(value = "page", defaultValue = "${page.config.size.page-default}") int page,
                                @ModelAttribute("doctorSearchForm") DoctorSearchDTO doctorSearchDTO,
                                Model model) {
-        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        PageRequest pageRequest = PageRequest.of(page - 1, pageConfig.getPageSize());
         Page<DoctorDTO> doctors;
         final String username = SecurityContextHolder.getContext().getAuthentication().getName();
         if (ADMIN.equalsIgnoreCase(username)) {

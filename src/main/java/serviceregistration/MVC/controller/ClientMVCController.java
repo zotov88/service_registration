@@ -31,18 +31,20 @@ public class ClientMVCController {
 
     private final ClientService clientService;
     private final UserService userService;
+    private final PageConfig pageConfig;
 
     public ClientMVCController(ClientService clientService,
-                               UserService userService) {
+                               UserService userService,
+                               PageConfig pageConfig) {
         this.clientService = clientService;
         this.userService = userService;
+        this.pageConfig = pageConfig;
     }
 
     @GetMapping("")
-    public String getAll(@RequestParam(value = "page", defaultValue = "1") int page,
-                         @RequestParam(value = "size", defaultValue = "10") int pageSize,
+    public String getAll(@RequestParam(value = "page", defaultValue = "${page.config.size.page-default}") int page,
                          Model model) {
-        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        PageRequest pageRequest = PageRequest.of(page - 1, pageConfig.getPageSize());
         Page<ClientDTO> clients;
         final String username = SecurityContextHolder.getContext().getAuthentication().getName();
         if (ADMIN.equalsIgnoreCase(username)) {
@@ -55,11 +57,10 @@ public class ClientMVCController {
     }
 
     @PostMapping("/search")
-    public String searchDoctor(@RequestParam(value = "page", defaultValue = "1") int page,
-                               @RequestParam(value = "size", defaultValue = "10") int pageSize,
+    public String searchDoctor(@RequestParam(value = "page", defaultValue = "${page.config.size.page-default}") int page,
                                @ModelAttribute("clientSearchForm") ClientSearchDTO clientSearchDTO,
                                Model model) {
-        PageRequest pageRequest = PageRequest.of(page - 1, pageSize);
+        PageRequest pageRequest = PageRequest.of(page - 1, pageConfig.getPageSize());
         Page<ClientDTO> clients;
         final String username = SecurityContextHolder.getContext().getAuthentication().getName();
         if (ADMIN.equalsIgnoreCase(username)) {
